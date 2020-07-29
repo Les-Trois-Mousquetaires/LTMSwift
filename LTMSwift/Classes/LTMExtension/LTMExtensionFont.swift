@@ -1,0 +1,58 @@
+//
+//  LTMExtensionFont.swift
+//  ZhiHuiKuangShan
+//
+//  Created by 柯南 on 2020/7/6.
+//  Copyright © 2020 TianRui. All rights reserved.
+//
+
+import UIKit
+
+enum fontWeight {
+    case ultraLight
+    case thin
+    case light
+    case regular
+    case medium
+    case semibold
+    case bold
+    case heavy
+    case black
+    
+    @available(iOS 10.0, *)
+    
+    func systemWeight() ->UIFont.Weight{
+        switch self {
+        case .ultraLight:
+            return UIFont.Weight.ultraLight
+        case .thin:
+            return UIFont.Weight.thin
+        case .light:
+            return UIFont.Weight.light
+        case .regular:
+            return UIFont.Weight.regular
+        case .medium:
+            return UIFont.Weight.medium
+        case .semibold:
+            return UIFont.Weight.semibold
+        case .bold:
+            return UIFont.Weight.bold
+        case .heavy:
+            return UIFont.Weight.heavy
+        case .black:
+            return UIFont.Weight.black
+        }
+    }
+}
+
+extension UIFont {
+    /**
+     苹果字体
+     
+     - parameter size 字体大小
+     - parameter weight 字体格式
+     */
+    class func appleFont(size: CGFloat = 16, weight: fontWeight = .regular) -> UIFont!{
+        return UIFont.systemFont(ofSize: size, weight: weight.systemWeight())
+    }
+}

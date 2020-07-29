@@ -1,0 +1,6 @@
+framework module LTMSwift {
+  umbrella header "LTMSwift-umbrella.h"
+
+  export *
+  module * { export * }
+}
