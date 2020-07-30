@@ -7,7 +7,7 @@
 //
 import UIKit
 
-extension UIImage{
+public extension UIImage{
     
     /**
      颜色生成图片
