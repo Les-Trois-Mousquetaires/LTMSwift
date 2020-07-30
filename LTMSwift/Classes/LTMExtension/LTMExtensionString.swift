@@ -1,11 +1,10 @@
 //
 //  LTMExtensionString.swift
-//  ZhiHuiKuangShan
+//  LTMSwift
 //
-//  Created by 柯南 on 2020/7/6.
-//  Copyright © 2020 TianRui. All rights reserved.
+//  Created by kenan0620 on 07/29/2020.
+//  Copyright (c) 2020 kenan0620. All rights reserved.
 //
-
 import UIKit
 
 public extension String{

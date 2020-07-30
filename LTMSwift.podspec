@@ -31,7 +31,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '10.0'
 
   s.source_files = 'LTMSwift/Classes/LTMExtension/**/*'
-  
+  s.swift_versions = '5.2'
   # s.resource_bundles = {
   #   'LTMSwift' => ['LTMSwift/Assets/*.png']
   # }

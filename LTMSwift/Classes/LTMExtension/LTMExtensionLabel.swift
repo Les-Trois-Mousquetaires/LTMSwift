@@ -1,4 +1,10 @@
-
+//
+//  LTMExtensionLabel.swift
+//  LTMSwift
+//
+//  Created by kenan0620 on 07/29/2020.
+//  Copyright (c) 2020 kenan0620. All rights reserved.
+//
 import Foundation
 
 public extension UILabel{
