@@ -8,13 +8,14 @@
 
 import UIKit
 
-extension String{
+public extension String{
     
     /**
      截取到任意位置
      */
     func subString(to: Int) -> String {
         let index: String.Index = self.index(startIndex, offsetBy: to)
+        
         return String(self[..<index])
     }
     
@@ -23,6 +24,7 @@ extension String{
      */
     func subString(from: Int) -> String {
         let index: String.Index = self.index(startIndex, offsetBy: from)
+        
         return String(self[index ..< endIndex])
     }
     
@@ -32,6 +34,7 @@ extension String{
     func subString(from: Int, to: Int) -> String {
         let beginIndex = self.index(self.startIndex, offsetBy: from)
         let endIndex = self.index(self.startIndex, offsetBy: to)
+        
         return String(self[beginIndex...endIndex])
     }
     
@@ -52,26 +55,7 @@ extension String{
         
         return mutabString as String
     }
-    
-    /**
-     手机号344格式显示
-     */
-    func phoneNumberFormatString() -> String{
-        if self.count < 11 {
-            return self
-        }
-        
-        let mutabString: NSMutableString = NSMutableString.init(string: self.replacingOccurrences(of: " ", with: ""))
-        if mutabString.length > 3 {
-            mutabString.insert(" ", at: 3)
-        }
-        if mutabString.length > 8 {
-            mutabString.insert(" ", at: 8)
-        }
-        
-        return mutabString as String
-    }
-    
+
     /**
      修改某段文字字体和颜色
      */
@@ -79,14 +63,39 @@ extension String{
         let range = (self as NSString).range(of: subString)
         let attStr = NSMutableAttributedString.init(string: self)
         attStr.addAttributes([NSAttributedString.Key.foregroundColor: textColor, NSAttributedString.Key.font: font], range: range)
+        
         return attStr
+    }
+}
+
+public extension String{
+    /**
+     秒级时间戳转时间
+     
+     - parameter dateFormat 时间格式
+     */
+    func secondTimeStampToDate(dateFormat: String!) -> String{
+        if self.isEmpty {
+            return ""
+        }
+        
+        let interval: TimeInterval = TimeInterval.init(self)!
+        if interval > 0  {
+            let date = Date(timeIntervalSince1970: interval)
+            let dateformatter = DateFormatter()
+            dateformatter.dateFormat = dateFormat
+            return dateformatter.string(from: date)
+        }else {
+            return " "
+        }
     }
     
     /**
-     时间戳转时间
+     毫秒级时间戳转时间
+     
+     - parameter dateFormat 时间格式
      */
-    func getDateDayStyleFormatString() ->String{
-        
+    func millisecondTimeStampToDate(dateFormat: String!) -> String{
         if self.isEmpty {
             return ""
         }
@@ -95,31 +104,8 @@ extension String{
         if interval > 0  {
             let date = Date(timeIntervalSince1970: interval/1000)
             let dateformatter = DateFormatter()
-            dateformatter.dateFormat = "yyyy/MM/dd"
-            return dateformatter.string(from: date)
-        }else {
-            return " "
-        }
-    }
-    
-}
-
-extension String{
-    /**
-     时间戳转时间
-     
-     */
-    static func getDateFormatString(timeStamp:String) ->String{
-        
-        if timeStamp.isEmpty {
-            return ""
-        }
-        
-        let interval: TimeInterval = TimeInterval.init(timeStamp)!
-        if interval > 0  {
-            let date = Date(timeIntervalSince1970: interval/1000)
-            let dateformatter = DateFormatter()
-            dateformatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+            dateformatter.dateFormat = dateFormat
+            
             return dateformatter.string(from: date)
         }else {
             return " "
@@ -127,74 +113,40 @@ extension String{
     }
     
     /**
-     时间戳转时间
+     时间转毫秒级时间戳
      
+     - parameter dateFormat 时间格式
      */
-    static func getDateMinutesFormatString(timeStamp:String) ->String{
-        
-        if timeStamp.isEmpty {
-            return ""
-        }
-        
-        let interval: TimeInterval = TimeInterval.init(timeStamp)!
-        if interval > 0  {
-            let date = Date(timeIntervalSince1970: interval/1000)
-            let dateformatter = DateFormatter()
-            dateformatter.dateFormat = "yyyy/MM/dd HH:mm"
-            return dateformatter.string(from: date)
-        }else {
-            return " "
-        }
-    }
     
-    /**
-     时间戳转时间 yyyy-MM-dd
-     
-     */
-    static func getDateYMDString(timeStamp:String) ->String{
+    func dateStringToMillisecondTimeStamp(dateFormat: String!) -> String {
         
-        let interval: TimeInterval = TimeInterval.init(timeStamp)!
-        let date = Date(timeIntervalSince1970: interval/1000)
-        let dateformatter = DateFormatter()
-        dateformatter.dateFormat = "yyyy年MM月dd"
-        return dateformatter.string(from: date)
-    }
-    
-    /**
-     时间转时间戳
-     
-     */
-    static func stringToTimeStamp(stringTime:String)->String {
-        
-        let dfmatter = DateFormatter()
-        dfmatter.dateFormat="yyyy年MM月dd日"
-        let date = dfmatter.date(from: stringTime)
-        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = dateFormat
+        let date = dateFormatter.date(from: self)
         let dateStamp:TimeInterval = date!.timeIntervalSince1970
+        let dateNum:Int = Int(dateStamp)*1000
         
-        let dateSt:Int = Int(dateStamp)
-        print(dateSt)
-        return String(dateSt)
-        
+        return String(dateNum)
     }
     
-    static func stringToTimeStamp1000(stringTime:String)->String {
+    /**
+     时间转秒级时间戳
+     
+     - parameter dateFormat 时间格式
+     */
+    func dateStringToSecondTimeStamp(dateFormat: String!) -> String {
         
-        let dfmatter = DateFormatter()
-        dfmatter.dateFormat="yyyy年MM月dd日"
-        let date = dfmatter.date(from: stringTime)
-        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = dateFormat
+        let date = dateFormatter.date(from: self)
         let dateStamp:TimeInterval = date!.timeIntervalSince1970
+        let dateNum:Int = Int(dateStamp)
         
-        let dateSt:Int = Int(dateStamp)*1000
-        print(dateSt)
-        return String(dateSt)
-        
+        return String(dateNum)
     }
 }
 
-extension String{
-    
+public extension String{
     /**
      字符串转Int
      */

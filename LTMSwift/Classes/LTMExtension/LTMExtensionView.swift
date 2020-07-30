@@ -1,14 +1,7 @@
-//
-//  LTMExtensionView.swift
-//  ZhiHuiKuangShan
-//
-//  Created by 柯南 on 2020/7/6.
-//  Copyright © 2020 TianRui. All rights reserved.
-//
 
 import UIKit
 
-extension UIView{
+public extension UIView{
     /**
      添加多个子视图
      */
@@ -45,7 +38,7 @@ extension UIView{
      - parameter startPoint 渐变起始点 默认0.0
      - parameter endPoint 渐变结束点 默认1.0
      - parameter colors 渐变颜色数组
-    */
+     */
     func setGradient(startPoint: CGPoint?, endPoint: CGPoint?, colors:[Any]){
         let gradientLocations:[NSNumber] = [0, 1]
         let gradientLayer = CAGradientLayer()
@@ -56,12 +49,10 @@ extension UIView{
         gradientLayer.endPoint = endPoint ?? CGPoint.init(x: 1, y: 0)
         gradientLayer.frame = self.bounds
         self.layer.insertSublayer(gradientLayer, at: 0)
-        
-        //return gradientLayer
     }
 }
 
-extension UIView{
+public extension UIView{
     /**
      View生成图片
      */

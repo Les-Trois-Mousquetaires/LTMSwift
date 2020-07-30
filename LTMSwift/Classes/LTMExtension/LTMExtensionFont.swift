@@ -1,14 +1,7 @@
-//
-//  LTMExtensionFont.swift
-//  ZhiHuiKuangShan
-//
-//  Created by 柯南 on 2020/7/6.
-//  Copyright © 2020 TianRui. All rights reserved.
-//
 
 import UIKit
 
-enum fontWeight {
+public enum SystemFontWeight {
     case ultraLight
     case thin
     case light
@@ -45,14 +38,14 @@ enum fontWeight {
     }
 }
 
-extension UIFont {
+public extension UIFont {
     /**
      苹果字体
      
      - parameter size 字体大小
      - parameter weight 字体格式
      */
-    class func appleFont(size: CGFloat = 16, weight: fontWeight = .regular) -> UIFont!{
+    class func appleFont(size: CGFloat = 16, weight: SystemFontWeight = .regular) -> UIFont!{
         return UIFont.systemFont(ofSize: size, weight: weight.systemWeight())
     }
 }

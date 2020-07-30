@@ -1,15 +1,7 @@
-//
-//  LTMExtensionColor.swift
-//  ZhiHuiKuangShan
-//
-//  Created by 柯南 on 2020/7/6.
-//  Copyright © 2020 TianRui. All rights reserved.
-//
 
 import UIKit
 
-extension UIColor{
-    
+public extension UIColor{
     /**
      hex颜色值
      
@@ -19,7 +11,6 @@ extension UIColor{
         self.init(hexString: hexString,alpha: 1)
     }
     
-    //便利构造器
     /**
      hex颜色值带透明度
      
@@ -32,14 +23,10 @@ extension UIColor{
         //扫描指定字符串的抽象类,然后scanner会按照你的要求从头到尾扫描这个字符串的每个字符
         let scanner = Scanner(string: hexString)
         if hexString.hasPrefix("#") {
-            //确认扫描位置
             scanner.scanLocation = 1
         }
-        
         var color: UInt32 = 0
         scanner.scanHexInt32(&color)
-        
-        //位运算
         let mask = 0x000000FF
         let redValue = Int(color >> 16) & mask
         let greenValue = Int(color >> 8) & mask

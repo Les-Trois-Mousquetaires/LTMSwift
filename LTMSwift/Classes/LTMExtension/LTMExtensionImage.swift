@@ -1,16 +1,13 @@
-//
-//  LTMExtensionImage.swift
-//  ZhiHuiKuangShan
-//
-//  Created by 柯南 on 2020/7/6.
-//  Copyright © 2020 TianRui. All rights reserved.
-//
 
 import UIKit
 
 extension UIImage{
     
-    //颜色生成图片
+    /**
+     颜色生成图片
+     
+     - parameter color 色值
+     */
     class func createImage(_ color: UIColor)-> UIImage{
         let rect = CGRect.init(x: 0.0, y: 0.0, width: 1.0, height: 1.0)
         UIGraphicsBeginImageContext(rect.size)
@@ -22,7 +19,6 @@ extension UIImage{
         
         return image!
     }
-    
     
     /**
      用颜色生成图片

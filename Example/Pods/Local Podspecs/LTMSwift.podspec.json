@@ -1,6 +1,6 @@
 {
   "name": "LTMSwift",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "summary": "LTMSwift is swift often uselib.",
   "description": "LTMSwift is swift often uselib.",
   "homepage": "https://github.com/Les-Trois-Mousquetaires/LTMSwift",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/Les-Trois-Mousquetaires/LTMSwift.git",
-    "tag": "0.1.0"
+    "tag": "0.1.1"
   },
   "platforms": {
     "ios": "10.0"

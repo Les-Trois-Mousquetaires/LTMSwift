@@ -1,36 +1,36 @@
-//
-//  LTMExtensionLabel.swift
-//  ZhiHuiKuangShan
-//
-//  Created by 柯南 on 2020/7/23.
-//  Copyright © 2020 TianRui. All rights reserved.
-//
 
 import Foundation
 
-extension UILabel{
+public extension UILabel{
     
     /**
-     控制字间距
+     设置字间距
      
      - parameter text 文本内容
+     - parameter textSpace 字间距大小
      */
-    func spaceText(text: String){
-        let fontSize = self.font.pointSize
-        switch fontSize {
-        case 12:
-            self.attributedText = NSAttributedString.textSpace(text: text, space: 0.4)
-        case 14:
-            self.attributedText = NSAttributedString.textSpace(text: text, space: 0.5)
-        case 16:
-            self.attributedText = NSAttributedString.textSpace(text: text, space: 0.6)
-        case 18:
-            self.attributedText = NSAttributedString.textSpace(text: text, space: 0.7)
-        case 20:
-            self.attributedText = NSAttributedString.textSpace(text: text, space: 0.8)
-            
-        default:
-            self.attributedText = NSAttributedString.textSpace(text: text, space: 0.5)
-        }
+    func setTextSpace(text: String, textSpace: Double) {
+        self.setTextSpace(text: text, textSpace: textSpace, lineSpace: 0)
+    }
+    
+    /**
+     设置行间距
+     
+     - parameter text 文本内容
+     - parameter lineSpace 行间距大小
+     */
+    func setTextSpace(text: String, lineSpace: CGFloat) {
+        self.setTextSpace(text: text, textSpace: 0, lineSpace: lineSpace)
+    }
+    
+    /**
+     设置行间距和字间距
+     
+     - parameter text 文本内容
+     - parameter textSpace 字间距大小
+     - parameter lineSpace 行间距大小
+     */
+    func setTextSpace(text: String, textSpace: Double, lineSpace: CGFloat) {
+        self.attributedText = NSAttributedString.setTextSpaceAndLineSpace(text: text, textSpace: textSpace, lineSpace: lineSpace)
     }
 }
