@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.2.0'
+  s.version          = '0.2.1'
   s.summary          = 'LTMSwift is swift often uselib.'
 
 # This description is used to generate tags and improve search results.
@@ -42,4 +42,17 @@ Pod::Spec.new do |s|
   # s.public_header_files = 'Pod/Classes/**/*.h'
    s.frameworks = 'UIKit', 'Foundation'
   # s.dependency 'AFNetworking', '~> 2.3'
+  
+  s.subspec "LTMExtension" do |ss|
+    ss.source_files  = 'LTMSwift/Classes/LTMExtension/**/*'
+    ss.framework  = 'UIKit', 'Foundation'
+  end
+  
+  s.subspec "LTMFoundation" do |ss|
+    ss.source_files  = 'LTMSwift/Classes/LTMFoundation/**/*'
+    ss.framework  = 'UIKit', 'Foundation'
+    ss.dependency "LTMSwift/LTMExtension"
+
+  end
+
 end
