@@ -17,7 +17,7 @@ private let hudmaxWidth: CGFloat = (UIScreen.main.bounds.size.width - 100) // �
 private let hudiconWH: CGFloat = 36 // 图片大小
 private let hudlabelSize: CGFloat = 14 // 文本大小
 private let hudlineSpacing: CGFloat = 3 // 行间距
-
+ 
 open class LTMHUDManage: NSObject {
     // MARK: - HUD相关
     static let instance: LTMHUDManage = LTMHUDManage()
@@ -29,7 +29,7 @@ open class LTMHUDManage: NSObject {
     
     /// 加载HUD
     /// - Parameter name: 提示语
-    func ltm_showLoading(_ name: String = "正在加载",_ time: TimeInterval? = nil) {
+   public func ltm_showLoading(_ name: String = "正在加载",_ time: TimeInterval? = nil) {
         if time == nil {
             LTMProgressHUD.show(.loading, name, 60)
         } else {
@@ -43,7 +43,7 @@ open class LTMHUDManage: NSObject {
      - parameter name 提示语
      - parameter delay 延迟时间
      */
-    func ltm_showtitle(_ name: String?,_ delay: TimeInterval = 1) {
+    public func ltm_showtitle(_ name: String?,_ delay: TimeInterval = 1) {
         LTMProgressHUD.show(.none, name ?? "", delay)
     }
     
@@ -53,22 +53,22 @@ open class LTMHUDManage: NSObject {
      - parameter name 提示语
      - parameter delay 延迟时间
      */
-    func ltm_showInfo(_ name: String?,_ delay: TimeInterval = 1) {
+    public func ltm_showInfo(_ name: String?,_ delay: TimeInterval = 1) {
         LTMProgressHUD.show(.info, name ?? "", delay)
     }
     
     /// 隐藏HUD
-    func ltm_dismiss() {
+    public func ltm_dismiss() {
         LTMProgressHUD.dismiss()
     }
     
     /// 成功提示
-    func ltm_showSuccess(_ name: String) {
+    public func ltm_showSuccess(_ name: String) {
         LTMProgressHUD.show(.success, name, 1)
     }
     
     /// 失败提示
-    func ltm_showError(_ name: String) {
+    public func ltm_showError(_ name: String) {
         LTMProgressHUD.show(.error, name, 1)
     }
 }

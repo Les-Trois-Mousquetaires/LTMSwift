@@ -6,14 +6,15 @@
 //
 
 import Foundation
-public class LTMTimeManager: NSObject {
+
+open class LTMTimeManager: NSObject {
     /**
      今天开始到现在时间
      - parameter dateFormat 时间格式
      
      - returns: 返回开始和结束时间及相应时间戳
      */
-    class func todayStartEndTime(dateFormat: String) -> (startDate: (String, String), endDate: (String, String)) {
+    public class func todayStartEndTime(dateFormat: String) -> (startDate: (String, String), endDate: (String, String)) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         let nowTimeStr = dateFormatter.string(from: Date())
@@ -34,7 +35,7 @@ public class LTMTimeManager: NSObject {
      
      - returns: 返回开始和结束时间及相应时间戳
      */
-    class func weekStartEndTime(dateFormat: String) -> (startDate: (String, String), endDate: (String, String)) {
+    public class func weekStartEndTime(dateFormat: String) -> (startDate: (String, String), endDate: (String, String)) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         let nowTimeStr = dateFormatter.string(from: Date())
@@ -67,7 +68,7 @@ public class LTMTimeManager: NSObject {
      
      - returns: 返回开始和结束时间及相应时间戳
      */
-    class func monthStartEndTime(dateFormat: String) -> (startDate: (String, String), endDate: (String, String)) {
+    public class func monthStartEndTime(dateFormat: String) -> (startDate: (String, String), endDate: (String, String)) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         let nowTimeStr = dateFormatter.string(from: Date())
@@ -82,14 +83,14 @@ public class LTMTimeManager: NSObject {
         return ((firstDay,firstDay.dateStringToMillisecondTimeStamp(dateFormat: dateFormat)),
                 (nowTimeStr,nowTimeStr.dateStringToMillisecondTimeStamp(dateFormat: dateFormat)))
     }
-        
+    
     /**
      本年时间
      - parameter dateFormat 时间格式
      
      - returns: 返回开始和结束时间及相应时间戳
      */
-    class func yearStartEndTime(dateFormat: String) -> (startDate: (String, String), endDate: (String, String)) {
+    public class func yearStartEndTime(dateFormat: String) -> (startDate: (String, String), endDate: (String, String)) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         let nowTimeStr = dateFormatter.string(from: Date())
@@ -105,14 +106,14 @@ public class LTMTimeManager: NSObject {
         return ((firstDay,firstDay.dateStringToMillisecondTimeStamp(dateFormat: dateFormat)),
                 (nowTimeStr,nowTimeStr.dateStringToMillisecondTimeStamp(dateFormat: dateFormat)))
     }
-        
+    
     /**
      获取今天所在的周一和周日
      - parameter dateFormat 时间格式
      
      - returns: 返回开始和结束时间及相应时间戳
      */
-    class func getWeekTime(dateFormat: String) -> (String, String) {
+    public class func getWeekTime(dateFormat: String) -> (String, String) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         let today = dateFormatter.string(from: Date())

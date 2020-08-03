@@ -24,22 +24,21 @@ public enum LTMPopupSlideStyle: Int {
 
 open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
     /// Set popup view display position. default is .Center
-    var layoutType: LTMPopupLayoutType = .Center
+    public var layoutType: LTMPopupLayoutType = .Center
     /// Set popup view slide Style. default is .Fade, layoutType = .Center is vaild
-    var slideStyle: LTMPopupSlideStyle = .Fade
+    public var slideStyle: LTMPopupSlideStyle = .Fade
     // default true
-    var dismissOnMaskTouched: Bool = true
+    public  var dismissOnMaskTouched: Bool = true
     // default false, layoutType = .Center is vaild
-    var dismissOppositeDirection: Bool = false
+    public var dismissOppositeDirection: Bool = false
     // default 0
-    var offsetSpacingOfKeyboard: CGFloat = 0.0
+    public var offsetSpacingOfKeyboard: CGFloat = 0.0
     
-    var maskTouched: ((LTMPopupVC) -> Void)?
-    var willPresent: ((LTMPopupVC) -> Void)?
-    var didPresent: ((LTMPopupVC) -> Void)?
-    var willDismiss: ((LTMPopupVC) -> Void)?
-    var didDismiss: ((LTMPopupVC) -> Void)?
-
+    public var maskTouched: ((LTMPopupVC) -> Void)?
+    public var willPresent: ((LTMPopupVC) -> Void)?
+    public var didPresent: ((LTMPopupVC) -> Void)?
+    public var willDismiss: ((LTMPopupVC) -> Void)?
+    public  var didDismiss: ((LTMPopupVC) -> Void)?
     
     private var popupView: UIView!
     private var superView: UIView!
@@ -130,20 +129,20 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
     }
     
     // MARK: - Observing
-
+    
     private func bindNotificationEvent() {
         unbindNotificationEvent()
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         NotificationCenter.default.addObserver(self, selector: #selector(willChangeStatusBarOrientation), name: UIApplication.willChangeStatusBarOrientationNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeStatusBarOrientation), name: UIApplication.didChangeStatusBarOrientationNotification, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
     
     private func unbindNotificationEvent() {
         UIDevice.current.endGeneratingDeviceOrientationNotifications()
         NotificationCenter.default.removeObserver(self, name: UIApplication.willChangeStatusBarOrientationNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didChangeStatusBarOrientationNotification, object: nil)
-//        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        //        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
     
     @objc private func keyboardWillChangeFrame(_ notification: Notification) {
@@ -253,7 +252,7 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
         }
         return prepareCenterFrom(type: layoutType.rawValue, viewRef: maskView)
     }
-
+    
     private func finishedCenter() -> CGPoint {
         let point = maskView.center
         
@@ -275,7 +274,7 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
         }
         return point
     }
-
+    
     private func dismissedCenter() -> CGPoint {
         if layoutType != .Center {
             return prepareCenterFrom(type: layoutType.rawValue, viewRef: popupView)
@@ -284,28 +283,28 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
         switch slideStyle {
         case .Top:
             return dismissOppositeDirection ?
-            CGPoint(x: popupView.center.x, y: maskView.bounds.height + popupView.bounds.height / 2) :
-            CGPoint(x: popupView.center.x, y: -popupView.bounds.height / 2)
+                CGPoint(x: popupView.center.x, y: maskView.bounds.height + popupView.bounds.height / 2) :
+                CGPoint(x: popupView.center.x, y: -popupView.bounds.height / 2)
         case .Bottom:
             return dismissOppositeDirection ?
-            CGPoint(x: popupView.center.x, y: -popupView.bounds.height / 2):
-            CGPoint(x: popupView.center.x, y: maskView.bounds.height + popupView.bounds.height / 2)
+                CGPoint(x: popupView.center.x, y: -popupView.bounds.height / 2):
+                CGPoint(x: popupView.center.x, y: maskView.bounds.height + popupView.bounds.height / 2)
         case .Left:
             return dismissOppositeDirection ?
-            CGPoint(x: maskView.bounds.width + popupView.bounds.width / 2, y: popupView.center.y):
-            CGPoint(x: -popupView.bounds.width / 2, y: popupView.center.y)
+                CGPoint(x: maskView.bounds.width + popupView.bounds.width / 2, y: popupView.center.y):
+                CGPoint(x: -popupView.bounds.width / 2, y: popupView.center.y)
         case .Right:
             return dismissOppositeDirection ?
-            CGPoint(x: -popupView.bounds.width / 2, y: popupView.center.y):
-            CGPoint(x: maskView.bounds.width + popupView.bounds.width / 2, y: popupView.center.y)
+                CGPoint(x: -popupView.bounds.width / 2, y: popupView.center.y):
+                CGPoint(x: maskView.bounds.width + popupView.bounds.width / 2, y: popupView.center.y)
         case .ShrinkInOut1:
             popupView.transform = dismissOppositeDirection ?
-            CGAffineTransform(scaleX: 1.75, y: 1.75):
-            CGAffineTransform(scaleX: 0.25, y: 0.25)
+                CGAffineTransform(scaleX: 1.75, y: 1.75):
+                CGAffineTransform(scaleX: 0.25, y: 0.25)
         case .ShrinkInOut2:
             popupView.transform = dismissOppositeDirection ?
-            CGAffineTransform(scaleX: 1.2, y: 1.2):
-            CGAffineTransform(scaleX: 0.75, y: 0.75)
+                CGAffineTransform(scaleX: 1.2, y: 1.2):
+                CGAffineTransform(scaleX: 0.75, y: 0.75)
         case .Fade:
             maskView.alpha = 0
         }
@@ -313,7 +312,7 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
     }
     
     // MARK: - Buffer point
-
+    
     private func bufferCenter(move: CGFloat) -> CGPoint {
         var point = popupView.center
         switch layoutType {
@@ -345,15 +344,15 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
                 break
             case .ShrinkInOut1, .ShrinkInOut2:
                 popupView.transform = dismissOppositeDirection ?
-                CGAffineTransform(scaleX: 0.95, y: 0.95) :
-                CGAffineTransform(scaleX: 1.05, y: 1.05)
+                    CGAffineTransform(scaleX: 0.95, y: 0.95) :
+                    CGAffineTransform(scaleX: 1.05, y: 1.05)
                 break
             default: break
             }
         }
         return point
     }
-
+    
     // MARK: -  Destroy timer
     
     private func destroyTimer() {
@@ -390,7 +389,7 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
         }
         maskView.removeFromSuperview()
     }
-
+    
     
     // MARK: - UIGestureRecognizerDelegate
     
@@ -401,7 +400,7 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
         return true
     }
     
-   @objc private func handleTap() {
+    @objc private func handleTap() {
         if dismissOnMaskTouched {
             if maskTouched != nil {
                 maskTouched!(self)
@@ -415,7 +414,7 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
         if !allowPan || !isPresenting || dropAngle != 0 {
             return
         }
-  
+        
         let translation = pan.translation(in: maskView)
         switch pan.state {
         case .began:
@@ -658,7 +657,7 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
     }
     
     // MARK: - Present
-
+    
     private func _present(contentView: UIView, duration: TimeInterval, isSpringAnimated: Bool, inView: UIView?, displayTime: TimeInterval) {
         if isPresenting {
             return
