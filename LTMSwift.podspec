@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = 'LTMSwift is swift often uselib.'
 
 # This description is used to generate tags and improve search results.
@@ -19,12 +19,13 @@ Pod::Spec.new do |s|
 
   s.description      = <<-DESC
   LTMSwift is swift often uselib.
+  LTMExtension is Swift Classes folder
                        DESC
 
   s.homepage         = 'https://github.com/Les-Trois-Mousquetaires/LTMSwift'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'kenan0620' => 'coenen@aliyun.com' }
+  s.author           = { 'coenen' => 'coenen@aliyun.com' }
   s.source           = { :git => 'https://github.com/Les-Trois-Mousquetaires/LTMSwift.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
@@ -37,6 +38,6 @@ Pod::Spec.new do |s|
   # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
+   s.frameworks = 'UIKit', 'Foundation'
   # s.dependency 'AFNetworking', '~> 2.3'
 end

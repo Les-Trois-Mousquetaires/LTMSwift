@@ -50,6 +50,8 @@ public extension UIFont {
      
      - parameter size 字体大小
      - parameter weight 字体格式
+     
+     - returns: 系统字体
      */
     class func appleFont(size: CGFloat = 16, weight: SystemFontWeight = .regular) -> UIFont!{
         return UIFont.systemFont(ofSize: size, weight: weight.systemWeight())

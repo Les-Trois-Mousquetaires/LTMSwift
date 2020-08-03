@@ -15,6 +15,8 @@ public extension NSAttributedString{
      - parameter text 文本内容
      - parameter textSpace 字间距大小
      - parameter lineSpace 行间距大小
+     
+     - returns: 处理后的富文本
      */
     class func setTextSpaceAndLineSpace(text: String, textSpace: Double, lineSpace: CGFloat) -> NSAttributedString{
         let style = NSMutableParagraphStyle()
