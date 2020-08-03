@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.1.2'
+  s.version          = '0.2.0'
   s.summary          = 'LTMSwift is swift often uselib.'
 
 # This description is used to generate tags and improve search results.
@@ -19,7 +19,9 @@ Pod::Spec.new do |s|
 
   s.description      = <<-DESC
   LTMSwift is swift often uselib.
-  LTMExtension is Swift Classes folder
+  LTMExtension is Swift Classes folder tool
+  LTMExtension is tools folder
+
                        DESC
 
   s.homepage         = 'https://github.com/Les-Trois-Mousquetaires/LTMSwift'
@@ -31,7 +33,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '10.0'
 
-  s.source_files = 'LTMSwift/Classes/LTMExtension/**/*'
+  s.source_files = 'LTMSwift/Classes/**/*'
   s.swift_versions = '5.2'
   # s.resource_bundles = {
   #   'LTMSwift' => ['LTMSwift/Assets/*.png']

@@ -1,8 +1,8 @@
 {
   "name": "LTMSwift",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "summary": "LTMSwift is swift often uselib.",
-  "description": "LTMSwift is swift often uselib.\nLTMExtension is Swift Classes folder",
+  "description": "LTMSwift is swift often uselib.\nLTMExtension is Swift Classes folder tool\nLTMExtension is tools folder",
   "homepage": "https://github.com/Les-Trois-Mousquetaires/LTMSwift",
   "license": {
     "type": "MIT",
@@ -13,12 +13,12 @@
   },
   "source": {
     "git": "https://github.com/Les-Trois-Mousquetaires/LTMSwift.git",
-    "tag": "0.1.2"
+    "tag": "0.2.0"
   },
   "platforms": {
     "ios": "10.0"
   },
-  "source_files": "LTMSwift/Classes/LTMExtension/**/*",
+  "source_files": "LTMSwift/Classes/**/*",
   "swift_versions": "5.2",
   "frameworks": [
     "UIKit",

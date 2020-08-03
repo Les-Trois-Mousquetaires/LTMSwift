@@ -22,7 +22,7 @@ pod 'LTMSwift'
 
 ## Author
 
-kenan0620, coenen@aliyun.com
+coenen, coenen@aliyun.com
 
 ## License
 

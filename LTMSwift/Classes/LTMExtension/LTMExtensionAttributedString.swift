@@ -8,7 +8,6 @@
 import Foundation
 
 public extension NSAttributedString{
-    
     /**
      设置字间距及行间距
      
