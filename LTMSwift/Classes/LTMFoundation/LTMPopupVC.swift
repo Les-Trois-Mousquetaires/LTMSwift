@@ -40,9 +40,9 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
     public var willDismiss: ((LTMPopupVC) -> Void)?
     public  var didDismiss: ((LTMPopupVC) -> Void)?
     
-    private var popupView: UIView!
+    public var popupView: UIView!
     private var superView: UIView!
-    private var maskView: UIView!
+    public var maskView: UIView!
     private var contentView: UIView!
     
     private var maskAlpha: CGFloat = 0.6
@@ -57,12 +57,12 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
     private var duration: TimeInterval?
     private var isSpringAnimated: Bool = false
     
-    override init() {
+    public override init() {
         super.init()
         setupSubviews(maskType: .BlackTranslucent)
     }
     
-    init(maskType: LTMPopupMaskType) {
+    public init(maskType: LTMPopupMaskType) {
         super.init()
         setupSubviews(maskType: maskType)
     }
@@ -123,7 +123,8 @@ open class LTMPopupVC: NSObject, UIGestureRecognizerDelegate{
         
         maskView.addSubview(popupView)
         superView.addSubview(maskView)
-        
+        maskView.backgroundColor = .red
+        popupView.backgroundColor = .brown
         // Observer statusBar orientation changes.
         bindNotificationEvent()
     }
