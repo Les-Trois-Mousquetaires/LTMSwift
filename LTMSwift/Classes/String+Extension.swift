@@ -1,14 +1,13 @@
 //
-//  LTMExtensionString.swift
+//  String+Extension.swift
 //  LTMSwift
 //
-//  Created by kenan0620 on 07/29/2020.
-//  Copyright (c) 2020 kenan0620. All rights reserved.
+//  Created by 柯南 on 2022/11/29.
 //
-import UIKit
+
+import Foundation
 
 public extension String{
-    
     /**
      截取到任意位置
      */
@@ -54,7 +53,7 @@ public extension String{
         
         return mutabString as String
     }
-
+    
     /**
      修改某段文字字体和颜色
      */
@@ -191,3 +190,62 @@ public extension String{
     }
 }
 
+extension String{
+    /**
+     base64编码字符串生成图片
+     
+     - returns 图片
+     */
+    func base64ToImage() -> UIImage?{
+        let base64String = self.replacingOccurrences(of: "data:image/jpg;base64,", with: "")
+        //转换尝试判断，有可能返回的数据丢失"=="，如果丢失，swift校验不通过
+        var imageData = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters)
+        if imageData == nil {
+            //如果数据不正确，添加"=="重试
+            imageData = Data(base64Encoded: base64String + "==", options: .ignoreUnknownCharacters)
+        }
+        var image:UIImage?
+        if imageData != nil {
+            //            print("图片不为空")
+            image = UIImage(data: imageData!) ?? UIImage() //转换内容
+        } else {
+            //            print("图片为空")
+        }
+        
+        return image
+    }
+}
+
+//MARK: - 手机号字符串
+public extension String{
+    /**
+     手机号转3*4格式
+     
+     - returns: 处理后的字符串
+     */
+    func phoneNum3_4() -> String {
+        if self.count < 8 {
+            return self
+        }
+        let start = self.subString(to: 3)
+        let end = self.subString(from: self.count - 4)
+        
+        return "\(start)****\(end)"
+    }
+    
+    /**
+     手机号转3 4 4空格格式
+     
+     - returns: 处理后的字符串
+     */
+    func phoneNum344() -> String {
+        if self.count != 11 {
+            return self
+        }
+        let start = self.subString(to: 3)
+        let center = self.subString(from: 3, to: 6)
+        let end = self.subString(from: self.count - 4)
+        
+        return "\(start) \(center) \(end)"
+    }
+}

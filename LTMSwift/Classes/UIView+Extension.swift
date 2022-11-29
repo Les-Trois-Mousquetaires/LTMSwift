@@ -1,11 +1,11 @@
 //
-//  LTMExtensionView.swift
+//  UIView+Extension.swift
 //  LTMSwift
 //
-//  Created by kenan0620 on 07/29/2020.
-//  Copyright (c) 2020 kenan0620. All rights reserved.
+//  Created by 柯南 on 2022/11/29.
 //
-import UIKit
+
+import Foundation
 
 public extension UIView{
     /**
@@ -15,27 +15,6 @@ public extension UIView{
         views.forEach({
             addSubview($0)
         })
-    }
-    
-    /**
-     设置视图圆角
-     
-     - parameter view 视图
-     - parameter radius 圆角大小
-     - parameter roundingCorners 圆角方位
-     */
-    func setCornersRadius(_ view: UIView!, radius: CGFloat, roundingCorners: UIRectCorner) {
-        if view == nil {
-            return
-        }
-        let maskPath = UIBezierPath(roundedRect: view.bounds, byRoundingCorners: roundingCorners, cornerRadii: CGSize(width: radius, height: radius))
-        let maskLayer = CAShapeLayer()
-        maskLayer.frame = view.bounds
-        maskLayer.path = maskPath.cgPath
-        maskLayer.shouldRasterize = true
-        maskLayer.rasterizationScale = UIScreen.main.scale
-        
-        view.layer.mask = maskLayer
     }
     
     /**

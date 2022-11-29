@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.2.5'
-  s.summary          = 'LTMSwift is swift often uselib.'
+  s.version          = '0.2.6'
+  s.summary          = 'Swift 项目常用组件库.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -25,12 +25,10 @@ Pod::Spec.new do |s|
                        DESC
 
   s.homepage         = 'https://github.com/Les-Trois-Mousquetaires/LTMSwift'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'coenen' => 'coenen@aliyun.com' }
+  s.author           = { 'kenan' => 'houkenan0620@126.com' }
   s.source           = { :git => 'https://github.com/Les-Trois-Mousquetaires/LTMSwift.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
-
+  
   s.ios.deployment_target = '11.0'
 
 #  s.source_files = 'LTMSwift/Classes/**/*'
@@ -39,20 +37,14 @@ Pod::Spec.new do |s|
   #   'LTMSwift' => ['LTMSwift/Assets/*.png']
   # }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
    s.frameworks = 'UIKit', 'Foundation'
-  # s.dependency 'AFNetworking', '~> 2.3'
   
-  s.subspec "LTMExtension" do |ss|
-    ss.source_files  = 'LTMExtension'
-    ss.framework  = 'UIKit', 'Foundation'
+  s.subspec 'Extension' do |ss|
+      ss.source_files = 'LTMSwift/Classes/{*}+{*}.swift'
   end
   
-  s.subspec "LTMFoundation" do |ss|
-    ss.source_files  = 'LTMFoundation'
-    ss.framework  = 'UIKit', 'Foundation'
-    ss.dependency "LTMSwift/LTMExtension"
-
+  s.subspec 'HUDManage' do |ss|
+      ss.source_files = 'LTMSwift/Classes/LTMHUDManage.swift'
   end
 
 end

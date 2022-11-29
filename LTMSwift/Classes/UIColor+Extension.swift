@@ -1,12 +1,11 @@
 //
-//  LTMExtensionColor.swift
+//  UIColor+Extension.swift
 //  LTMSwift
 //
-//  Created by kenan0620 on 07/29/2020.
-//  Copyright (c) 2020 kenan0620. All rights reserved.
+//  Created by 柯南 on 2022/11/29.
 //
-import UIKit
 
+import Foundation
 public extension UIColor{
     /**
      hex颜色值

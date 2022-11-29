@@ -1,12 +1,11 @@
 //
-//  LTMExtensionImage.swift
+//  UIImage+Extension.swift
 //  LTMSwift
 //
-//  Created by kenan0620 on 07/29/2020.
-//  Copyright (c) 2020 kenan0620. All rights reserved.
+//  Created by 柯南 on 2022/11/29.
 //
-import UIKit
 
+import Foundation
 public extension UIImage{
     
     /**
@@ -58,5 +57,32 @@ public extension UIImage{
         UIGraphicsEndImageContext()
         
         return image!
+    }
+}
+
+public extension UIImage{
+    /**
+     加载本地大图
+     
+     - parameter name 图片名
+     */
+    class func largerImage(name: String) -> UIImage? {
+        return self.largerImage(name: name, type: "png")
+    }
+    
+    /**
+     加载本地大图
+     
+     - parameter name 图片名
+     - parameter type 图片类型
+     
+     - returns 大图
+     */
+    class func largerImage(name: String, type: String) -> UIImage? {
+        guard let path = Bundle.main.path(forResource: name, ofType: type) else {
+            return UIImage()
+        }
+        
+        return UIImage.init(contentsOfFile: path)
     }
 }

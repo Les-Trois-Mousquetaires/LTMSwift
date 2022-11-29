@@ -1,9 +1,10 @@
 //
-//  LTMExtensionDate.swift
-//  Pods
+//  Date+Extension.swift
+//  LTMSwift
 //
-//  Created by 柯南 on 2020/8/3.
+//  Created by 柯南 on 2022/11/29.
 //
+
 import Foundation
 
 public extension Date{
@@ -14,7 +15,7 @@ public extension Date{
      
      - returns: 转换后时间字符串及时间戳元组
      */
-    func dateToSTimeStamp(dateFormat: String!) -> (String, String){
+    func secondTimestamp(dateFormat: String!) -> (String, String){
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         let dateStr = dateFormatter.string(from: self)
@@ -25,13 +26,13 @@ public extension Date{
     }
     
     /**
-    时间格式转换及转毫秒级时间戳
-    
-    - parameter dateFormat 时间展示格式
+     时间格式转换及转毫秒级时间戳
      
-    - returns: 转换后时间字符串及时间戳元组
-    */
-    func dateToMSTimeStamp(dateFormat: String!) -> (String, String){
+     - parameter dateFormat 时间展示格式
+     
+     - returns: 转换后时间字符串及时间戳元组
+     */
+    func msecondTimestamp(dateFormat: String!) -> (String, String){
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         let dateStr = dateFormatter.string(from: self)

@@ -7,135 +7,131 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		068A23E202D670A078C252E13A1E931D /* LTMExtensionColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F014FDC270C962EDFAF94ADC2D0A54C /* LTMExtensionColor.swift */; };
-		1135D41E75FD49BEDC9E5F97425C0F86 /* LTMSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77FD237FC0DBA5D74CE99D387F6EBDC /* LTMSecurity.swift */; };
-		1D16BA9817E3F5469A11CA1C81ECECDE /* LTMTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAB3EFB106DDEA88FF5C832D7FFC342 /* LTMTimeManager.swift */; };
+		0E429695F9543B9E3B3CF8E08D69FB87 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DA24A38BA9EE106B59E3D4C8DD1CE0E /* UIKit.framework */; };
+		1131EF7764CEB62773FAF153B4D97ADD /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E769B64EECF29BB65C88D102F1B30A /* UILabel+Extension.swift */; };
+		1DC5ACB808A54A71ACE7352B4F4B49F8 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B003E3939CC446357F83A6BFA964E3B3 /* UIView+Extension.swift */; };
 		1F84FE646CD1D7BAFFB58C243277AFF8 /* FBSnapshotTestCase-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 8E5923010B02074CAA9AAF6EA02D66AA /* FBSnapshotTestCase-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		24782D8432F3555F3FA003700682656E /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280CA52D4052D4F1A2284208B25B60B4 /* UIImage+Extension.swift */; };
 		27B1A9D2CD585A10224EB32C665FFD81 /* Pods-LTMSwift_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B0D84F306DD1F2D772DBFFB0BB982B /* Pods-LTMSwift_Example-dummy.m */; };
 		2975A09730FD83DC0897129A11EA6585 /* SwiftSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0D66CF296ABBC57EC4D0452397E235 /* SwiftSupport.swift */; };
+		2995634AA913567466007CC602F1C555 /* NSAttributedString+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A374EF573787B88F5F84A92AE19CC3C2 /* NSAttributedString+Extension.swift */; };
 		2B88C28DD20CBFA7B3AEB21A365197FE /* FBSnapshotTestController.h in Headers */ = {isa = PBXBuildFile; fileRef = AE9FF9459FBCDC4AF88FB6B5A4CC1439 /* FBSnapshotTestController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2CB61F6FA511CAACB43A50DC3A82E0DD /* UIImage+Snapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = D872A3EE224412D4057C234FBC629F9C /* UIImage+Snapshot.m */; };
 		2ECCAC52EF4C74E1032E0BC646BBE5B9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57221B54D014471C3D3E1925EFC917C8 /* Foundation.framework */; };
-		3012F7EABD3A6A9E816187FB0E676016 /* LTMExtensionImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DF0FDD1E9E47B1A4B5094C188D7A22 /* LTMExtensionImage.swift */; };
 		30D475DF57C0C682A723231E7BCA0D14 /* FBSnapshotTestCasePlatform.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ABB3EB3CCC5BCA82F40FE8DC87BB778 /* FBSnapshotTestCasePlatform.m */; };
+		322CFF7873E79A9730256A3A47F63A39 /* String+Encryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E9062B6A35215D99CAFA25F70CC4C3 /* String+Encryption.swift */; };
+		36F37A2BA574951C8BC09E72081B0A7F /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E236B2543B551DE074658CE893EB883 /* UIColor+Extension.swift */; };
 		36FDAD0C348D3A2D6192717E1BBB34D6 /* Pods-LTMSwift_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E56CDA903DD778F6DE58A46B3E8CF32 /* Pods-LTMSwift_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		373413256658309F9053CE22BF62077E /* UIImage+Snapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 284833D18C244D2B42966B6EE425AA59 /* UIImage+Snapshot.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		3A61FD50B16802EB260ED71DA4D410A8 /* LTMExtensionAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E308F01F36E3FB4C51422D5D9A86CF7 /* LTMExtensionAttributedString.swift */; };
-		3BF4F33FEDC7FB6BA9F80CF699566CF1 /* LTMExtensionString.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84910684F1CA06609F209CE84BD5DD8 /* LTMExtensionString.swift */; };
+		3D118C7A00F6CE81D6CB92675DE7D098 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F082C34AC4CEE64F07DE7983B6685A9A /* String+Extension.swift */; };
 		473B26F30A4E5C45D607B07794F5CD42 /* Pods-LTMSwift_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F6236F3DA6F85DF8FDDE58E8EE20447 /* Pods-LTMSwift_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4DB3F3A610BB40100006320A15306534 /* LTMSwift-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = BC814849931A49603A063316F8CFBAFA /* LTMSwift-dummy.m */; };
-		4DB7A00405AFA0AB90C0A8E6AFB7AA32 /* LTMExtensionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671FE3A7A7AD325688A4C959D28B0C02 /* LTMExtensionView.swift */; };
+		4E131CC70DD7D725FA2C3233FD847870 /* LTMHUDManage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9744A989722A0D0CC1C356C12EDDA7 /* LTMHUDManage.swift */; };
 		5558B876B579BC1E79BD3D2B19148329 /* UIApplication+StrictKeyWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 99A67367E018411D614EC8536A8A1C5B /* UIApplication+StrictKeyWindow.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		5BE525FF6FA14B999ED2CCC0AA4FA0CF /* FBSnapshotTestCase-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ADA6E655DC84D06359BD0ED5E36C783 /* FBSnapshotTestCase-dummy.m */; };
-		5CA87D5A5D1CF1AE92C25FA68CBF2F71 /* LTMExtensionFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCA2557B957D90F1308234208A19D70 /* LTMExtensionFont.swift */; };
 		640CCE9C3A28AA3CA15510899F9140EE /* FBSnapshotTestCasePlatform.h in Headers */ = {isa = PBXBuildFile; fileRef = 88B1DEEBF6316A84D7413645212492FF /* FBSnapshotTestCasePlatform.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		660B3D3F8997E273BCBDD6F7B4CC144C /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446804A883C067DFEF3E637BDA0889BA /* UIButton+Extension.swift */; };
 		67F1963AA7C9EDB78127AD5F566A4949 /* UIImage+Diff.h in Headers */ = {isa = PBXBuildFile; fileRef = 96187BF3038121CC146335E9FF0B0AFF /* UIImage+Diff.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		73D2658133CFC8A020C7DF3203E1D8D2 /* LTMExtensionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12DCA723EC2916E62051156FF3D96ED /* LTMExtensionLabel.swift */; };
 		74339C58AC4E5631FB8C0E662668A796 /* UIApplication+StrictKeyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F538C426803AE34255FC6E35B408CCA /* UIApplication+StrictKeyWindow.m */; };
 		7C67CBD15D9B5D0B7769B2F469478332 /* FBSnapshotTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 277B6BE10C665F515606A22FD60C6DCC /* FBSnapshotTestCase.m */; };
 		875A310EAF4D0C136C3FFFF5E0335BE4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DA24A38BA9EE106B59E3D4C8DD1CE0E /* UIKit.framework */; };
 		8AE19756F0126FE92AF625E36F3D70FE /* UIImage+Compare.h in Headers */ = {isa = PBXBuildFile; fileRef = 656116C8FA5458F45D4707110C9530EC /* UIImage+Compare.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		8D2AC4E929A55FA96F9C37235EE1F2A0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57221B54D014471C3D3E1925EFC917C8 /* Foundation.framework */; };
+		9B0418930876EF3B00038198D9F84AB8 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8175A57D0117EE11C42E5186D94497B3 /* Date+Extension.swift */; };
 		9D3C5E2F56838937146191468A893244 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E658F388F01C72599CA75537950B6095 /* XCTest.framework */; };
 		B52281F9F4340D4FC8ABB2FEB1FEC08E /* UIImage+Compare.m in Sources */ = {isa = PBXBuildFile; fileRef = 235A78CFFA6D8B8D86CACD733531CB13 /* UIImage+Compare.m */; };
 		B59DFF694C0FCA2E995DBD47FDA4260F /* Pods-LTMSwift_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 92B465EB80F1F0AF3A3EAA3898BBD00E /* Pods-LTMSwift_Tests-dummy.m */; };
-		B6A4C22F87622AA0698390BA6542D262 /* LTMSwift-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 05F473B2A8506D6C99E5FF4E94703095 /* LTMSwift-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B8A3BB7952ADA27F0A916384E484FEF1 /* LTMSwift-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FA1179ECD4CC98927EFDDC24A2A47DE /* LTMSwift-dummy.m */; };
+		BD06512F7E3D5BA56ECBC330AC0E2146 /* LTMSwift-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2AA7595E2FD6C1645F7795FCB1A270 /* LTMSwift-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C390C6005353FB986CB52F474CEF8588 /* FBSnapshotTestController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1B7EA746BF6557FD565BAE12AF9198 /* FBSnapshotTestController.m */; };
-		C7059558316A2CE8219126C99D82FB92 /* LTMExtensionDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0A80CC346EEB94AF119156AE013900 /* LTMExtensionDate.swift */; };
-		C82A523C31E1BA9B3729E23B370B870F /* LTMPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2333560354E943A1015CE5BFC9B2BCD /* LTMPopupVC.swift */; };
+		C54FD297DAAA32E5925D5AA26649CFA0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57221B54D014471C3D3E1925EFC917C8 /* Foundation.framework */; };
 		C9F76407497DF0205D7460B36D22259F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3280BB5E7B57C31D41117A74F76E9DF3 /* QuartzCore.framework */; };
 		CA54C09A12400567AFFCB407EEB7E154 /* UIImage+Diff.m in Sources */ = {isa = PBXBuildFile; fileRef = 4568279DE47DC3AB91598E1317503995 /* UIImage+Diff.m */; };
 		D6D44E0B631427EF18A3C96A34EF0959 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57221B54D014471C3D3E1925EFC917C8 /* Foundation.framework */; };
-		D7EAF7190BEA64DE847770019209358D /* LTMHUDManage.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD2D13968EBDFB4B41EFEA4A48DCE92 /* LTMHUDManage.swift */; };
-		E3CD7537559F08EF7448BD08E6A4B3DB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57221B54D014471C3D3E1925EFC917C8 /* Foundation.framework */; };
-		E5FB42B892DDD3062180DBF6AD0ECBA9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DA24A38BA9EE106B59E3D4C8DD1CE0E /* UIKit.framework */; };
 		FF8307B7346F4D3BA13C11AECFE6EDD0 /* FBSnapshotTestCase.h in Headers */ = {isa = PBXBuildFile; fileRef = FEE661E58CA6655B39AA49AA4C021C33 /* FBSnapshotTestCase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		4EEBF8622B16A5562B0752D94A17CAA8 /* PBXContainerItemProxy */ = {
+		0E92DA0D3C0862C60945E37F488912E3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 98A98149697C80CEF8D5772791E92E66;
 			remoteInfo = FBSnapshotTestCase;
 		};
-		76B80053F9DD2CC2187E16E147D79E16 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C1802B92EE65078CD93AA013C51D387C;
-			remoteInfo = LTMSwift;
-		};
-		86EA825433D82104908439742EC9AC1E /* PBXContainerItemProxy */ = {
+		471479A5CBD2924D3AFA687634184AC1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = E2FAAA7D20FFBF1E4A976BF3CEF961B1;
 			remoteInfo = "Pods-LTMSwift_Example";
 		};
+		DABCBDA1615C1FC44EFC437A31029B41 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C1802B92EE65078CD93AA013C51D387C;
+			remoteInfo = LTMSwift;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		04EBA02AD50C079EAA6D4DCA3BBF66B9 /* LTMSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LTMSwift.release.xcconfig; sourceTree = "<group>"; };
-		05F473B2A8506D6C99E5FF4E94703095 /* LTMSwift-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "LTMSwift-umbrella.h"; sourceTree = "<group>"; };
-		0E308F01F36E3FB4C51422D5D9A86CF7 /* LTMExtensionAttributedString.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMExtensionAttributedString.swift; path = LTMExtension/LTMExtensionAttributedString.swift; sourceTree = "<group>"; };
+		0A9DBF295599AC15D76A2E2C15F33EBF /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
 		0F538C426803AE34255FC6E35B408CCA /* UIApplication+StrictKeyWindow.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIApplication+StrictKeyWindow.m"; path = "FBSnapshotTestCase/Categories/UIApplication+StrictKeyWindow.m"; sourceTree = "<group>"; };
+		0F9744A989722A0D0CC1C356C12EDDA7 /* LTMHUDManage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMHUDManage.swift; path = LTMSwift/Classes/LTMHUDManage.swift; sourceTree = "<group>"; };
 		14B0D84F306DD1F2D772DBFFB0BB982B /* Pods-LTMSwift_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-LTMSwift_Example-dummy.m"; sourceTree = "<group>"; };
 		1ADA6E655DC84D06359BD0ED5E36C783 /* FBSnapshotTestCase-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FBSnapshotTestCase-dummy.m"; sourceTree = "<group>"; };
 		1DA24A38BA9EE106B59E3D4C8DD1CE0E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		1E933E9372FBA8D001EA695AACAE4910 /* LTMSwift-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "LTMSwift-prefix.pch"; sourceTree = "<group>"; };
 		235A78CFFA6D8B8D86CACD733531CB13 /* UIImage+Compare.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Compare.m"; path = "FBSnapshotTestCase/Categories/UIImage+Compare.m"; sourceTree = "<group>"; };
 		277B6BE10C665F515606A22FD60C6DCC /* FBSnapshotTestCase.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FBSnapshotTestCase.m; path = FBSnapshotTestCase/FBSnapshotTestCase.m; sourceTree = "<group>"; };
+		280CA52D4052D4F1A2284208B25B60B4 /* UIImage+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIImage+Extension.swift"; path = "LTMSwift/Classes/UIImage+Extension.swift"; sourceTree = "<group>"; };
 		284833D18C244D2B42966B6EE425AA59 /* UIImage+Snapshot.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIImage+Snapshot.h"; path = "FBSnapshotTestCase/Categories/UIImage+Snapshot.h"; sourceTree = "<group>"; };
-		2EAB3EFB106DDEA88FF5C832D7FFC342 /* LTMTimeManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMTimeManager.swift; path = LTMFoundation/LTMTimeManager.swift; sourceTree = "<group>"; };
 		3280BB5E7B57C31D41117A74F76E9DF3 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		32E435E9BF9934F9BF69B52DB2D6620A /* Pods-LTMSwift_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-LTMSwift_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
-		3D0A80CC346EEB94AF119156AE013900 /* LTMExtensionDate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMExtensionDate.swift; path = LTMExtension/LTMExtensionDate.swift; sourceTree = "<group>"; };
 		3F0D66CF296ABBC57EC4D0452397E235 /* SwiftSupport.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SwiftSupport.swift; path = FBSnapshotTestCase/SwiftSupport.swift; sourceTree = "<group>"; };
+		42DDB660BE1D81181153A9EEDE443FB1 /* LTMSwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LTMSwift.debug.xcconfig; sourceTree = "<group>"; };
+		446804A883C067DFEF3E637BDA0889BA /* UIButton+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIButton+Extension.swift"; path = "LTMSwift/Classes/UIButton+Extension.swift"; sourceTree = "<group>"; };
 		4568279DE47DC3AB91598E1317503995 /* UIImage+Diff.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Diff.m"; path = "FBSnapshotTestCase/Categories/UIImage+Diff.m"; sourceTree = "<group>"; };
 		4BBFFC4ABC523B018A5E98655A4C4CBB /* Pods-LTMSwift_Example */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-LTMSwift_Example"; path = Pods_LTMSwift_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C6513B09838318BD763CFD5390D1DE0 /* FBSnapshotTestCase.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FBSnapshotTestCase.release.xcconfig; sourceTree = "<group>"; };
 		51B7A0F156A5DC202F3A595D3ADB593B /* Pods-LTMSwift_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-LTMSwift_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		57221B54D014471C3D3E1925EFC917C8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		59DF0FDD1E9E47B1A4B5094C188D7A22 /* LTMExtensionImage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMExtensionImage.swift; path = LTMExtension/LTMExtensionImage.swift; sourceTree = "<group>"; };
 		5C4F31330DFA99D699E4BDC8C3573D73 /* FBSnapshotTestCase */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = FBSnapshotTestCase; path = FBSnapshotTestCase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5F014FDC270C962EDFAF94ADC2D0A54C /* LTMExtensionColor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMExtensionColor.swift; path = LTMExtension/LTMExtensionColor.swift; sourceTree = "<group>"; };
 		60A5BAA10C9585A6B5B37F727540FE28 /* Pods-LTMSwift_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-LTMSwift_Example.modulemap"; sourceTree = "<group>"; };
 		656116C8FA5458F45D4707110C9530EC /* UIImage+Compare.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIImage+Compare.h"; path = "FBSnapshotTestCase/Categories/UIImage+Compare.h"; sourceTree = "<group>"; };
-		671FE3A7A7AD325688A4C959D28B0C02 /* LTMExtensionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMExtensionView.swift; path = LTMExtension/LTMExtensionView.swift; sourceTree = "<group>"; };
 		6ABB3EB3CCC5BCA82F40FE8DC87BB778 /* FBSnapshotTestCasePlatform.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FBSnapshotTestCasePlatform.m; path = FBSnapshotTestCase/FBSnapshotTestCasePlatform.m; sourceTree = "<group>"; };
 		79C7605792CDD28B89461B6234E9C787 /* Pods-LTMSwift_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-LTMSwift_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		7E1B7EA746BF6557FD565BAE12AF9198 /* FBSnapshotTestController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FBSnapshotTestController.m; path = FBSnapshotTestCase/FBSnapshotTestController.m; sourceTree = "<group>"; };
 		7E56CDA903DD778F6DE58A46B3E8CF32 /* Pods-LTMSwift_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-LTMSwift_Example-umbrella.h"; sourceTree = "<group>"; };
+		8175A57D0117EE11C42E5186D94497B3 /* Date+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Date+Extension.swift"; path = "LTMSwift/Classes/Date+Extension.swift"; sourceTree = "<group>"; };
 		8236BD8FBB23C69C42B751418E3265C1 /* Pods-LTMSwift_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-LTMSwift_Tests.modulemap"; sourceTree = "<group>"; };
 		88B1DEEBF6316A84D7413645212492FF /* FBSnapshotTestCasePlatform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FBSnapshotTestCasePlatform.h; path = FBSnapshotTestCase/FBSnapshotTestCasePlatform.h; sourceTree = "<group>"; };
 		88C89C5A2F24B6765D1F3BC9DC97A527 /* Pods-LTMSwift_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-LTMSwift_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		8E5923010B02074CAA9AAF6EA02D66AA /* FBSnapshotTestCase-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FBSnapshotTestCase-umbrella.h"; sourceTree = "<group>"; };
 		8F6236F3DA6F85DF8FDDE58E8EE20447 /* Pods-LTMSwift_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-LTMSwift_Tests-umbrella.h"; sourceTree = "<group>"; };
+		8FA1179ECD4CC98927EFDDC24A2A47DE /* LTMSwift-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "LTMSwift-dummy.m"; sourceTree = "<group>"; };
 		92B465EB80F1F0AF3A3EAA3898BBD00E /* Pods-LTMSwift_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-LTMSwift_Tests-dummy.m"; sourceTree = "<group>"; };
+		938BC0D54596F742D5BD954D1243DC15 /* LTMSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LTMSwift.release.xcconfig; sourceTree = "<group>"; };
 		9468E867498BBAF36F9AFFE4845F8B09 /* FBSnapshotTestCase.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FBSnapshotTestCase.debug.xcconfig; sourceTree = "<group>"; };
 		96187BF3038121CC146335E9FF0B0AFF /* UIImage+Diff.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIImage+Diff.h"; path = "FBSnapshotTestCase/Categories/UIImage+Diff.h"; sourceTree = "<group>"; };
 		99A67367E018411D614EC8536A8A1C5B /* UIApplication+StrictKeyWindow.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIApplication+StrictKeyWindow.h"; path = "FBSnapshotTestCase/Categories/UIApplication+StrictKeyWindow.h"; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9E236B2543B551DE074658CE893EB883 /* UIColor+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIColor+Extension.swift"; path = "LTMSwift/Classes/UIColor+Extension.swift"; sourceTree = "<group>"; };
 		A114D6BF6007CD37A0D3E5D91D40D9AA /* Pods-LTMSwift_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-LTMSwift_Example-frameworks.sh"; sourceTree = "<group>"; };
-		A53D47E1352C6794028B38797203C68E /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
-		A77FD237FC0DBA5D74CE99D387F6EBDC /* LTMSecurity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMSecurity.swift; path = LTMFoundation/LTMSecurity.swift; sourceTree = "<group>"; };
-		A84910684F1CA06609F209CE84BD5DD8 /* LTMExtensionString.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMExtensionString.swift; path = LTMExtension/LTMExtensionString.swift; sourceTree = "<group>"; };
-		ABD2D13968EBDFB4B41EFEA4A48DCE92 /* LTMHUDManage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMHUDManage.swift; path = LTMFoundation/LTMHUDManage.swift; sourceTree = "<group>"; };
+		A374EF573787B88F5F84A92AE19CC3C2 /* NSAttributedString+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "NSAttributedString+Extension.swift"; path = "LTMSwift/Classes/NSAttributedString+Extension.swift"; sourceTree = "<group>"; };
 		AE9FF9459FBCDC4AF88FB6B5A4CC1439 /* FBSnapshotTestController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FBSnapshotTestController.h; path = FBSnapshotTestCase/FBSnapshotTestController.h; sourceTree = "<group>"; };
-		B2333560354E943A1015CE5BFC9B2BCD /* LTMPopupVC.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMPopupVC.swift; path = LTMFoundation/LTMPopupVC.swift; sourceTree = "<group>"; };
-		B5F83FF8FC3353426790E7C1FE7E54ED /* LTMSwift.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = LTMSwift.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		B003E3939CC446357F83A6BFA964E3B3 /* UIView+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIView+Extension.swift"; path = "LTMSwift/Classes/UIView+Extension.swift"; sourceTree = "<group>"; };
+		B575A48F30FDD5E045742D47DE38BCFE /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		B5A525A397B01AF9167D0E494B5C6E13 /* LTMSwift.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = LTMSwift.modulemap; sourceTree = "<group>"; };
+		B5E9062B6A35215D99CAFA25F70CC4C3 /* String+Encryption.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+Encryption.swift"; path = "LTMSwift/Classes/String+Encryption.swift"; sourceTree = "<group>"; };
 		B7103CA00AED20722C5B69CA5B4F6938 /* FBSnapshotTestCase-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "FBSnapshotTestCase-Info.plist"; sourceTree = "<group>"; };
 		B94945D8548ACCB61C67DC9A906245A8 /* Pods-LTMSwift_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-LTMSwift_Example-Info.plist"; sourceTree = "<group>"; };
-		BA44CBDFE2F7CE093CBE3A4E69A2E981 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
-		BC814849931A49603A063316F8CFBAFA /* LTMSwift-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "LTMSwift-dummy.m"; sourceTree = "<group>"; };
-		BD2D775AC577A7C6971758460FE91094 /* LTMSwift-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "LTMSwift-Info.plist"; sourceTree = "<group>"; };
+		BDF734ED93E25D078A5EDD2D57CE1947 /* LTMSwift-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "LTMSwift-Info.plist"; sourceTree = "<group>"; };
+		BF15EAF805F091D68687D1C476A55326 /* LTMSwift-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "LTMSwift-prefix.pch"; sourceTree = "<group>"; };
 		BFB20BC9989706E1898826D7694E13A0 /* Pods-LTMSwift_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-LTMSwift_Tests-frameworks.sh"; sourceTree = "<group>"; };
-		C12DCA723EC2916E62051156FF3D96ED /* LTMExtensionLabel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMExtensionLabel.swift; path = LTMExtension/LTMExtensionLabel.swift; sourceTree = "<group>"; };
+		C4E769B64EECF29BB65C88D102F1B30A /* UILabel+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UILabel+Extension.swift"; path = "LTMSwift/Classes/UILabel+Extension.swift"; sourceTree = "<group>"; };
 		C5B2FD64BF68459D1BCAC86C811C4989 /* Pods-LTMSwift_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-LTMSwift_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		CBFF6C5FD9C3A84274A9314D3E940B6E /* FBSnapshotTestCase.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = FBSnapshotTestCase.modulemap; sourceTree = "<group>"; };
-		CCCA2557B957D90F1308234208A19D70 /* LTMExtensionFont.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LTMExtensionFont.swift; path = LTMExtension/LTMExtensionFont.swift; sourceTree = "<group>"; };
+		CD2AA7595E2FD6C1645F7795FCB1A270 /* LTMSwift-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "LTMSwift-umbrella.h"; sourceTree = "<group>"; };
 		D08CEBB9BDD9EF7A662ECFC0305C169E /* FBSnapshotTestCase-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FBSnapshotTestCase-prefix.pch"; sourceTree = "<group>"; };
 		D85E94B7ECC14F96ECCCC03DDDC76CDD /* Pods-LTMSwift_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-LTMSwift_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		D872A3EE224412D4057C234FBC629F9C /* UIImage+Snapshot.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Snapshot.m"; path = "FBSnapshotTestCase/Categories/UIImage+Snapshot.m"; sourceTree = "<group>"; };
@@ -143,8 +139,8 @@
 		E2D00AA4C0FE96849DF98E57CEC1464F /* Pods-LTMSwift_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-LTMSwift_Tests-Info.plist"; sourceTree = "<group>"; };
 		E658F388F01C72599CA75537950B6095 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		E6BE87CED9F0B65AD8F5FD86EF97EFBD /* Pods-LTMSwift_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-LTMSwift_Example.release.xcconfig"; sourceTree = "<group>"; };
-		ECBF0B28132AA7552FD41C39F448612B /* LTMSwift.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = LTMSwift.modulemap; sourceTree = "<group>"; };
-		F2388591D4B2157D84FC166ACFF1545E /* LTMSwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LTMSwift.debug.xcconfig; sourceTree = "<group>"; };
+		EC758FA00F05C4786DD15B628BB773EB /* LTMSwift.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = LTMSwift.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		F082C34AC4CEE64F07DE7983B6685A9A /* String+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+Extension.swift"; path = "LTMSwift/Classes/String+Extension.swift"; sourceTree = "<group>"; };
 		F7C86B46F2C7228EA8A8815A1A026230 /* LTMSwift */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = LTMSwift; path = LTMSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDAC145D20AB0E1C7597ACCF6F4B5B2D /* Pods-LTMSwift_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-LTMSwift_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		FEE661E58CA6655B39AA49AA4C021C33 /* FBSnapshotTestCase.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FBSnapshotTestCase.h; path = FBSnapshotTestCase/FBSnapshotTestCase.h; sourceTree = "<group>"; };
@@ -159,12 +155,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A91885CC766D2C8810E9F86301CC66E2 /* Frameworks */ = {
+		6F094D11DAF363B3DE15589EC8C36753 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E3CD7537559F08EF7448BD08E6A4B3DB /* Foundation.framework in Frameworks */,
-				E5FB42B892DDD3062180DBF6AD0ECBA9 /* UIKit.framework in Frameworks */,
+				C54FD297DAAA32E5925D5AA26649CFA0 /* Foundation.framework in Frameworks */,
+				0E429695F9543B9E3B3CF8E08D69FB87 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,19 +203,12 @@
 			path = "Target Support Files/Pods-LTMSwift_Tests";
 			sourceTree = "<group>";
 		};
-		20FDA7DB3A54191F7F45615476981F80 /* Support Files */ = {
+		28F7ADC24DD34BDB33B14356508DAE0A /* HUDManage */ = {
 			isa = PBXGroup;
 			children = (
-				ECBF0B28132AA7552FD41C39F448612B /* LTMSwift.modulemap */,
-				BC814849931A49603A063316F8CFBAFA /* LTMSwift-dummy.m */,
-				BD2D775AC577A7C6971758460FE91094 /* LTMSwift-Info.plist */,
-				1E933E9372FBA8D001EA695AACAE4910 /* LTMSwift-prefix.pch */,
-				05F473B2A8506D6C99E5FF4E94703095 /* LTMSwift-umbrella.h */,
-				F2388591D4B2157D84FC166ACFF1545E /* LTMSwift.debug.xcconfig */,
-				04EBA02AD50C079EAA6D4DCA3BBF66B9 /* LTMSwift.release.xcconfig */,
+				0F9744A989722A0D0CC1C356C12EDDA7 /* LTMHUDManage.swift */,
 			);
-			name = "Support Files";
-			path = "Example/Pods/Target Support Files/LTMSwift";
+			name = HUDManage;
 			sourceTree = "<group>";
 		};
 		34908AD6674DB0E0DCB8FCD8170C62D6 /* Targets Support Files */ = {
@@ -231,15 +220,14 @@
 			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
-		36C97D299BBBD477D1A654CBF617675A /* LTMFoundation */ = {
+		43314F2E29A0D8D45C2932E82BE664C5 /* Pod */ = {
 			isa = PBXGroup;
 			children = (
-				ABD2D13968EBDFB4B41EFEA4A48DCE92 /* LTMHUDManage.swift */,
-				B2333560354E943A1015CE5BFC9B2BCD /* LTMPopupVC.swift */,
-				A77FD237FC0DBA5D74CE99D387F6EBDC /* LTMSecurity.swift */,
-				2EAB3EFB106DDEA88FF5C832D7FFC342 /* LTMTimeManager.swift */,
+				0A9DBF295599AC15D76A2E2C15F33EBF /* LICENSE */,
+				EC758FA00F05C4786DD15B628BB773EB /* LTMSwift.podspec */,
+				B575A48F30FDD5E045742D47DE38BCFE /* README.md */,
 			);
-			name = LTMFoundation;
+			name = Pod;
 			sourceTree = "<group>";
 		};
 		4BA2479549DD918290454B1CDCD0B92B /* Core */ = {
@@ -282,26 +270,20 @@
 			name = SwiftSupport;
 			sourceTree = "<group>";
 		};
-		92920CF42E6EE48F2099AB2A4122726C /* LTMSwift */ = {
+		AA779346DE0F67F1631FB1E53CC5870E /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				D0B9EFAE205976DAD0A9988A3E3BBA38 /* LTMExtension */,
-				36C97D299BBBD477D1A654CBF617675A /* LTMFoundation */,
-				9B87A919FEF4AEF8DE3A29511350FF3F /* Pod */,
-				20FDA7DB3A54191F7F45615476981F80 /* Support Files */,
+				8175A57D0117EE11C42E5186D94497B3 /* Date+Extension.swift */,
+				A374EF573787B88F5F84A92AE19CC3C2 /* NSAttributedString+Extension.swift */,
+				B5E9062B6A35215D99CAFA25F70CC4C3 /* String+Encryption.swift */,
+				F082C34AC4CEE64F07DE7983B6685A9A /* String+Extension.swift */,
+				446804A883C067DFEF3E637BDA0889BA /* UIButton+Extension.swift */,
+				9E236B2543B551DE074658CE893EB883 /* UIColor+Extension.swift */,
+				280CA52D4052D4F1A2284208B25B60B4 /* UIImage+Extension.swift */,
+				C4E769B64EECF29BB65C88D102F1B30A /* UILabel+Extension.swift */,
+				B003E3939CC446357F83A6BFA964E3B3 /* UIView+Extension.swift */,
 			);
-			name = LTMSwift;
-			path = ../..;
-			sourceTree = "<group>";
-		};
-		9B87A919FEF4AEF8DE3A29511350FF3F /* Pod */ = {
-			isa = PBXGroup;
-			children = (
-				A53D47E1352C6794028B38797203C68E /* LICENSE */,
-				B5F83FF8FC3353426790E7C1FE7E54ED /* LTMSwift.podspec */,
-				BA44CBDFE2F7CE093CBE3A4E69A2E981 /* README.md */,
-			);
-			name = Pod;
+			name = Extension;
 			sourceTree = "<group>";
 		};
 		ACECF05E719FA2459A23A730F18FB9D4 /* Pods-LTMSwift_Example */ = {
@@ -319,6 +301,33 @@
 			);
 			name = "Pods-LTMSwift_Example";
 			path = "Target Support Files/Pods-LTMSwift_Example";
+			sourceTree = "<group>";
+		};
+		AE81069CF3628C930E5A3CFF85C459A4 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				B5A525A397B01AF9167D0E494B5C6E13 /* LTMSwift.modulemap */,
+				8FA1179ECD4CC98927EFDDC24A2A47DE /* LTMSwift-dummy.m */,
+				BDF734ED93E25D078A5EDD2D57CE1947 /* LTMSwift-Info.plist */,
+				BF15EAF805F091D68687D1C476A55326 /* LTMSwift-prefix.pch */,
+				CD2AA7595E2FD6C1645F7795FCB1A270 /* LTMSwift-umbrella.h */,
+				42DDB660BE1D81181153A9EEDE443FB1 /* LTMSwift.debug.xcconfig */,
+				938BC0D54596F742D5BD954D1243DC15 /* LTMSwift.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "Example/Pods/Target Support Files/LTMSwift";
+			sourceTree = "<group>";
+		};
+		B40096E0BE559168EAF992AE60DD923C /* LTMSwift */ = {
+			isa = PBXGroup;
+			children = (
+				AA779346DE0F67F1631FB1E53CC5870E /* Extension */,
+				28F7ADC24DD34BDB33B14356508DAE0A /* HUDManage */,
+				43314F2E29A0D8D45C2932E82BE664C5 /* Pod */,
+				AE81069CF3628C930E5A3CFF85C459A4 /* Support Files */,
+			);
+			name = LTMSwift;
+			path = ../..;
 			sourceTree = "<group>";
 		};
 		B69B2ECE2D2C9A3924A9231138CE0BBC /* Support Files */ = {
@@ -367,21 +376,6 @@
 			);
 			sourceTree = "<group>";
 		};
-		D0B9EFAE205976DAD0A9988A3E3BBA38 /* LTMExtension */ = {
-			isa = PBXGroup;
-			children = (
-				0E308F01F36E3FB4C51422D5D9A86CF7 /* LTMExtensionAttributedString.swift */,
-				5F014FDC270C962EDFAF94ADC2D0A54C /* LTMExtensionColor.swift */,
-				3D0A80CC346EEB94AF119156AE013900 /* LTMExtensionDate.swift */,
-				CCCA2557B957D90F1308234208A19D70 /* LTMExtensionFont.swift */,
-				59DF0FDD1E9E47B1A4B5094C188D7A22 /* LTMExtensionImage.swift */,
-				C12DCA723EC2916E62051156FF3D96ED /* LTMExtensionLabel.swift */,
-				A84910684F1CA06609F209CE84BD5DD8 /* LTMExtensionString.swift */,
-				671FE3A7A7AD325688A4C959D28B0C02 /* LTMExtensionView.swift */,
-			);
-			name = LTMExtension;
-			sourceTree = "<group>";
-		};
 		E81A37DBDE41E671312C56736544E2FA /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -393,7 +387,7 @@
 		F6820197A5407F40D4025720EB3DC678 /* Development Pods */ = {
 			isa = PBXGroup;
 			children = (
-				92920CF42E6EE48F2099AB2A4122726C /* LTMSwift */,
+				B40096E0BE559168EAF992AE60DD923C /* LTMSwift */,
 			);
 			name = "Development Pods";
 			sourceTree = "<group>";
@@ -420,6 +414,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C8ADF576E2004655A45D462038F44D70 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD06512F7E3D5BA56ECBC330AC0E2146 /* LTMSwift-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4CF7A53AFE8275DDE075747E8245F97 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -443,14 +445,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F02A285C97AAA29F07F4ACC57F54DA17 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B6A4C22F87622AA0698390BA6542D262 /* LTMSwift-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -466,8 +460,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				79A5C1AF2586C9BA26CD7ED0F0C38C03 /* PBXTargetDependency */,
-				C6A700CD3C013234055B5B5C3394B843 /* PBXTargetDependency */,
+				1BD129C5348A337C180324611722B6E0 /* PBXTargetDependency */,
+				2EEF4C37261B134113B2930FF38D09B2 /* PBXTargetDependency */,
 			);
 			name = "Pods-LTMSwift_Tests";
 			productName = Pods_LTMSwift_Tests;
@@ -494,12 +488,12 @@
 		};
 		C1802B92EE65078CD93AA013C51D387C /* LTMSwift */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5B7DBCDE5CA158FEA3A5A63D9FFBCA40 /* Build configuration list for PBXNativeTarget "LTMSwift" */;
+			buildConfigurationList = 5AD076EA60C56917CA9A016A8756D39F /* Build configuration list for PBXNativeTarget "LTMSwift" */;
 			buildPhases = (
-				F02A285C97AAA29F07F4ACC57F54DA17 /* Headers */,
-				646064505885AEF3FC5F411B91701530 /* Sources */,
-				A91885CC766D2C8810E9F86301CC66E2 /* Frameworks */,
-				04014C1EF5F62C875AC1557E019F4118 /* Resources */,
+				C8ADF576E2004655A45D462038F44D70 /* Headers */,
+				99C980EBA3C6974F9E6D249606185172 /* Sources */,
+				6F094D11DAF363B3DE15589EC8C36753 /* Frameworks */,
+				BDB105B4A65BA63F9FE5A2E353BC9A11 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -522,7 +516,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				DCFA27E1B3587E14181B3ADCB5737B2E /* PBXTargetDependency */,
+				B31B9E1615C7C9A0EC710550C64FFFD6 /* PBXTargetDependency */,
 			);
 			name = "Pods-LTMSwift_Example";
 			productName = Pods_LTMSwift_Example;
@@ -560,14 +554,14 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		04014C1EF5F62C875AC1557E019F4118 /* Resources */ = {
+		194C9DCC4899F62F4FB7DDF15C987499 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		194C9DCC4899F62F4FB7DDF15C987499 /* Resources */ = {
+		BDB105B4A65BA63F9FE5A2E353BC9A11 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -591,31 +585,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		646064505885AEF3FC5F411B91701530 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3A61FD50B16802EB260ED71DA4D410A8 /* LTMExtensionAttributedString.swift in Sources */,
-				068A23E202D670A078C252E13A1E931D /* LTMExtensionColor.swift in Sources */,
-				C7059558316A2CE8219126C99D82FB92 /* LTMExtensionDate.swift in Sources */,
-				5CA87D5A5D1CF1AE92C25FA68CBF2F71 /* LTMExtensionFont.swift in Sources */,
-				3012F7EABD3A6A9E816187FB0E676016 /* LTMExtensionImage.swift in Sources */,
-				73D2658133CFC8A020C7DF3203E1D8D2 /* LTMExtensionLabel.swift in Sources */,
-				3BF4F33FEDC7FB6BA9F80CF699566CF1 /* LTMExtensionString.swift in Sources */,
-				4DB7A00405AFA0AB90C0A8E6AFB7AA32 /* LTMExtensionView.swift in Sources */,
-				D7EAF7190BEA64DE847770019209358D /* LTMHUDManage.swift in Sources */,
-				C82A523C31E1BA9B3729E23B370B870F /* LTMPopupVC.swift in Sources */,
-				1135D41E75FD49BEDC9E5F97425C0F86 /* LTMSecurity.swift in Sources */,
-				4DB3F3A610BB40100006320A15306534 /* LTMSwift-dummy.m in Sources */,
-				1D16BA9817E3F5469A11CA1C81ECECDE /* LTMTimeManager.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		87464D7450D639CAF2E69F00EBE88E3D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				B59DFF694C0FCA2E995DBD47FDA4260F /* Pods-LTMSwift_Tests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99C980EBA3C6974F9E6D249606185172 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B0418930876EF3B00038198D9F84AB8 /* Date+Extension.swift in Sources */,
+				4E131CC70DD7D725FA2C3233FD847870 /* LTMHUDManage.swift in Sources */,
+				B8A3BB7952ADA27F0A916384E484FEF1 /* LTMSwift-dummy.m in Sources */,
+				2995634AA913567466007CC602F1C555 /* NSAttributedString+Extension.swift in Sources */,
+				322CFF7873E79A9730256A3A47F63A39 /* String+Encryption.swift in Sources */,
+				3D118C7A00F6CE81D6CB92675DE7D098 /* String+Extension.swift in Sources */,
+				660B3D3F8997E273BCBDD6F7B4CC144C /* UIButton+Extension.swift in Sources */,
+				36F37A2BA574951C8BC09E72081B0A7F /* UIColor+Extension.swift in Sources */,
+				24782D8432F3555F3FA003700682656E /* UIImage+Extension.swift in Sources */,
+				1131EF7764CEB62773FAF153B4D97ADD /* UILabel+Extension.swift in Sources */,
+				1DC5ACB808A54A71ACE7352B4F4B49F8 /* UIView+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -646,23 +638,23 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		79A5C1AF2586C9BA26CD7ED0F0C38C03 /* PBXTargetDependency */ = {
+		1BD129C5348A337C180324611722B6E0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = FBSnapshotTestCase;
 			target = 98A98149697C80CEF8D5772791E92E66 /* FBSnapshotTestCase */;
-			targetProxy = 4EEBF8622B16A5562B0752D94A17CAA8 /* PBXContainerItemProxy */;
+			targetProxy = 0E92DA0D3C0862C60945E37F488912E3 /* PBXContainerItemProxy */;
 		};
-		C6A700CD3C013234055B5B5C3394B843 /* PBXTargetDependency */ = {
+		2EEF4C37261B134113B2930FF38D09B2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "Pods-LTMSwift_Example";
 			target = E2FAAA7D20FFBF1E4A976BF3CEF961B1 /* Pods-LTMSwift_Example */;
-			targetProxy = 86EA825433D82104908439742EC9AC1E /* PBXContainerItemProxy */;
+			targetProxy = 471479A5CBD2924D3AFA687634184AC1 /* PBXContainerItemProxy */;
 		};
-		DCFA27E1B3587E14181B3ADCB5737B2E /* PBXTargetDependency */ = {
+		B31B9E1615C7C9A0EC710550C64FFFD6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = LTMSwift;
 			target = C1802B92EE65078CD93AA013C51D387C /* LTMSwift */;
-			targetProxy = 76B80053F9DD2CC2187E16E147D79E16 /* PBXContainerItemProxy */;
+			targetProxy = DABCBDA1615C1FC44EFC437A31029B41 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -927,9 +919,41 @@
 			};
 			name = Release;
 		};
-		9049790082EB91876D678DFF44AAFF89 /* Release */ = {
+		8949384A4DA270804FE730B57FE60A50 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04EBA02AD50C079EAA6D4DCA3BBF66B9 /* LTMSwift.release.xcconfig */;
+			baseConfigurationReference = 42DDB660BE1D81181153A9EEDE443FB1 /* LTMSwift.debug.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/LTMSwift/LTMSwift-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/LTMSwift/LTMSwift-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/LTMSwift/LTMSwift.modulemap";
+				PRODUCT_MODULE_NAME = LTMSwift;
+				PRODUCT_NAME = LTMSwift;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		8FF90D78CAED5B05F6BB553CD00C4308 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 938BC0D54596F742D5BD954D1243DC15 /* LTMSwift.release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -1029,38 +1053,6 @@
 			};
 			name = Debug;
 		};
-		D6F8E11CBE5A3337CDAECB84AF2E251D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F2388591D4B2157D84FC166ACFF1545E /* LTMSwift.debug.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/LTMSwift/LTMSwift-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/LTMSwift/LTMSwift-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/LTMSwift/LTMSwift.modulemap";
-				PRODUCT_MODULE_NAME = LTMSwift;
-				PRODUCT_NAME = LTMSwift;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1082,11 +1074,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5B7DBCDE5CA158FEA3A5A63D9FFBCA40 /* Build configuration list for PBXNativeTarget "LTMSwift" */ = {
+		5AD076EA60C56917CA9A016A8756D39F /* Build configuration list for PBXNativeTarget "LTMSwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D6F8E11CBE5A3337CDAECB84AF2E251D /* Debug */,
-				9049790082EB91876D678DFF44AAFF89 /* Release */,
+				8949384A4DA270804FE730B57FE60A50 /* Debug */,
+				8FF90D78CAED5B05F6BB553CD00C4308 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -1,12 +1,11 @@
 //
-//  LTMExtensionAttributedString.swift
+//  NSAttributedString+Extension.swift
 //  LTMSwift
 //
-//  Created by kenan0620 on 07/29/2020.
-//  Copyright (c) 2020 kenan0620. All rights reserved.
+//  Created by 柯南 on 2022/11/29.
 //
-import Foundation
 
+import Foundation
 public extension NSAttributedString{
     /**
      设置字间距及行间距
