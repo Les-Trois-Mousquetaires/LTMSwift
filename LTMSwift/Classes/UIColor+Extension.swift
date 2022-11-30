@@ -12,7 +12,7 @@ public extension UIColor{
      
      - parameter hexString 颜色值
      */
-    convenience init(hexString: String) {
+    public convenience init(hexString: String) {
         self.init(hexString: hexString,alpha: 1)
     }
     
@@ -22,7 +22,7 @@ public extension UIColor{
      - parameter hexString 颜色值
      - parameter alpha 透明度
      */
-    convenience init(hexString: String, alpha:CGFloat) {
+    public convenience init(hexString: String, alpha:CGFloat) {
         //删除前后多余的空格换行
         let hexString = hexString.trimmingCharacters(in: .whitespacesAndNewlines)
         //扫描指定字符串的抽象类,然后scanner会按照你的要求从头到尾扫描这个字符串的每个字符

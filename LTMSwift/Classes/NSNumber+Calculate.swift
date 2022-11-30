@@ -29,7 +29,7 @@ public extension NSNumber{
      
      - parameter digit 小数位数, 默认四舍五入
      */
-    func decimalDigit(_ digit: Int) -> String{
+    public func decimalDigit(_ digit: Int) -> String{
         return self.decimalDigit(digit, .halfUp, true)
     }
     
@@ -38,7 +38,7 @@ public extension NSNumber{
      
      - parameter digit 小数位数, 默认四舍五入
      */
-    func decimalDigitParam(_ digit: Int) -> String{
+    public func decimalDigitParam(_ digit: Int) -> String{
         return self.decimalDigit(digit, .halfUp, false)
     }
     
@@ -64,7 +64,7 @@ public extension NSNumber{
      
      - parameter num 被加数
      */
-    func adding(num:NSNumber) -> NSNumber{
+    public func adding(num:NSNumber) -> NSNumber{
         let number1 = NSDecimalNumber(string: self.stringValue)
         let number2 = NSDecimalNumber(string: num.stringValue)
         let sum = number1.adding(number2)
@@ -76,7 +76,7 @@ public extension NSNumber{
      
      - parameter num 被减数
      */
-    func subtracting(num:NSNumber) -> NSNumber{
+    public func subtracting(num:NSNumber) -> NSNumber{
         let number1 = NSDecimalNumber(string: self.stringValue)
         let number2 = NSDecimalNumber(string: num.stringValue)
         let sum = number1.subtracting(number2)
@@ -88,7 +88,7 @@ public extension NSNumber{
      
      - parameter num 被乘数
      */
-    func multiplying(num:NSNumber) -> NSNumber{
+    public func multiplying(num:NSNumber) -> NSNumber{
         let number1 = NSDecimalNumber(string: self.stringValue)
         let number2 = NSDecimalNumber(string: num.stringValue)
         let sum = number1.multiplying(by: number2)
@@ -99,7 +99,7 @@ public extension NSNumber{
      
      - parameter num 被除数
      */
-    func dividing(num:NSNumber) -> NSNumber{
+    public func dividing(num:NSNumber) -> NSNumber{
         let number1 = NSDecimalNumber(string: self.stringValue)
         let number2 = NSDecimalNumber(string: num.stringValue)
         let sum = number1.dividing(by: number2)

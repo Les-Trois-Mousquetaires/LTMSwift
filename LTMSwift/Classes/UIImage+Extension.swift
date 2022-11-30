@@ -13,7 +13,7 @@ public extension UIImage{
      
      - parameter color 色值
      */
-    class func createImage(_ color: UIColor)-> UIImage{
+    public class func createImage(_ color: UIColor)-> UIImage{
         let rect = CGRect.init(x: 0.0, y: 0.0, width: 1.0, height: 1.0)
         UIGraphicsBeginImageContext(rect.size)
         let context = UIGraphicsGetCurrentContext()
@@ -30,7 +30,7 @@ public extension UIImage{
      
      - parameter color 色值
      */
-    convenience init(color: UIColor) {
+    public convenience init(color: UIColor) {
         let rect = CGRect.init(x: 0.0, y: 0.0, width: 1.0, height: 1.0)
         UIGraphicsBeginImageContext(rect.size)
         let context = UIGraphicsGetCurrentContext()
@@ -46,7 +46,7 @@ public extension UIImage{
      
      - parameter slaveImage 拼接图片
      */
-    func addSlaveImage(slaveImage: UIImage) -> UIImage{
+    public func addSlaveImage(slaveImage: UIImage) -> UIImage{
         var size = CGSize()
         size.width = self.size.width
         size.height = self.size.height + slaveImage.size.height
@@ -66,7 +66,7 @@ public extension UIImage{
      
      - parameter name 图片名
      */
-    class func largerImage(name: String) -> UIImage? {
+    public class func largerImage(name: String) -> UIImage? {
         return self.largerImage(name: name, type: "png")
     }
     
@@ -78,7 +78,7 @@ public extension UIImage{
      
      - returns 大图
      */
-    class func largerImage(name: String, type: String) -> UIImage? {
+    public class func largerImage(name: String, type: String) -> UIImage? {
         guard let path = Bundle.main.path(forResource: name, ofType: type) else {
             return UIImage()
         }

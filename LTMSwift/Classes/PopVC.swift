@@ -8,7 +8,7 @@
 import Foundation
 public class PopVC: NSObject {
     
-    enum PopType {
+    public enum PopType {
         // 居左
         case left
         // 居友
@@ -26,7 +26,7 @@ public class PopVC: NSObject {
      
      - parameter view 被弹回视图
      */
-    class func dismiss(view: UIView) {
+    public class func dismiss(view: UIView) {
         view.popupView()?.dismiss(animated: true, completion: nil)
     }
     
@@ -37,7 +37,7 @@ public class PopVC: NSObject {
      - parameter poptype 弹出方式
      - parameter space 间距
      */
-    class func popView(view: UIView, poptype: PopType, space: CGFloat? = 0) {
+    public class func popView(view: UIView, poptype: PopType, space: CGFloat? = 0) {
         var layout: BaseAnimator.Layout
         var animator: PopupViewAnimator
         switch poptype {

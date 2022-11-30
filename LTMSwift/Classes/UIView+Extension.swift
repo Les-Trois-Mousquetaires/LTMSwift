@@ -11,7 +11,7 @@ public extension UIView{
     /**
      添加多个子视图
      */
-    func addSubViews(_ views: [UIView]) {
+    public func addSubViews(_ views: [UIView]) {
         views.forEach({
             addSubview($0)
         })
@@ -24,7 +24,7 @@ public extension UIView{
      - parameter endPoint 渐变结束点 默认1.0
      - parameter colors 渐变颜色数组
      */
-    func setGradient(startPoint: CGPoint?, endPoint: CGPoint?, colors:[Any]){
+    public func setGradient(startPoint: CGPoint?, endPoint: CGPoint?, colors:[Any]){
         let gradientLocations:[NSNumber] = [0, 1]
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = colors
@@ -41,7 +41,7 @@ public extension UIView{
     /**
      View生成图片
      */
-    func makeImage() -> UIImage{
+    public func makeImage() -> UIImage{
         //第一个参数表示区域大小。第二个参数表示是否是非透明的，如果需要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, UIScreen.main.scale)
         self.layer.render(in: UIGraphicsGetCurrentContext()!)
@@ -54,7 +54,7 @@ public extension UIView{
     /**
      View生成图片,可以显示layer(分享分时图、k线)
      */
-    func makeLayerImage() -> UIImage{
+    public func makeLayerImage() -> UIImage{
         //第一个参数表示区域大小。第二个参数表示是否是非透明的，如果需要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0.0)
         self.drawHierarchy(in: self.bounds, afterScreenUpdates: true)
@@ -67,7 +67,7 @@ public extension UIView{
     /**
      将tableview 生成图片
      */
-    func getTableViewImage() -> UIImage{
+    public func getTableViewImage() -> UIImage{
         var image = UIImage()
         let scrollView: UIScrollView = self as! UITableView
         //第一个参数表示区域大小。第二个参数表示是否是非透明的，如果需要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了

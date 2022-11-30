@@ -11,7 +11,7 @@ public extension String{
     /**
      截取到任意位置
      */
-    func subString(to: Int) -> String {
+    public func subString(to: Int) -> String {
         let index: String.Index = self.index(startIndex, offsetBy: to)
         
         return String(self[..<index])
@@ -20,7 +20,7 @@ public extension String{
     /**
      从任意位置开始截取
      */
-    func subString(from: Int) -> String {
+    public func subString(from: Int) -> String {
         let index: String.Index = self.index(startIndex, offsetBy: from)
         
         return String(self[index ..< endIndex])
@@ -29,7 +29,7 @@ public extension String{
     /**
      从任意位置开始截取到任意位置
      */
-    func subString(from: Int, to: Int) -> String {
+    public func subString(from: Int, to: Int) -> String {
         let beginIndex = self.index(self.startIndex, offsetBy: from)
         let endIndex = self.index(self.startIndex, offsetBy: to)
         
@@ -39,7 +39,7 @@ public extension String{
     /**
      字符串前加空格
      */
-    func appendFirstNullString() -> String{
+    public func appendFirstNullString() -> String{
         let mutabString: NSMutableString = NSMutableString()
         
         return mutabString.appending(" \(self)")
@@ -48,7 +48,7 @@ public extension String{
     /**
      字符串删除空格
      */
-    func deleteNullString() -> String{
+    public func deleteNullString() -> String{
         let mutabString: NSMutableString = NSMutableString.init(string: self.replacingOccurrences(of: " ", with: ""))
         
         return mutabString as String
@@ -57,7 +57,7 @@ public extension String{
     /**
      修改某段文字字体和颜色
      */
-    func changeFontColor(subString: String, font: UIFont, textColor: UIColor)-> NSMutableAttributedString {
+    public func changeFontColor(subString: String, font: UIFont, textColor: UIColor)-> NSMutableAttributedString {
         let range = (self as NSString).range(of: subString)
         let attStr = NSMutableAttributedString.init(string: self)
         attStr.addAttributes([NSAttributedString.Key.foregroundColor: textColor, NSAttributedString.Key.font: font], range: range)
@@ -72,7 +72,7 @@ public extension String{
      
      - parameter dateFormat 时间格式
      */
-    func secondTimeStampToDate(dateFormat: String!) -> String{
+    public func secondTimeStampToDate(dateFormat: String!) -> String{
         if self.isEmpty {
             return ""
         }
@@ -93,7 +93,7 @@ public extension String{
      
      - parameter dateFormat 时间格式
      */
-    func millisecondTimeStampToDate(dateFormat: String!) -> String{
+    public func millisecondTimeStampToDate(dateFormat: String!) -> String{
         if self.isEmpty {
             return ""
         }
@@ -116,7 +116,7 @@ public extension String{
      - parameter dateFormat 时间格式
      */
     
-    func dateStringToMillisecondTimeStamp(dateFormat: String!) -> String {
+    public func dateStringToMillisecondTimeStamp(dateFormat: String!) -> String {
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
@@ -132,7 +132,7 @@ public extension String{
      
      - parameter dateFormat 时间格式
      */
-    func dateStringToSecondTimeStamp(dateFormat: String!) -> String {
+    public func dateStringToSecondTimeStamp(dateFormat: String!) -> String {
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
@@ -148,7 +148,7 @@ public extension String{
     /**
      字符串转Int
      */
-    func LTMStringToInt() -> Int{
+    public func LTMStringToInt() -> Int{
         var res : Int = 0
         /// 正数 true 负数 false
         var isPositiveNumber : Bool = true
@@ -196,7 +196,7 @@ extension String{
      
      - returns 图片
      */
-    func base64ToImage() -> UIImage?{
+    public func base64ToImage() -> UIImage?{
         let base64String = self.replacingOccurrences(of: "data:image/jpg;base64,", with: "")
         //转换尝试判断，有可能返回的数据丢失"=="，如果丢失，swift校验不通过
         var imageData = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters)
@@ -223,7 +223,7 @@ public extension String{
      
      - returns: 处理后的字符串
      */
-    func phoneNum3_4() -> String {
+    public func phoneNum3_4() -> String {
         if self.count < 8 {
             return self
         }
@@ -238,7 +238,7 @@ public extension String{
      
      - returns: 处理后的字符串
      */
-    func phoneNum344() -> String {
+    public func phoneNum344() -> String {
         if self.count != 11 {
             return self
         }

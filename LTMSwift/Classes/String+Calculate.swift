@@ -7,7 +7,7 @@
 
 import Foundation
 public extension String {
-    enum RoundingType : UInt {
+    public enum RoundingType : UInt {
         case plain//取整
         case down//只舍不入
         case up//只入不舍
@@ -19,7 +19,7 @@ public extension String {
      
      - parameter digit 小数位数, 默认四舍五入
      */
-    func number() -> NSNumber{
+    public func number() -> NSNumber{
         return self.number(.halfUp)
     }
     
@@ -38,7 +38,7 @@ public extension String {
     /**
      加
      */
-    func add(num:String) -> String {
+    public func add(num:String) -> String {
         let number1 = NSDecimalNumber(string: self)
         let number2 = NSDecimalNumber(string: num)
         let summation = number1.adding(number2)
@@ -47,7 +47,7 @@ public extension String {
     /**
      减
      */
-    func minus(num:String) -> String {
+    public func minus(num:String) -> String {
         let number1 = NSDecimalNumber(string: self)
         let number2 = NSDecimalNumber(string: num)
         let summation = number1.subtracting(number2)
@@ -56,7 +56,7 @@ public extension String {
     /**
      乘
      */
-    func multiplying(num:String) -> String {
+    public func multiplying(num:String) -> String {
         let number1 = NSDecimalNumber(string: self)
         let number2 = NSDecimalNumber(string: num)
         let summation = number1.multiplying(by: number2)
@@ -65,7 +65,7 @@ public extension String {
     /**
      除
      */
-    func dividing(num:String) -> String {
+    public func dividing(num:String) -> String {
         let number1 = NSDecimalNumber(string: self)
         let number2 = NSDecimalNumber(string: num)
         let summation = number1.dividing(by:number2)
@@ -75,7 +75,7 @@ public extension String {
     /**
      num 保留几位小数 type 取舍类型
      */
-    func numType(num : Int , type : RoundingType) -> String {
+    public func numType(num : Int , type : RoundingType) -> String {
         /*
          enum NSRoundingMode : UInt {
          

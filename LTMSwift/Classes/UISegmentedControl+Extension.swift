@@ -6,7 +6,7 @@
 //
 
 import Foundation
-extension UISegmentedControl {
+public extension UISegmentedControl {
     /**
      设置Segment风格
      
@@ -14,7 +14,7 @@ extension UISegmentedControl {
      - parameter selectedColor 选中颜色
      - parameter dividerColor 分割线颜色
      */
-    func setStyle(normalColor: UIColor, selectedColor: UIColor ,dividerColor: UIColor){
+    public func setStyle(normalColor: UIColor, selectedColor: UIColor ,dividerColor: UIColor){
         let normalImage = UIImage.init(color: normalColor)
         let selectedImage = UIImage.init(color: selectedColor)
         let dividerImage = UIImage.init(color: dividerColor)

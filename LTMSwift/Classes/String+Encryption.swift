@@ -15,7 +15,7 @@ public extension String {
      - parameter iv 偏移量
      - parameter options 加密方式
      */
-    func desEncrypt(key:String, iv:String, options:Int = kCCOptionPKCS7Padding) -> String? {
+    public func desEncrypt(key:String, iv:String, options:Int = kCCOptionPKCS7Padding) -> String? {
         if let keyData = key.data(using: String.Encoding.utf8),
            let data = self.data(using: String.Encoding.utf8),
            let cryptData    = NSMutableData(length: Int((data.count)) + kCCBlockSizeDES) {
@@ -54,7 +54,7 @@ public extension String {
      - parameter iv 偏移量
      - parameter options 解密方式
      */
-    func desDecrypt(key:String, iv:String, options:Int = kCCOptionPKCS7Padding) -> String? {
+    public func desDecrypt(key:String, iv:String, options:Int = kCCOptionPKCS7Padding) -> String? {
         if let keyData = key.data(using: String.Encoding.utf8),
            let data = NSData(base64Encoded: self, options: .ignoreUnknownCharacters),
            let cryptData    = NSMutableData(length: Int((data.length)) + kCCBlockSizeDES) {
@@ -90,7 +90,7 @@ public extension String {
      - parameter key 密钥
      - parameter iv 偏移量
      */
-    func aesEncrypt(key:String, iv:String, options:Int = kCCOptionPKCS7Padding) -> String? {
+    public func aesEncrypt(key:String, iv:String, options:Int = kCCOptionPKCS7Padding) -> String? {
         if let keyData = key.data(using: String.Encoding.utf8),
            let data = self.data(using: String.Encoding.utf8),
            let cryptData    = NSMutableData(length: Int((data.count)) + kCCBlockSizeAES128) {
@@ -129,7 +129,7 @@ public extension String{
      
      - returns: MD5值
      */
-    func strngToCapitalMD5() -> String{
+    public func strngToCapitalMD5() -> String{
         return self.stringToMD5(outputFormat: "X")
     }
     
@@ -138,7 +138,7 @@ public extension String{
      
      - returns: MD5值
      */
-    func strngToLowercaseMD5() -> String{
+    public func strngToLowercaseMD5() -> String{
         return self.stringToMD5(outputFormat: "x")
     }
     
@@ -147,7 +147,7 @@ public extension String{
      
      - returns: 哈希值
      */
-    func strngToCapitalSHA1() -> String {
+    public func strngToCapitalSHA1() -> String {
         return self.stringToSHA1(outputFormat: "X")
     }
     
@@ -156,7 +156,7 @@ public extension String{
      
      - returns: 哈希值
      */
-    func strngToLowercaseSHA1() -> String {
+    public func strngToLowercaseSHA1() -> String {
         return self.stringToSHA1(outputFormat: "x")
     }
     

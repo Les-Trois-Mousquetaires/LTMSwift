@@ -13,7 +13,7 @@ public extension UITextField{
      
      - parameter space 字间距大小
      */
-    func space(space: CGFloat) {
+    public func space(space: CGFloat) {
         self.defaultTextAttributes = [NSAttributedString.Key.kern: space]
     }
 }

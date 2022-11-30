@@ -6,9 +6,9 @@
 //
 
 import Foundation
-extension NSObject {
+public extension NSObject {
     // 方法交换
-    static func ltm_swizzleMethod(_ cls: AnyClass, originalSelector: Selector, swizzleSelector: Selector){
+    public static func ltm_swizzleMethod(_ cls: AnyClass, originalSelector: Selector, swizzleSelector: Selector){
         let originalMethod = class_getInstanceMethod(cls, originalSelector)!
         let swizzledMethod = class_getInstanceMethod(cls, swizzleSelector)!
         let didAddMethod = class_addMethod(cls,

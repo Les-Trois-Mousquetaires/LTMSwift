@@ -6,13 +6,13 @@
 //
 
 import Foundation
-enum AlignType : NSInteger {
+public enum AlignType : NSInteger {
     case left = 0
     case center = 1
     case right = 2
 }
 
-class EqualCellSpaceFlowLayout: UICollectionViewFlowLayout {
+public class EqualCellSpaceFlowLayout: UICollectionViewFlowLayout {
     //两个Cell之间的距离
     private var itemSpace : CGFloat{
         didSet{
@@ -22,7 +22,7 @@ class EqualCellSpaceFlowLayout: UICollectionViewFlowLayout {
     //cell对齐方式
     private var alignType : AlignType = AlignType.center
     //在居中对齐的时候需要知道这行所有cell的宽度总和
-    var cellWidthInLine : CGFloat = 0.0
+    public var cellWidthInLine : CGFloat = 0.0
     
     override init() {
         itemSpace = 10.0
@@ -31,11 +31,11 @@ class EqualCellSpaceFlowLayout: UICollectionViewFlowLayout {
         estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
-    convenience init(_ cellType:AlignType){
+    public convenience init(_ cellType:AlignType){
         self.init()
         self.alignType = cellType
     }
-    convenience init(_ cellType: AlignType, _ itemSpace: CGFloat){
+    public convenience init(_ cellType: AlignType, _ itemSpace: CGFloat){
         self.init()
         self.alignType = cellType
         self.itemSpace = itemSpace

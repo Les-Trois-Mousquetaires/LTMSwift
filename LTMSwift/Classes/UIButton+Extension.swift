@@ -11,7 +11,7 @@ import UIKit
 fileprivate var rectNameKey:(Character?,Character?,Character?,Character?)
 
 //MARK: - UIButton设置热区
-extension UIButton{
+public extension UIButton{
     /**
      设置热区
      
@@ -20,7 +20,10 @@ extension UIButton{
      - parameter bottom 底部
      - parameter right 右边
      */
-    func setEnlargeEdgeWith(top:CGFloat,left:CGFloat,bottom:CGFloat,right:CGFloat){
+    public func setEnlargeEdgeWith(top:CGFloat,
+                                   left:CGFloat,
+                                   bottom:CGFloat,
+                                   right:CGFloat){
         objc_setAssociatedObject(self, &rectNameKey.0, top, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         objc_setAssociatedObject(self, &rectNameKey.1, right, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         objc_setAssociatedObject(self, &rectNameKey.2, bottom, .OBJC_ASSOCIATION_COPY_NONATOMIC)
@@ -33,7 +36,8 @@ extension UIButton{
      - parameter point 点击点
      - parameter event 响应
      */
-    open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    open override func hitTest(_ point: CGPoint,
+                               with event: UIEvent?) -> UIView? {
         if let topEdge = objc_getAssociatedObject(self, &rectNameKey.0) as? CGFloat,
            let rightEdge = objc_getAssociatedObject(self, &rectNameKey.1) as? CGFloat,
            let bottomEdge = objc_getAssociatedObject(self, &rectNameKey.2) as? CGFloat,
@@ -45,12 +49,12 @@ extension UIButton{
 }
 
 //MARK: - UIButton设置图文位置间距
-extension UIButton {
+public extension UIButton {
     /// 逆时针方向🔄
-    enum Position { case top, left, bottom, right }
+    public enum Position { case top, left, bottom, right }
     
     /// 重置图片image与标题title位置(默认间距为0)
-    func imagePosition(_ position: Position, spacing: CGFloat = 0 ) {
+    public func imagePosition(_ position: Position, spacing: CGFloat = 0 ) {
         self.sizeToFit()
         
         let imageWidth = self.imageView?.image?.size.width
@@ -84,11 +88,11 @@ extension UIButton {
 }
 
 //MARK: - UIButton设置标题、颜色、图片
-extension UIButton {
+public extension UIButton {
     /**
      设置标题
      */
-    func setTitle(_ title: String?){
+    public func setTitle(_ title: String?){
         setTitle(title, for: .normal)
         setTitle(title, for: .selected)
         setTitle(title, for: .highlighted)
@@ -96,7 +100,7 @@ extension UIButton {
     /**
      设置标题颜色
      */
-    func setTitleColor(_ color: UIColor?){
+    public func setTitleColor(_ color: UIColor?){
         setTitleColor(color, for: .normal)
         setTitleColor(color, for: .selected)
         setTitleColor(color, for: .highlighted)
@@ -104,7 +108,7 @@ extension UIButton {
     /**
      设置图片
      */
-    func setImage(_ image: UIImage?){
+    public func setImage(_ image: UIImage?){
         setImage(image, for: .normal)
         setImage(image, for: .selected)
         setImage(image, for: .highlighted)
@@ -112,7 +116,7 @@ extension UIButton {
     /**
      设置背景图片
      */
-    func setBackgroundImage(_ image: UIImage?){
+    public func setBackgroundImage(_ image: UIImage?){
         setBackgroundImage(image, for: .normal)
         setBackgroundImage(image, for: .selected)
         setBackgroundImage(image, for: .highlighted)

@@ -7,14 +7,14 @@
 
 import Foundation
 
-extension UIViewController {
+public extension UIViewController {
     
     /**
      系统拨打电话、固定电话
      
      - parameter phone 电话号码
      */
-    func callPhone(_ phone: String) {
+    public func callPhone(_ phone: String) {
         var phoneStr = phone
         /// 小于固话长度
         if phone.count < 7{
