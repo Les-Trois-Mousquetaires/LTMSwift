@@ -1,6 +1,6 @@
 {
   "name": "LTMSwift",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "summary": "Swift 项目常用组件库.",
   "description": "LTMSwift is swift often uselib.\nLTMExtension is Swift Classes folder tool\nLTMExtension is tools folder",
   "homepage": "https://github.com/Les-Trois-Mousquetaires/LTMSwift",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/Les-Trois-Mousquetaires/LTMSwift.git",
-    "tag": "0.2.6"
+    "tag": "0.2.7"
   },
   "platforms": {
     "ios": "11.0"
@@ -31,6 +31,10 @@
     {
       "name": "HUDManage",
       "source_files": "LTMSwift/Classes/LTMHUDManage.swift"
+    },
+    {
+      "name": "PopView",
+      "source_files": "LTMSwift/Classes/Pop{*}.swift"
     }
   ],
   "swift_version": "5.2"
