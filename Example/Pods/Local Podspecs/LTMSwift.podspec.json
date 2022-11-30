@@ -35,10 +35,6 @@
     {
       "name": "PopView",
       "source_files": "LTMSwift/Classes/Pop{*}.swift"
-    },
-    {
-      "name": "Cell",
-      "source_files": "LTMSwift/Classes/{*}Cell{*}.swift"
     }
   ],
   "swift_version": "5.2"

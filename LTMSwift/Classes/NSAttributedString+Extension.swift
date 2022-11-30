@@ -16,7 +16,7 @@ public extension NSAttributedString{
      
      - returns: 处理后的富文本
      */
-    public class func setTextSpaceAndLineSpace(text: String, textSpace: Double, lineSpace: CGFloat) -> NSAttributedString{
+    class func setTextSpaceAndLineSpace(text: String, textSpace: Double, lineSpace: CGFloat) -> NSAttributedString{
         let style = NSMutableParagraphStyle()
         style.lineSpacing = lineSpace
         

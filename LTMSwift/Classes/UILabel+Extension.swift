@@ -13,7 +13,7 @@ public extension UILabel{
      - parameter text 文本内容
      - parameter textSpace 字间距大小
      */
-    public func setTextSpace(text: String, textSpace: Double) {
+    func setTextSpace(text: String, textSpace: Double) {
         self.setTextSpace(text: text, textSpace: textSpace, lineSpace: 0)
     }
     
@@ -23,7 +23,7 @@ public extension UILabel{
      - parameter text 文本内容
      - parameter lineSpace 行间距大小
      */
-    public func setTextSpace(text: String, lineSpace: CGFloat) {
+    func setTextSpace(text: String, lineSpace: CGFloat) {
         self.setTextSpace(text: text, textSpace: 0, lineSpace: lineSpace)
     }
     
@@ -34,7 +34,7 @@ public extension UILabel{
      - parameter textSpace 字间距大小
      - parameter lineSpace 行间距大小
      */
-    public func setTextSpace(text: String, textSpace: Double, lineSpace: CGFloat) {
+    func setTextSpace(text: String, textSpace: Double, lineSpace: CGFloat) {
         self.attributedText = NSAttributedString.setTextSpaceAndLineSpace(text: text, textSpace: textSpace, lineSpace: lineSpace)
     }
 }

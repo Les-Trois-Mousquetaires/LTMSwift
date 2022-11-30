@@ -50,9 +50,5 @@ Pod::Spec.new do |s|
   s.subspec 'PopView' do |ss|
       ss.source_files = 'LTMSwift/Classes/Pop{*}.swift'
   end
-  
-  s.subspec 'Cell' do |ss|
-      ss.source_files = 'LTMSwift/Classes/{*}Cell{*}.swift'
-  end
 
 end

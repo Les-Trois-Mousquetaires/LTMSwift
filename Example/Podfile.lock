@@ -5,11 +5,9 @@ PODS:
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
   - LTMSwift (0.2.9):
-    - LTMSwift/Cell (= 0.2.9)
     - LTMSwift/Extension (= 0.2.9)
     - LTMSwift/HUDManage (= 0.2.9)
     - LTMSwift/PopView (= 0.2.9)
-  - LTMSwift/Cell (0.2.9)
   - LTMSwift/Extension (0.2.9)
   - LTMSwift/HUDManage (0.2.9)
   - LTMSwift/PopView (0.2.9)
@@ -28,7 +26,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  LTMSwift: c0ea28695ebcfb36da549e6322979dddca1add04
+  LTMSwift: 3560f157df7dd878e89f28f917638087a64fee00
 
 PODFILE CHECKSUM: 8ea9eb1fa355c03eb740b79b84aa347a9186b32b
 

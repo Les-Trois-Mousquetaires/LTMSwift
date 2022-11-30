@@ -9,7 +9,7 @@ import Foundation
 
 public extension UITableView{
     // 列表适配
-    public func adapt(){
+    func adapt(){
         self.separatorStyle = .none
         self.showsVerticalScrollIndicator = false
         self.showsHorizontalScrollIndicator = false

@@ -14,7 +14,7 @@ public extension UIViewController {
      
      - parameter phone 电话号码
      */
-    public func callPhone(_ phone: String) {
+    func callPhone(_ phone: String) {
         var phoneStr = phone
         /// 小于固话长度
         if phone.count < 7{

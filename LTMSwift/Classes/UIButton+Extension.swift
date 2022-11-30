@@ -20,10 +20,10 @@ public extension UIButton{
      - parameter bottom 底部
      - parameter right 右边
      */
-    public func setEnlargeEdgeWith(top:CGFloat,
-                                   left:CGFloat,
-                                   bottom:CGFloat,
-                                   right:CGFloat){
+    func setEnlargeEdgeWith(top:CGFloat,
+                            left:CGFloat,
+                            bottom:CGFloat,
+                            right:CGFloat){
         objc_setAssociatedObject(self, &rectNameKey.0, top, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         objc_setAssociatedObject(self, &rectNameKey.1, right, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         objc_setAssociatedObject(self, &rectNameKey.2, bottom, .OBJC_ASSOCIATION_COPY_NONATOMIC)
@@ -36,7 +36,7 @@ public extension UIButton{
      - parameter point 点击点
      - parameter event 响应
      */
-    open override func hitTest(_ point: CGPoint,
+    override func hitTest(_ point: CGPoint,
                                with event: UIEvent?) -> UIView? {
         if let topEdge = objc_getAssociatedObject(self, &rectNameKey.0) as? CGFloat,
            let rightEdge = objc_getAssociatedObject(self, &rectNameKey.1) as? CGFloat,
@@ -51,10 +51,10 @@ public extension UIButton{
 //MARK: - UIButton设置图文位置间距
 public extension UIButton {
     /// 逆时针方向🔄
-    public enum Position { case top, left, bottom, right }
+    enum Position { case top, left, bottom, right }
     
     /// 重置图片image与标题title位置(默认间距为0)
-    public func imagePosition(_ position: Position, spacing: CGFloat = 0 ) {
+    func imagePosition(_ position: Position, spacing: CGFloat = 0 ) {
         self.sizeToFit()
         
         let imageWidth = self.imageView?.image?.size.width
@@ -92,7 +92,7 @@ public extension UIButton {
     /**
      设置标题
      */
-    public func setTitle(_ title: String?){
+    func setTitle(_ title: String?){
         setTitle(title, for: .normal)
         setTitle(title, for: .selected)
         setTitle(title, for: .highlighted)
@@ -100,7 +100,7 @@ public extension UIButton {
     /**
      设置标题颜色
      */
-    public func setTitleColor(_ color: UIColor?){
+    func setTitleColor(_ color: UIColor?){
         setTitleColor(color, for: .normal)
         setTitleColor(color, for: .selected)
         setTitleColor(color, for: .highlighted)
@@ -108,7 +108,7 @@ public extension UIButton {
     /**
      设置图片
      */
-    public func setImage(_ image: UIImage?){
+    func setImage(_ image: UIImage?){
         setImage(image, for: .normal)
         setImage(image, for: .selected)
         setImage(image, for: .highlighted)
@@ -116,7 +116,7 @@ public extension UIButton {
     /**
      设置背景图片
      */
-    public func setBackgroundImage(_ image: UIImage?){
+    func setBackgroundImage(_ image: UIImage?){
         setBackgroundImage(image, for: .normal)
         setBackgroundImage(image, for: .selected)
         setBackgroundImage(image, for: .highlighted)

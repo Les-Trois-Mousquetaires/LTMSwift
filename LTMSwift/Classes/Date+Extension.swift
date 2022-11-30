@@ -15,7 +15,7 @@ public extension Date{
      
      - returns: 转换后时间字符串及时间戳元组
      */
-    public func secondTimestamp(dateFormat: String!) -> (String, String){
+    func secondTimestamp(dateFormat: String!) -> (String, String){
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         let dateStr = dateFormatter.string(from: self)
@@ -32,7 +32,7 @@ public extension Date{
      
      - returns: 转换后时间字符串及时间戳元组
      */
-    public func msecondTimestamp(dateFormat: String!) -> (String, String){
+    func msecondTimestamp(dateFormat: String!) -> (String, String){
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         let dateStr = dateFormatter.string(from: self)
