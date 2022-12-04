@@ -7,8 +7,8 @@
 
 import SnapKit
 
-class RichListView: UIView{
-    var enentBlock: ((_ content: String) -> Void)?
+open class RichListView: UIView{
+    public var enentBlock: ((_ content: String) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,7 +21,7 @@ class RichListView: UIView{
     
     private var listData: [RichModel] = []
     /// 展示模型
-    var model: [RichModel] {
+    public var model: [RichModel] {
         set{
             self.listData = newValue
             var tableHeight = 0.0
@@ -38,7 +38,7 @@ class RichListView: UIView{
         }
     }
     
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     

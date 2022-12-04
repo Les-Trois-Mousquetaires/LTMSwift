@@ -3,13 +3,15 @@
 //  FBSnapshotTestCase
 //
 //  Created by zsn on 2022/12/4.
-//
+//  请求Log输出
 
 import Moya
 
-class LTMLogPlugin: PluginType{
+open class LTMLogPlugin: PluginType{
+    public init() {
+    }
 
-    func willSend(_ request: RequestType, target: TargetType) {
+    open func willSend(_ request: RequestType, target: TargetType) {
         print("请求头 \(request.request?.allHTTPHeaderFields ?? [:])")
         if request.request?.method == .post{
             do {
@@ -21,7 +23,7 @@ class LTMLogPlugin: PluginType{
         }
     }
     
-    func didReceive(_ result: Result<Response, MoyaError>, target: TargetType) {
+    open func didReceive(_ result: Result<Response, MoyaError>, target: TargetType) {
         switch result {
         case .success(let response):
             guard let resultDic: [String: Any] = try? response.mapJSON() as? [String : Any] else {

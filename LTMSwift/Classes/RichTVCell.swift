@@ -8,7 +8,7 @@
 import YYText
 import SnapKit
 
-class RichTVCell: UITableViewCell {
+open class RichTVCell: UITableViewCell {
     /// 响应key
     var enentBlock: (() -> Void)?
     
@@ -86,7 +86,7 @@ class RichTVCell: UITableViewCell {
         block()
     }
         
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     

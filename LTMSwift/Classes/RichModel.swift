@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 富文本类型
 public enum RichItemType {
     /// 输入框
     case textfield
@@ -15,35 +16,35 @@ public enum RichItemType {
 }
 
 //MARK: - 双富文本模型
-open class RichModel: NSObject{
-    override init() {
+public struct RichModel{
+    public init() {
         
     }
     /// 键
-    var key: NSMutableAttributedString = NSMutableAttributedString()
+    public var key: NSMutableAttributedString = NSMutableAttributedString()
     /// 值
-    var value: NSMutableAttributedString = NSMutableAttributedString()
+    public var value: NSMutableAttributedString = NSMutableAttributedString()
     /// 是否展示分割线
-    var isShowLine: Bool = true
+    public var isShowLine: Bool = true
     /// 响应键值
-    var eventKey: String = ""
+    public var eventKey: String = ""
     /// 是否展示更新分割线位置
-    var isUpdateLineSpace: Bool = false
+    public var isUpdateLineSpace: Bool = false
     /// 分割线位置
-    var lineSpace: CGFloat = 9
+    public var lineSpace: CGFloat = 9
     /// 高度
-    var height: CGFloat = 44
+    public var height: CGFloat = 44
     /// 视图类型
-    var type: RichItemType = .richLabel
+    public var type: RichItemType = .richLabel
     /// 默认白色
-    var cellColor: UIColor = .white
+    public var cellColor: UIColor = .white
     /// 分割线颜色 默认灰色
-    var lineColor: UIColor = .gray
+    public var lineColor: UIColor = .gray
     
     /// 仅Textfield  有效 且无value值
-    var placeHolder: NSMutableAttributedString = NSMutableAttributedString()
+    public var placeHolder: NSMutableAttributedString = NSMutableAttributedString()
     /// Textfield 文本颜色 仅输入时有效
-    var textFieldTextColor: UIColor = .black
+    public var textFieldTextColor: UIColor = .black
     /// Textfield 文本颜色 仅输入时有效
-    var textFieldFont: UIFont = .systemFont(ofSize: 14)
+    public var textFieldFont: UIFont = .systemFont(ofSize: 14)
 }

@@ -63,6 +63,7 @@ open class LTMNetworkDeal: NSObject {
             }
         }
     }
+    
     //MARK: - Deal info
     private func successDealWtih<Model: LTMModel>(response: [String : Any], targetName: Model) -> Any{
         let resultModel = Model.deserialize(from: response)
@@ -70,8 +71,7 @@ open class LTMNetworkDeal: NSObject {
         return resultModel ?? NSObject()
     }
     
-    public func failureDealWith(response: Any) -> String?{
-        
+    open func failureDealWith(response: Any) -> String?{
         return "failure"
     }
 }
