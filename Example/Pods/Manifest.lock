@@ -6,21 +6,28 @@ PODS:
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
   - HandyJSON (5.0.2)
-  - LTMSwift (0.3.0):
-    - LTMSwift/Extension (= 0.3.0)
-    - LTMSwift/HUDManage (= 0.3.0)
-    - LTMSwift/Network (= 0.3.0)
-    - LTMSwift/PopView (= 0.3.0)
-  - LTMSwift/Extension (0.3.0)
-  - LTMSwift/HUDManage (0.3.0)
-  - LTMSwift/Network (0.3.0):
+  - LTMSwift (0.3.1):
+    - LTMSwift/Extension (= 0.3.1)
+    - LTMSwift/HUDManage (= 0.3.1)
+    - LTMSwift/Network (= 0.3.1)
+    - LTMSwift/PopView (= 0.3.1)
+    - LTMSwift/RichView (= 0.3.1)
+  - LTMSwift/Extension (0.3.1)
+  - LTMSwift/HUDManage (0.3.1)
+  - LTMSwift/Network (0.3.1):
     - HandyJSON
     - Moya
-  - LTMSwift/PopView (0.3.0)
+  - LTMSwift/PopView (0.3.1)
+  - LTMSwift/RichView (0.3.1):
+    - LTMSwift/Extension
+    - SnapKit
+    - YYText
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
   - Moya/Core (15.0.0):
     - Alamofire (~> 5.0)
+  - SnapKit (5.6.0)
+  - YYText (1.0.7)
 
 DEPENDENCIES:
   - FBSnapshotTestCase (~> 2.1.4)
@@ -31,6 +38,8 @@ SPEC REPOS:
     - Alamofire
     - HandyJSON
     - Moya
+    - SnapKit
+    - YYText
   trunk:
     - FBSnapshotTestCase
 
@@ -42,8 +51,10 @@ SPEC CHECKSUMS:
   Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
-  LTMSwift: 1c5a573a158202047c8af63f271c3c9b7357cbb8
+  LTMSwift: 6da4047166a933a33cbf9fbc81ef00a12b1fd3a4
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
+  SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
+  YYText: 5c461d709e24d55a182d1441c41dc639a18a4849
 
 PODFILE CHECKSUM: 8ea9eb1fa355c03eb740b79b84aa347a9186b32b
 
