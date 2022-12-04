@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.2.9'
+  s.version          = '0.3.0'
   s.summary          = 'Swift 项目常用组件库.'
 
 # This description is used to generate tags and improve search results.
@@ -47,8 +47,15 @@ Pod::Spec.new do |s|
       ss.source_files = 'LTMSwift/Classes/LTMHUDManage.swift'
   end
   
+  s.subspec 'Network' do |ss|
+      ss.source_files = 'LTMSwift/Classes/LTM{*}.swift'
+      ss.dependency 'Moya'
+      ss.dependency 'HandyJSON'
+  end
+  
   s.subspec 'PopView' do |ss|
       ss.source_files = 'LTMSwift/Classes/Pop{*}.swift'
   end
+  
 
 end
