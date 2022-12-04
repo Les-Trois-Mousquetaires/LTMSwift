@@ -57,7 +57,7 @@ open class RichListView: UIView{
 }
 
 extension RichListView: UITableViewDelegate, UITableViewDataSource{
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "RichTVCell") as? RichTVCell
         if cell == nil{
             cell = RichTVCell.init(style: .default, reuseIdentifier: "RichTVCell")
@@ -70,11 +70,11 @@ extension RichListView: UITableViewDelegate, UITableViewDataSource{
         return cell!
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return self.listData[indexPath.row].height
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         self.listData.count
     }
     
