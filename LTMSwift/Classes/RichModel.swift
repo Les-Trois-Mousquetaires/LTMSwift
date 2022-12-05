@@ -41,6 +41,9 @@ public struct RichModel{
     /// 分割线颜色 默认灰色
     public var lineColor: UIColor = .gray
     
+    /// 仅Textfield 是否可以输入
+    public var isEnabled: Bool = true
+    
     /// 仅Textfield  有效 且无value值
     public var placeHolder: NSMutableAttributedString = NSMutableAttributedString()
     /// Textfield 文本颜色 仅输入时有效

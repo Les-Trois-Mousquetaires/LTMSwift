@@ -28,6 +28,7 @@ open class RichTVCell: UITableViewCell {
             }else if (self.attrModel.type == .textfield){
                 self.valueTextField.isHidden = false
                 self.valueRichLabel.isHidden = true
+                self.valueTextField.isEnabled = self.attrModel.isEnabled
                 if (self.attrModel.value.string.count > 0){
                     self.valueTextField.attributedText =  self.attrModel.value
                 }else{
