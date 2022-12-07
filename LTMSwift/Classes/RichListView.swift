@@ -8,8 +8,11 @@
 import SnapKit
 
 open class RichListView: UIView{
-    public var enentBlock: ((_ content: String) -> Void)?
-    
+    /// 响应Block
+    public var eventBlock: ((_ eventKey: String) -> Void)?
+    /// textField 响应Block
+    public var textFieldEventBlock: ((_ eventKey: String, _ content: String) -> Void)?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
@@ -64,8 +67,11 @@ extension RichListView: UITableViewDelegate, UITableViewDataSource{
         }
         let model = self.listData[indexPath.row]
         cell?.model = model
-        cell?.enentBlock = {[weak self] in
+        cell?.eventBlock = {[weak self] in
             self?.clickEvent(model)
+        }
+        cell?.textFieldEvnentBlock = {[weak self] text in
+            self?.textFieldEvent(model, text)
         }
         return cell!
     }
@@ -82,10 +88,18 @@ extension RichListView: UITableViewDelegate, UITableViewDataSource{
     private func clickEvent(_ model: RichModel){
         self.tableview.endEditing(true)
         if model.eventKey.count > 0{
-            guard let block: ((_ content: String) -> Void) = self.enentBlock else {
+            guard let block = self.eventBlock else {
                 return
             }
             block(model.eventKey)
         }
+    }
+    
+    /// textField 响应事件
+    private func textFieldEvent(_ model: RichModel, _ text: String){
+        guard let block = self.textFieldEventBlock else {
+            return
+        }
+        block(model.eventKey, text)
     }
 }

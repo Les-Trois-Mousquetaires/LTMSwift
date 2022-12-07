@@ -10,8 +10,10 @@ import SnapKit
 
 open class RichTVCell: UITableViewCell {
     /// 响应key
-    var enentBlock: (() -> Void)?
-    
+    var eventBlock: (() -> Void)?
+    /// 输入框响应key
+    var textFieldEvnentBlock: ((_ text: String) -> Void)?
+
     private var attrModel = RichModel()
     /// 富文本模型
     var model: RichModel {
@@ -78,10 +80,18 @@ open class RichTVCell: UITableViewCell {
         }
         let tapGes = UITapGestureRecognizer(target: self, action: #selector(click))
         self.contentView.addGestureRecognizer(tapGes)
+        self.valueTextField.addTarget(self, action: #selector(phoneTextFieldChange(_:)), for: .editingChanged)
+    }
+    
+    @objc func phoneTextFieldChange(_ textfield: UITextField){
+        guard let block = self.textFieldEvnentBlock else{
+            return
+        }
+        block(textfield.text ?? "")
     }
     
     @objc func click(){
-        guard let block = self.enentBlock else{
+        guard let block = self.eventBlock else{
             return
         }
         block()
