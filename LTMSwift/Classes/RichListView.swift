@@ -43,7 +43,7 @@ open class RichListView: UIView{
     
     /// 刷新所有数据
     public func reloadData(){
-        self.tableview .reloadData()
+        self.tableview.reloadData()
     }
     
     /// 刷新Rows数据

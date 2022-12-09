@@ -16,7 +16,7 @@ public enum RichItemType {
 }
 
 //MARK: - 双富文本模型
-public struct RichModel{
+public class RichModel{
     public init() {
         
     }
