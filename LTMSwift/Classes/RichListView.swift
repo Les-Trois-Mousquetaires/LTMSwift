@@ -41,6 +41,16 @@ open class RichListView: UIView{
         }
     }
     
+    /// 刷新所有数据
+    public func reloadData(){
+        self.tableview .reloadData()
+    }
+    
+    /// 刷新Rows数据
+    public func reloadRowData(indexPaths: [IndexPath]){
+        self.tableview.reloadRows(at: indexPaths, with: .none)
+    }
+    
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
