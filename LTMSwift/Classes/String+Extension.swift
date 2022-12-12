@@ -249,3 +249,28 @@ public extension String{
         return "\(start) \(center) \(end)"
     }
 }
+
+//MARK: - 字符串正则
+extension String{
+    /**
+     身份证真伪校验
+     
+     - returns 真假
+     */
+    func idCardNoCheck() -> Bool{
+        if self.replacingOccurrences(of: " ", with: "").count != 18 {
+            return false
+        }
+        let calculateList = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2, 0]
+        let checkList = ["1","0","X","9","8","7","6","5","4","3","2",]
+        var sum: Int = 0
+        for index in 0 ..< 17{
+           let curentStr = self.subString(from: index, to: index)
+            sum += (Int(curentStr) ?? 0) * calculateList[index]
+            print("内容是 \(curentStr)")
+        }
+        let checkIndex = sum % 11
+
+        return checkList[checkIndex] == self.subString(from: 17, to: 17)
+    }
+}
