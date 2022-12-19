@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import Kingfisher
 
 fileprivate var rectNameKey:(Character?,Character?,Character?,Character?)
 

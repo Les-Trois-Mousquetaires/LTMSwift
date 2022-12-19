@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Kingfisher
 
 public extension UIImage{
     /**
