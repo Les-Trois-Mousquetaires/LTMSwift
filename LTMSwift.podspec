@@ -41,8 +41,6 @@ Pod::Spec.new do |s|
   
   s.subspec 'Extension' do |ss|
       ss.source_files = 'LTMSwift/Classes/{*}+{*}.swift'
-      ss.dependency 'Kingfisher'
-      ss.ios.deployment_target = '12.0'
   end
   
   s.subspec 'HUDManage' do |ss|

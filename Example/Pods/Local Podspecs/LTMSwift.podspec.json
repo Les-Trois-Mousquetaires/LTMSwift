@@ -26,15 +26,7 @@
   "subspecs": [
     {
       "name": "Extension",
-      "source_files": "LTMSwift/Classes/{*}+{*}.swift",
-      "dependencies": {
-        "Kingfisher": [
-
-        ]
-      },
-      "platforms": {
-        "ios": "12.0"
-      }
+      "source_files": "LTMSwift/Classes/{*}+{*}.swift"
     },
     {
       "name": "HUDManage",
