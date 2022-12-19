@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Kingfisher
+
 public extension UIImage{
     /**
      颜色生成图片
@@ -130,5 +132,18 @@ public extension UIImage{
             data = resultImage.jpegData(compressionQuality: compression)!
         }
         return resultImage
+    }
+}
+
+//MARK: - 设置占位图
+public extension UIImageView{
+    /**
+     设置网络图片
+     
+     - parameter url 图片地址
+     - parameter placeholder 占位图片
+     */
+    func setImageUrl(_ url: String, _ placeHoderImage: UIImage?){
+        self.kf.setImage(with: URL(string: url), placeholder: placeHoderImage)
     }
 }

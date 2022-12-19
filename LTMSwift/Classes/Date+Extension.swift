@@ -56,7 +56,7 @@ public extension Date{
 }
 
 //MARK: - 时间操作
-extension Date{
+public extension Date{
     /**
      时间前进几年
      

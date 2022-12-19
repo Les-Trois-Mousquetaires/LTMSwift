@@ -251,7 +251,7 @@ public extension String{
 }
 
 //MARK: - 字符串正则
-extension String{
+public extension String{
     /**
      身份证真伪校验
      
@@ -267,7 +267,6 @@ extension String{
         for index in 0 ..< 17{
            let curentStr = self.subString(from: index, to: index)
             sum += (Int(curentStr) ?? 0) * calculateList[index]
-            print("内容是 \(curentStr)")
         }
         let checkIndex = sum % 11
 

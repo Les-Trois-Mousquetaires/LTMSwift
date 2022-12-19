@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 fileprivate var rectNameKey:(Character?,Character?,Character?,Character?)
 
@@ -120,5 +121,29 @@ public extension UIButton {
         setBackgroundImage(image, for: .normal)
         setBackgroundImage(image, for: .selected)
         setBackgroundImage(image, for: .highlighted)
+    }
+}
+
+public extension UIButton{
+    /**
+     设置网络图片
+     
+     - parameter url 图片地址
+     - parameter state 状态
+     - parameter placeholder 占位图片
+     */
+    func setImageUrl(url: String, state: State, placeHoderImage: UIImage?){
+        self.kf.setImage(with: URL(string: url), for: state, placeholder: placeHoderImage)
+    }
+    
+    /**
+     设置网络背景图片
+     
+     - parameter url 图片地址
+     - parameter state 状态
+     - parameter placeholder 占位图片
+     */
+    func setBackgroundImageUrl(url: String, state: State, placeHoderImage: UIImage?){
+        self.kf.setBackgroundImage(with: URL(string: url), for: state, placeholder: placeHoderImage)
     }
 }
