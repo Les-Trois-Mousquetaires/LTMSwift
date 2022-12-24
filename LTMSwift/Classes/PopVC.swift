@@ -58,10 +58,12 @@ public class PopVC: NSObject {
             animator =  ZoomInOutAnimator(layout: layout)
         }
         
-        let popupView = PopupView(containerView: (UIApplication.shared.windows.filter{$0.isKeyWindow}.first)!, contentView: view, animator: animator)
+        let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).last
+        let popupView = PopupView(containerView: window!.rootViewController?.view ?? UIView(), contentView: view, animator: animator)
         //配置交互
         popupView.isDismissible = true
         popupView.isInteractive = true
+        popupView.isPenetrable = true
         //可以设置为false，再点击弹框中的button试试？
         //        popupView.isInteractive = false
         //        popupView.isPenetrable = true

@@ -123,7 +123,7 @@ public extension String {
                 return mutstr
             }
         } else {
-            mutstr.append(total)
+            mutstr.append(total + ".")
             if num == 0 {
             } else {
                 for _ in 1...num {
