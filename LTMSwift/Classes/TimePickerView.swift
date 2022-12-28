@@ -26,13 +26,13 @@ public enum TimePickerMode {
 
 open class TimePickerView: UIView {
     /// 关闭回调
-    var cancelBlock: (() -> Void)?
+    public var cancelBlock: (() -> Void)?
     /// 确定回调
-    var sureBlock: ((_ date: Date, _ isLongTime: Bool) -> Void)?
+    public var sureBlock: ((_ date: Date, _ isLongTime: Bool) -> Void)?
     
     /// 最大时间
     private var curMaxDate: Date = Date()
-    var maxDate: Date{
+    public var maxDate: Date{
         set{
             self.curMaxDate = newValue
         }get{
@@ -41,7 +41,7 @@ open class TimePickerView: UIView {
     }
     /// 最小时间
     private var curMinDate: Date = Date()
-    var minDate: Date{
+    public var minDate: Date{
         set{
             self.curMinDate = newValue
         }get{
@@ -51,7 +51,7 @@ open class TimePickerView: UIView {
     
     private var curDate: Date = Date()
     /// 当前时间
-    var defaultDate: Date {
+    public var defaultDate: Date {
         set{
             self.curDate = newValue
             self.configSelectRow(date: self.curDate, yearRow: 501, isScroll: true)
@@ -61,11 +61,11 @@ open class TimePickerView: UIView {
     }
     
     /// 当前展示样式 默认 年月日
-    var mode: TimePickerMode = .TimeModleYMDHMS
+    public var mode: TimePickerMode = .TimeModleYMDHMS
     
     private var curLineColor: UIColor = .gray
     /// 分割线颜色
-    var lineColor: UIColor {
+    public var lineColor: UIColor {
         set{
             self.curLineColor = newValue
             self.dividerView.backgroundColor = self.curLineColor
@@ -76,7 +76,7 @@ open class TimePickerView: UIView {
     
     private var curIsShowLongTime: Bool = true
     /// 是否展示长期，默认展示
-    var isShowLongTime: Bool {
+    public var isShowLongTime: Bool {
         set{
             self.curIsShowLongTime = newValue
             self.longTimeBtn.isHidden = !self.curIsShowLongTime
@@ -87,7 +87,7 @@ open class TimePickerView: UIView {
     
     private var curLayerColor: UIColor = .brown
     /// 当前选中框颜色
-    var layerColor: UIColor {
+    public var layerColor: UIColor {
         set{
             self.curLayerColor = newValue
             let path = UIBezierPath.init(roundedRect: CGRect(x: 10, y: UIScreen.main.bounds.size.width * 3 / 8 + 104, width: UIScreen.main.bounds.size.width - 10 * 2, height: 70), cornerRadius: 5)
@@ -104,7 +104,7 @@ open class TimePickerView: UIView {
     
     private var curConfirmText: String = ""
     /// 确认按钮文字
-    var confirmText: String {
+    public var confirmText: String {
         set{
             self.curConfirmText = newValue
             self.confirmBtn.setTitle(self.curConfirmText)
@@ -115,7 +115,7 @@ open class TimePickerView: UIView {
     
     private var curConfirmColor: UIColor = .black
     /// 确认按钮文字颜色
-    var confirmColor: UIColor {
+    public var confirmColor: UIColor {
         set{
             self.curConfirmColor = newValue
             self.confirmBtn.setTitleColor(self.curConfirmColor)
@@ -126,7 +126,7 @@ open class TimePickerView: UIView {
     
     private var curConfirmFont: UIFont = .systemFont(ofSize: 14, weight: .medium)
     /// 确认按钮文字字号
-    var confirmFont: UIFont {
+    public var confirmFont: UIFont {
         set{
             self.curConfirmFont = newValue
             self.confirmBtn.titleLabel?.font = self.curConfirmFont
@@ -137,7 +137,7 @@ open class TimePickerView: UIView {
     
     private var curCancelText: String = ""
     /// 取消按钮文字
-    var cancelText: String {
+    public var cancelText: String {
         set{
             self.curCancelText = newValue
             self.cancelBtn.setTitle(self.curCancelText)
@@ -148,7 +148,7 @@ open class TimePickerView: UIView {
     
     private var curCancelColor: UIColor = .black
     /// 取消按钮文字颜色
-    var cancelColor: UIColor {
+    public var cancelColor: UIColor {
         set{
             self.curCancelColor = newValue
             self.cancelBtn.setTitleColor(self.cancelColor)
@@ -159,7 +159,7 @@ open class TimePickerView: UIView {
     
     private var curCancelFont: UIFont = .systemFont(ofSize: 14, weight: .medium)
     /// 取消按钮文字字号
-    var cancelFont: UIFont {
+    public var cancelFont: UIFont {
         set{
             self.curCancelFont = newValue
             self.cancelBtn.titleLabel?.font = self.curCancelFont
@@ -170,7 +170,7 @@ open class TimePickerView: UIView {
     
     private var curPickerColor: UIColor = .black
     /// 滚轮日期文本颜色
-    var pickerColor: UIColor {
+    public var pickerColor: UIColor {
         set{
             self.curPickerColor = newValue
         }get{
@@ -180,7 +180,7 @@ open class TimePickerView: UIView {
     
     private var curPickerFont: UIFont = .systemFont(ofSize: 16, weight: .medium)
     /// 滚轮日期文字字号
-    var pickerFont: UIFont {
+    public var pickerFont: UIFont {
         set{
             self.curPickerFont = newValue
         }get{
@@ -292,7 +292,7 @@ open class TimePickerView: UIView {
         pickerView.delegate = self
         pickerView.dataSource = self
         pickerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
+        
         return pickerView
     }()
 }
@@ -391,7 +391,7 @@ extension TimePickerView: UIPickerViewDelegate{
         self.selectHour = date.hour
         self.selectMinute = date.minute
         self.selectSecond = date.second
-
+        
         switch self.mode{
         case .TimeModleY:
             self.timePickerView.selectRow(yearRow, inComponent: 0, animated: true)

@@ -60,7 +60,7 @@ public extension UITextView {
 
 fileprivate var kAssociationKeyMaxLength: Int = 0
 extension UITextView: UITextViewDelegate{
-    @IBInspectable var maxLength: Int {
+    @IBInspectable public var maxLength: Int {
         set {
             self.delegate = self
             objc_setAssociatedObject(self, &kAssociationKeyMaxLength, newValue, .OBJC_ASSOCIATION_RETAIN)
