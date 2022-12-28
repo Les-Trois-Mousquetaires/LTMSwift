@@ -21,17 +21,15 @@ open class LTMNetworkDeal: NSObject {
         
         switch result {
         case let .success(moyaResponse):
+            guard let resultDic: [String: Any] = try? moyaResponse.mapJSON() as? [String : Any] else {
+                DispatchQueue.main.async {
+                    failureClosure?(moyaResponse.statusCode, "数据解析异常")
+                }
+                return
+            }
             switch moyaResponse.statusCode {
             case 200:
-                guard let resultDic: [String: Any] = try? moyaResponse.mapJSON() as? [String : Any],
-                      let code: Int = resultDic[codeValue] as? Int
-                else {
-                    DispatchQueue.main.async {
-                        failureClosure?(200, "数据解析异常")
-                    }
-                    return
-                }
-                
+                let code: Int = resultDic[self.codeValue] as? Int ?? moyaResponse.statusCode
                 switch code {
                 case 200:
                     guard let systemEntity: [String: Any] = resultDic[dataValue] as? [String : Any] else {
@@ -45,15 +43,13 @@ open class LTMNetworkDeal: NSObject {
                     }
                     
                 default:
-                    if resultDic[msgValue] != nil{
-                        DispatchQueue.main.async {
-                            failureClosure?(code, self.failureDealWith(response: resultDic) ?? "服务器异常,未确认错误信息")
-                        }
+                    DispatchQueue.main.async {
+                        failureClosure?(code, self.failureDealWith(response: resultDic) ?? "服务器异常,未确认错误信息")
                     }
                 }
             default:
                 DispatchQueue.main.async {
-                    failureClosure?(moyaResponse.statusCode, self.failureDealWith(response: "errorServerMes") ?? "服务器异常")
+                    failureClosure?(moyaResponse.statusCode, self.failureDealWith(response: resultDic) ?? "服务器异常,未确认错误信息")
                 }
             }
         case let .failure(error):

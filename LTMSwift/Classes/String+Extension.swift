@@ -146,52 +146,6 @@ public extension String{
 
 public extension String{
     /**
-     字符串转Int
-     */
-    func LTMStringToInt() -> Int{
-        var res : Int = 0
-        /// 正数 true 负数 false
-        var isPositiveNumber : Bool = true
-        /// 索引位置
-        var position = 0
-        
-        //1.去掉空格
-        let arr = Array(self)
-        while position < arr.count , arr[position] == " "{
-            position += 1
-        }
-        //2.查找正负符号
-        if position < arr.count , arr[position] == "-"{
-            isPositiveNumber = false
-            position += 1
-        }else if position < arr.count , arr[position] == "+"{
-            isPositiveNumber = true
-            position += 1
-        }
-        //3.获取数字
-        while position < arr.count {
-            let r = arr[position]
-            //判断r 是否为数字
-            if r.isNumber{
-                res = 10 * res + Int(r.asciiValue!) - Int(Character("0").asciiValue!)
-                if isPositiveNumber , res >= Int64.max{
-                    return Int(Int64.max)
-                }
-                if !isPositiveNumber , res > Int64.max{
-                    return Int(Int64.min)
-                }
-            }else{
-                break
-            }
-            position += 1
-        }
-        
-        return isPositiveNumber ? Int(res) : -Int(res)
-    }
-}
-
-public extension String{
-    /**
      base64编码字符串生成图片
      
      - returns 图片

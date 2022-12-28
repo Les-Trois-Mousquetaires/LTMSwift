@@ -44,6 +44,8 @@ public class RichModel{
     /// 仅Textfield 是否可以输入
     public var isEnabled: Bool = true
     
+    /// Textfield 键盘
+    public var keyboard: UIKeyboardType = .default
     /// 仅Textfield  有效 且无value值
     public var placeHolder: NSMutableAttributedString = NSMutableAttributedString()
     /// Textfield 文本颜色 仅输入时有效

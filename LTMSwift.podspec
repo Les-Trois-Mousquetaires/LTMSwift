@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.4.2'
+  s.version          = '0.4.3'
   s.summary          = 'Swift 项目常用组件库.'
 
 # This description is used to generate tags and improve search results.
@@ -64,4 +64,9 @@ Pod::Spec.new do |s|
       ss.dependency 'LTMSwift/Extension'
   end
 
+  s.subspec 'TimePicker' do |ss|
+      ss.source_files = 'LTMSwift/Classes/TimePicker{*}.swift'
+      ss.dependency 'SnapKit'
+      ss.dependency 'LTMSwift/Extension'
+  end
 end

@@ -57,3 +57,36 @@ public extension UITextView {
     }
 }
 
+
+fileprivate var kAssociationKeyMaxLength: Int = 0
+extension UITextView: UITextViewDelegate{
+    @IBInspectable var maxLength: Int {
+        set {
+            self.delegate = self
+            objc_setAssociatedObject(self, &kAssociationKeyMaxLength, newValue, .OBJC_ASSOCIATION_RETAIN)
+        }get {
+            if let length = objc_getAssociatedObject(self, &kAssociationKeyMaxLength) as? Int {
+                return length
+            } else {
+                return Int.max
+            }
+        }
+    }
+    
+    public func textViewDidChange(_ textView: UITextView) {
+        checkMaxLength(textField: self)
+    }
+    @objc func checkMaxLength(textField: UITextView) {
+        guard let prospectiveText = self.text,
+              prospectiveText.count > maxLength
+        else {
+            return
+        }
+        
+        let selection = selectedTextRange
+        let indexEndOfText = prospectiveText.index(prospectiveText.startIndex, offsetBy: maxLength)
+        let substring = prospectiveText[..<indexEndOfText]
+        text = String(substring)
+        selectedTextRange = selection
+    }
+}
