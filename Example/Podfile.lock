@@ -6,24 +6,24 @@ PODS:
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
   - HandyJSON (5.0.2)
-  - LTMSwift (0.4.4):
-    - LTMSwift/Extension (= 0.4.4)
-    - LTMSwift/HUDManage (= 0.4.4)
-    - LTMSwift/Network (= 0.4.4)
-    - LTMSwift/PopView (= 0.4.4)
-    - LTMSwift/RichView (= 0.4.4)
-    - LTMSwift/TimePicker (= 0.4.4)
-  - LTMSwift/Extension (0.4.4)
-  - LTMSwift/HUDManage (0.4.4)
-  - LTMSwift/Network (0.4.4):
+  - LTMSwift (0.4.5):
+    - LTMSwift/Extension (= 0.4.5)
+    - LTMSwift/HUDManage (= 0.4.5)
+    - LTMSwift/Network (= 0.4.5)
+    - LTMSwift/PopView (= 0.4.5)
+    - LTMSwift/RichView (= 0.4.5)
+    - LTMSwift/TimePicker (= 0.4.5)
+  - LTMSwift/Extension (0.4.5)
+  - LTMSwift/HUDManage (0.4.5)
+  - LTMSwift/Network (0.4.5):
     - HandyJSON
     - Moya
-  - LTMSwift/PopView (0.4.4)
-  - LTMSwift/RichView (0.4.4):
+  - LTMSwift/PopView (0.4.5)
+  - LTMSwift/RichView (0.4.5):
     - LTMSwift/Extension
     - SnapKit
     - YYText
-  - LTMSwift/TimePicker (0.4.4):
+  - LTMSwift/TimePicker (0.4.5):
     - LTMSwift/Extension
     - SnapKit
   - Moya (15.0.0):
@@ -55,7 +55,7 @@ SPEC CHECKSUMS:
   Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
-  LTMSwift: 1117580d9c81a1cee91dfe0aff8726a8e577ef4b
+  LTMSwift: 920d6f3b8fbeff13528b11a02727f43e53048115
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
   YYText: 5c461d709e24d55a182d1441c41dc639a18a4849

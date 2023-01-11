@@ -37,8 +37,8 @@ open class RichTVCell: UITableViewCell {
                 }else{
                     self.valueTextField.textColor = self.attrModel.textFieldTextColor
                     self.valueTextField.font = self.attrModel.textFieldFont
-                    self.valueTextField.attributedPlaceholder =  self.attrModel.placeHolder
                 }
+                self.valueTextField.attributedPlaceholder =  self.attrModel.placeHolder
                 self.valueRichLabel.text =  ""
             }
             self.dividerView.isHidden = !self.attrModel.isShowLine

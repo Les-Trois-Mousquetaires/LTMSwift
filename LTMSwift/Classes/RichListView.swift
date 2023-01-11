@@ -18,7 +18,7 @@ open class RichListView: UIView{
         self.backgroundColor = .white
         self.addSubview(self.tableview)
         self.tableview.snp.makeConstraints { make in
-            make.edges.equalTo(self)
+            make.edges.equalTo(self).inset(self.edgeInset)
         }
     }
     
@@ -32,7 +32,7 @@ open class RichListView: UIView{
                 tableHeight += item.height
             }
             self.tableview.snp.remakeConstraints { make in
-                make.edges.equalTo(self)
+                make.edges.equalTo(self).inset(self.edgeInset)
                 make.height.equalTo(tableHeight)
             }
             self.tableview.reloadData()
@@ -41,6 +41,15 @@ open class RichListView: UIView{
         }
     }
     
+    private var edgeInset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    /// 列表与视图间距
+    public var edges: UIEdgeInsets {
+        set{
+            self.edgeInset = newValue
+        }get{
+            self.edgeInset
+        }
+    }
     /// 刷新所有数据
     public func reloadData(){
         self.tableview.reloadData()

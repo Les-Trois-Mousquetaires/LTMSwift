@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 public extension String{
     /**
@@ -219,11 +220,36 @@ public extension String{
         let checkList = ["1","0","X","9","8","7","6","5","4","3","2",]
         var sum: Int = 0
         for index in 0 ..< 17{
-           let curentStr = self.subString(from: index, to: index)
+            let curentStr = self.subString(from: index, to: index)
             sum += (Int(curentStr) ?? 0) * calculateList[index]
         }
         let checkIndex = sum % 11
-
+        
         return checkList[checkIndex] == self.subString(from: 17, to: 17)
+    }
+}
+
+
+public extension String{
+    /**
+     计算文本高度
+     
+     - parameter string 文本内容
+     - parameter textFont 文本字体
+     - parameter width 文本宽度
+     */
+    func stringHeight(string: String, textFont: UIFont, width: CGFloat) -> CGFloat{
+        return string.boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: [.font: textFont], context: nil).size.height + 5
+    }
+    
+    /**
+     计算文本高度
+     
+     - parameter string 文本内容
+     - parameter textFont 文本字体
+     - parameter height 文本高度
+     */
+    func stringWidth(string: String, textFont: UIFont, height: CGFloat) -> CGFloat{
+        return string.boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: height), options: .usesLineFragmentOrigin, attributes: [.font: textFont], context: nil).size.height
     }
 }

@@ -85,3 +85,37 @@ public extension UIView{
         return image
     }
 }
+
+public extension UIView {
+    /**
+     绘制虚线
+     
+     - parameter lineColor 虚线颜色
+     - parameter isHorizonal 虚线是否横向
+     - parameter lineWidth 每段虚线宽
+     - parameter lineLength 每段虚线长
+     - parameter lineSpacing 虚线间距
+     */
+    func drawDashLine(lineColor: UIColor, isHorizonal: Bool = true, lineWidth: CGFloat = 1, lineLength: Int = 5, lineSpacing: Int = 5) {
+        self.layoutIfNeeded()
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.bounds = self.bounds
+        shapeLayer.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.strokeColor = lineColor.cgColor
+        shapeLayer.lineWidth = lineWidth
+        shapeLayer.lineJoin = CAShapeLayerLineJoin.round
+        shapeLayer.lineDashPhase = 0 //从哪个位置开始
+        //每一段虚线长度 和 每两段虚线之间的间隔
+        shapeLayer.lineDashPattern = [NSNumber(value: lineLength), NSNumber(value: lineSpacing)]
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: 0, y: 0))
+        if (isHorizonal){
+            path.addLine(to: CGPoint(x: self.layer.bounds.width, y: 0))
+        }else{
+            path.addLine(to: CGPoint(x: 0, y: self.layer.bounds.height))
+        }
+        shapeLayer.path = path
+        self.layer.addSublayer(shapeLayer)
+    }
+}
