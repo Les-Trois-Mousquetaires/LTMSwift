@@ -228,6 +228,7 @@ extension ScanVC: UINavigationControllerDelegate, UIImagePickerControllerDelegat
             let fetures = decteor?.features(in: ciimg)
             if (fetures?.count)! > 0 {
                 if let qrFeture = fetures?.first as? CIQRCodeFeature {
+                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
                     // 停止扫描
                     self.stopRunning()
                     // 返回二维码信息
