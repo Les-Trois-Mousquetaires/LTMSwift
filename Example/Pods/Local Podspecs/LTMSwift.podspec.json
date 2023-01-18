@@ -1,6 +1,6 @@
 {
   "name": "LTMSwift",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "summary": "Swift 项目常用组件库.",
   "description": "LTMSwift is swift often uselib.\nLTMExtension is Swift Classes folder tool\nLTMExtension is tools folder",
   "homepage": "https://github.com/Les-Trois-Mousquetaires/LTMSwift",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/Les-Trois-Mousquetaires/LTMSwift.git",
-    "tag": "0.4.5"
+    "tag": "0.4.6"
   },
   "platforms": {
     "ios": "11.0"
@@ -27,6 +27,15 @@
     {
       "name": "Extension",
       "source_files": "LTMSwift/Classes/{*}+{*}.swift"
+    },
+    {
+      "name": "Gradient",
+      "source_files": "LTMSwift/Classes/Gradient{*}.swift",
+      "dependencies": {
+        "LTMSwift/Extension": [
+
+        ]
+      }
     },
     {
       "name": "HUDManage",
