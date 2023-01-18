@@ -21,7 +21,7 @@ open class GradientView: UIView {
     /// 渐变结束点
     @IBInspectable public var endPoint: CGPoint = CGPointMake(1, 1)
     
-    private var gradientBGLayer: CAGradientLayer? 
+    private var gradientBGLayer: CAGradientLayer?
     
     open override func layoutSubviews() {
         super.layoutSubviews()
