@@ -40,6 +40,18 @@ open class RichTVCell: UITableViewCell {
                 }
                 self.valueTextField.attributedPlaceholder =  self.attrModel.placeHolder
                 self.valueRichLabel.text =  ""
+                if (self.attrModel.maxLength >= 0){
+                    self.valueTextField.maxLength = self.attrModel.maxLength
+                }
+                if (self.attrModel.maxNumber.doubleValue >= 0){
+                    self.valueTextField.maxNumber = self.attrModel.maxNumber
+                }
+                if (self.attrModel.digits >= 0){
+                    self.valueTextField.digits = self.attrModel.digits
+                }
+                if ((self.attrModel.limitBlock) != nil){
+                    self.valueTextField.limitBlock = self.attrModel.limitBlock
+                }
             }
             self.dividerView.isHidden = !self.attrModel.isShowLine
             if self.attrModel.isUpdateLineSpace {

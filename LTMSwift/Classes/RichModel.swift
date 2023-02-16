@@ -41,9 +41,9 @@ public class RichModel{
     /// 分割线颜色 默认灰色
     public var lineColor: UIColor = .gray
     
-    /// 仅Textfield 是否可以输入
+    //MARK: - 仅Textfield 有效
+    /// 是否可以输入
     public var isEnabled: Bool = true
-    
     /// Textfield 键盘
     public var keyboard: UIKeyboardType = .default
     /// 仅Textfield  有效 且无value值
@@ -52,4 +52,12 @@ public class RichModel{
     public var textFieldTextColor: UIColor = .black
     /// Textfield 文本颜色 仅输入时有效
     public var textFieldFont: UIFont = .systemFont(ofSize: 14)
+    /// 最大值
+    public var maxNumber: NSNumber = -1
+    /// 小数位
+    public var digits: Int = -1
+    /// 最大长度
+    public var maxLength: Int = -1
+    /// 限制回调
+    public var limitBlock: ((_ limitReason: Int) -> Void)?
 }
