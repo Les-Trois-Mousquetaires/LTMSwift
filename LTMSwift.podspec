@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.4.9'
+  s.version          = '0.5.0'
   s.summary          = 'Swift 项目常用组件库.'
 
 # This description is used to generate tags and improve search results.
@@ -50,6 +50,12 @@ Pod::Spec.new do |s|
   
   s.subspec 'HUDManage' do |ss|
       ss.source_files = 'LTMSwift/Classes/LTMHUDManage.swift'
+  end
+  
+  s.subspec 'Keyboard' do |ss|
+      ss.source_files = 'LTMSwift/Classes/Keyboard{*}.swift'
+      ss.dependency 'SnapKit'
+      ss.dependency 'LTMSwift/Extension'
   end
   
   s.subspec 'Network' do |ss|

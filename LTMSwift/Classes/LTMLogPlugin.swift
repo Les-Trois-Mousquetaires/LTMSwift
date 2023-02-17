@@ -1,6 +1,6 @@
 //
 //  LTMLogPlugin.swift
-//  FBSnapshotTestCase
+//  LTMSwift
 //
 //  Created by zsn on 2022/12/4.
 //  请求Log输出

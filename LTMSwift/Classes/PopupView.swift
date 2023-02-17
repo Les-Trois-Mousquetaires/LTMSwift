@@ -1,6 +1,6 @@
 //
 //  PopupView.swift
-//  FBSnapshotTestCase
+//  LTMSwift
 //
 //  Created by 柯南 on 2022/11/30.
 //  https://github.com/pujiaxin33/JXPopupView

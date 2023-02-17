@@ -1,6 +1,6 @@
 //
 //  UITableView+Extension.swift
-//  FBSnapshotTestCase
+//  LTMSwift
 //
 //  Created by 柯南 on 2022/11/30.
 //

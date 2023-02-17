@@ -1,6 +1,6 @@
 //
 //  ScanVC.swift
-//  Alamofire
+//  LTMSwift
 //
 //  Created by 柯南 on 2023/1/18.
 // 二维码条形码 扫码识别、图片识别
