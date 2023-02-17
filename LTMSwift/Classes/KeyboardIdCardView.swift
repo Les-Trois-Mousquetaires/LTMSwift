@@ -8,7 +8,7 @@
 import Foundation
 import SnapKit
 
-class KeyboardIdCardView: UIView{
+open class KeyboardIdCardView: UIView{
     
     /**
      键盘点击事件
@@ -16,9 +16,9 @@ class KeyboardIdCardView: UIView{
      - parameter value 输入的身份证号内容
      - parameter isVaild 身份证号是否真实有效
      */
-    var valueBlock: ((_ value: String, _ isVaild: Bool) -> Void)?
+    public var valueBlock: ((_ value: String, _ isVaild: Bool) -> Void)?
     /// 按钮图片
-    var deleteImage: UIImage{
+    public var deleteImage: UIImage{
         set{
             self.deleteBtn.setImage(newValue)
         }get{
@@ -26,7 +26,7 @@ class KeyboardIdCardView: UIView{
         }
     }
     /// 按钮背景图片
-    var deleteBgImage: UIImage{
+    public var deleteBgImage: UIImage{
         set{
             self.deleteBtn.setBackgroundImage(newValue)
         }get{
@@ -34,7 +34,7 @@ class KeyboardIdCardView: UIView{
         }
     }
     /// 删除按钮文字
-    var deleteTitle: String{
+    public var deleteTitle: String{
         set{
             self.deleteBtn.setTitle(newValue)
         }get{
@@ -52,7 +52,7 @@ class KeyboardIdCardView: UIView{
     }
     
     /// 删除按钮文字字体
-    var deleteFont: UIFont{
+    public var deleteFont: UIFont{
         set{
             self.deleteBtn.titleLabel?.font = newValue
         }get{
@@ -68,7 +68,7 @@ class KeyboardIdCardView: UIView{
         configUI()
     }
     
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
