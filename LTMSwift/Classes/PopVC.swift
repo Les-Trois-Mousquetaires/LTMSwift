@@ -31,13 +31,35 @@ public class PopVC: NSObject {
     }
     
     /**
+     视图在View层弹出，能处理键盘弹出，视图上移
+
+     - parameter view 被弹出视图
+     - parameter poptype 弹出方式
+     - parameter space 间距
+     */
+    public class func popView(view: UIView, poptype: PopType, space: CGFloat? = 0) {
+        self.pop(view: view, poptype: poptype, isWindow: false)
+    }
+    
+    /**
+     视图在Window层弹出，不能处理键盘弹出，视图上移
+
+     - parameter view 被弹出视图
+     - parameter poptype 弹出方式
+     - parameter space 间距
+     */
+    public class func popWindow(view: UIView, poptype: PopType, space: CGFloat? = 0) {
+        self.pop(view: view, poptype: poptype, isWindow: true)
+    }
+    
+    /**
      视图弹出
      
      - parameter view 被弹出视图
      - parameter poptype 弹出方式
      - parameter space 间距
      */
-    public class func popView(view: UIView, poptype: PopType, space: CGFloat? = 0) {
+    private class func pop(view: UIView, poptype: PopType, space: CGFloat? = 0, isWindow: Bool) {
         var layout: BaseAnimator.Layout
         var animator: PopupViewAnimator
         switch poptype {
@@ -57,9 +79,14 @@ public class PopVC: NSObject {
             layout = .center(.init())
             animator =  ZoomInOutAnimator(layout: layout)
         }
+        var popupView = PopupView(containerView: UIView(), contentView: view)
+        if (isWindow){
+            popupView = PopupView(containerView: (UIApplication.shared.windows.filter{$0.isKeyWindow}.first)!, contentView: view, animator: animator)
+        }else{
+            let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).last
+            popupView = PopupView(containerView: window!.rootViewController?.view ?? UIView(), contentView: view, animator: animator)
+        }
         
-        let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).last
-        let popupView = PopupView(containerView: window!.rootViewController?.view ?? UIView(), contentView: view, animator: animator)
         //配置交互
 //        popupView.isDismissible = true
 //        popupView.isInteractive = true
