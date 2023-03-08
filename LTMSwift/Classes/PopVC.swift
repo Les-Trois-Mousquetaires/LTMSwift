@@ -79,12 +79,15 @@ public class PopVC: NSObject {
             layout = .center(.init())
             animator =  ZoomInOutAnimator(layout: layout)
         }
-        var popupView = PopupView(containerView: UIView(), contentView: view)
         if (isWindow){
-            popupView = PopupView(containerView: (UIApplication.shared.windows.filter{$0.isKeyWindow}.first)!, contentView: view, animator: animator)
+            let popupView = PopupView(containerView: (UIApplication.shared.windows.filter{$0.isKeyWindow}.first)!, contentView: view, animator: animator)
+            popupView.backgroundView.color = UIColor.init(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.3)
+            popupView.display(animated: true, completion: nil)
         }else{
             let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).last
-            popupView = PopupView(containerView: window!.rootViewController?.view ?? UIView(), contentView: view, animator: animator)
+            let popupView = PopupView(containerView: window!.rootViewController?.view ?? UIView(), contentView: view, animator: animator)
+            popupView.backgroundView.color = UIColor.init(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.3)
+            popupView.display(animated: true, completion: nil)
         }
         
         //配置交互
@@ -97,8 +100,6 @@ public class PopVC: NSObject {
         //- 配置背景
         //        popupView.backgroundView.style = self.backgroundStyle
         //        popupView.backgroundView.blurEffectStyle = self.backgroundEffectStyle
-        popupView.backgroundView.color = UIColor.init(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.3)
-        
-        popupView.display(animated: true, completion: nil)
+     
     }
 }
