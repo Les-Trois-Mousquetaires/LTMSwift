@@ -26,7 +26,36 @@ open class RichTVCell: UITableViewCell {
                 self.valueTextField.isHidden = true
                 self.valueRichLabel.isHidden = false
                 self.valueTextField.text =  ""
+                self.valueRichLabel.textAlignment = self.attrModel.valueTextAlignment
+                if (self.attrModel.titleWidth > 0){
+                    self.titleRichLabel.snp.remakeConstraints { make in
+                        make.top.bottom.equalTo(self.contentView)
+                        make.left.equalTo(self.contentView).offset(10)
+                        make.width.equalTo(self.attrModel.titleWidth)
+                    }
+                }else{
+                    self.titleRichLabel.snp.remakeConstraints { make in
+                        make.top.bottom.equalTo(self.contentView)
+                        make.left.equalTo(self.contentView).offset(10)
+                    }
+                }
+                if (self.attrModel.alignment == .left){
+                    self.valueRichLabel.textAlignment = .left
+                    self.valueRichLabel.snp.remakeConstraints { make in
+                        make.top.bottom.equalTo(self.contentView)
+                        make.left.equalTo(self.titleRichLabel.snp.right)
+                        make.right.equalTo(self.contentView).offset(-10)
+                    }
+                }else{
+                    self.valueRichLabel.textAlignment = .right
+                    self.valueRichLabel.snp.remakeConstraints { make in
+                        make.top.bottom.equalTo(self.contentView)
+                        make.left.greaterThanOrEqualTo(self.titleRichLabel.snp.right).offset(14)
+                        make.right.equalTo(self.contentView).offset(-10)
+                    }
+                }
                 self.valueRichLabel.attributedText =  self.attrModel.value
+
             }else if (self.attrModel.type == .textfield){
                 self.valueTextField.keyboardType = self.attrModel.keyboard
                 self.valueTextField.isHidden = false
@@ -115,20 +144,24 @@ open class RichTVCell: UITableViewCell {
     }
     
     private lazy var titleRichLabel: YYLabel = {
-       let label = YYLabel()
-        label.isUserInteractionEnabled = true
+        let label = YYLabel()
+         label.isUserInteractionEnabled = true
+         label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+         label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         
-        return label
-    }()
+         return label
+     }()
     
     private lazy var valueRichLabel: YYLabel = {
-       let label = YYLabel()
-        label.textAlignment = .right
-        label.isUserInteractionEnabled = true
-        label.numberOfLines = 0
-        
-        return label
-    }()
+        let label = YYLabel()
+         label.textAlignment = .right
+         label.isUserInteractionEnabled = true
+         label.numberOfLines = 0
+         label.setContentHuggingPriority(.defaultLow, for: .horizontal)
+         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+         
+         return label
+     }()
     
     private lazy var valueTextField: UITextField = {
        let textField = UITextField()

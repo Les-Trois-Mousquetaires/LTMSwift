@@ -262,8 +262,8 @@ public extension String{
      - parameter textFont 文本字体
      - parameter width 文本宽度
      */
-    func stringHeight(string: String, textFont: UIFont, width: CGFloat) -> CGFloat{
-        return string.boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: [.font: textFont], context: nil).size.height + 5
+    func stringHeight(textFont: UIFont, width: CGFloat) -> CGFloat{
+        return self.boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: [.font: textFont], context: nil).size.height + 5
     }
     
     /**
@@ -273,7 +273,7 @@ public extension String{
      - parameter textFont 文本字体
      - parameter height 文本高度
      */
-    func stringWidth(string: String, textFont: UIFont, height: CGFloat) -> CGFloat{
-        return string.boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: height), options: .usesLineFragmentOrigin, attributes: [.font: textFont], context: nil).size.height
+    func stringWidth(textFont: UIFont, height: CGFloat) -> CGFloat{
+        return self.boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: height), options: .usesLineFragmentOrigin, attributes: [.font: textFont], context: nil).size.width + 5
     }
 }

@@ -41,6 +41,14 @@ public class RichModel{
     /// 分割线颜色 默认灰色
     public var lineColor: UIColor = .gray
     
+    //MARK: - 仅richLabel 有效
+    /// 标题宽度
+    public var titleWidth: CGFloat = 0
+    /// 标题和内容内容对齐方式
+    public var alignment: NSTextAlignment = .right
+    /// 内容换行对齐方式
+    public var valueTextAlignment: NSTextAlignment = .left
+    
     //MARK: - 仅Textfield 有效
     /// 是否可以输入
     public var isEnabled: Bool = true
