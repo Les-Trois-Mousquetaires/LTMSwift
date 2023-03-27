@@ -15,6 +15,24 @@ public extension Date{
      
      - returns: 转换后时间字符串及时间戳元组
      */
+    func timestamp(dateFormat: String!) -> (String, String){
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = dateFormat
+        let dateStr = dateFormatter.string(from: self)
+        let timeInterval: TimeInterval = self.timeIntervalSince1970
+        let timeStamp = CLongLong(round(timeInterval*1000))
+        
+        return ("\(dateStr)","\(timeStamp)")
+    }
+    
+    /**
+     时间格式转换及转秒级时间戳
+     
+     - parameter dateFormat 时间展示格式
+     
+     - returns: 转换后时间字符串及时间戳元组
+     */
+    @available(*, deprecated, message:"Use timestamp(dateFormat: String!).")
     func secondTimestamp(dateFormat: String!) -> (String, String){
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
@@ -32,6 +50,7 @@ public extension Date{
      
      - returns: 转换后时间字符串及时间戳元组
      */
+    @available(*, deprecated, message:"Use timestamp(dateFormat: String!).")
     func msecondTimestamp(dateFormat: String!) -> (String, String){
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
@@ -366,12 +385,32 @@ public extension String{
     /**
      字符串转时间
      
-     - returns 时间是否在当前时间前后两百年范围内
+     - returns 时间
      */
     func date(format: String = "yyyy-MM-dd") -> Date{
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format
         
         return dateFormatter.date(from:self) ?? Date()
+    }
+    
+    /**
+     时间戳转时间
+     
+     - returns 时间
+     */
+    func timeStampToDate() -> Date{
+        if self.isEmpty {
+            return Date()
+        }
+        
+        let interval: TimeInterval = TimeInterval.init(self)!
+        if (self.count == 13 && interval > 0){
+            return Date(timeIntervalSince1970: interval/1000)
+        }else if (self.count == 10 && interval > 0){
+            return Date(timeIntervalSince1970: interval)
+        }
+        
+        return Date()
     }
 }

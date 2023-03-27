@@ -97,6 +97,7 @@ public extension String{
      
      - parameter dateFormat 时间格式
      */
+    @available(*, deprecated, message:"Use Date+Extension timeStampToDate().")
     func secondTimeStampToDate(dateFormat: String!) -> String{
         if self.isEmpty {
             return ""
@@ -118,6 +119,7 @@ public extension String{
      
      - parameter dateFormat 时间格式
      */
+    @available(*, deprecated, message:"Use Date+Extension timeStampToDate().")
     func millisecondTimeStampToDate(dateFormat: String!) -> String{
         if self.isEmpty {
             return ""
@@ -140,7 +142,7 @@ public extension String{
      
      - parameter dateFormat 时间格式
      */
-    
+    @available(*, deprecated, message:"Use Date+Extension timestamp().")
     func dateStringToMillisecondTimeStamp(dateFormat: String!) -> String {
         
         let dateFormatter = DateFormatter()
@@ -157,6 +159,7 @@ public extension String{
      
      - parameter dateFormat 时间格式
      */
+    @available(*, deprecated, message:"Use Date+Extension timestamp().")
     func dateStringToSecondTimeStamp(dateFormat: String!) -> String {
         
         let dateFormatter = DateFormatter()
