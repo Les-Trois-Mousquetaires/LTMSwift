@@ -30,13 +30,13 @@ open class RichTVCell: UITableViewCell {
                 if (self.attrModel.titleWidth > 0){
                     self.titleRichLabel.snp.remakeConstraints { make in
                         make.top.bottom.equalTo(self.contentView)
-                        make.left.equalTo(self.contentView).offset(10)
+                        make.left.equalTo(self.contentView).offset(self.attrModel.space)
                         make.width.equalTo(self.attrModel.titleWidth)
                     }
                 }else{
                     self.titleRichLabel.snp.remakeConstraints { make in
                         make.top.bottom.equalTo(self.contentView)
-                        make.left.equalTo(self.contentView).offset(10)
+                        make.left.equalTo(self.contentView).offset(self.attrModel.space)
                     }
                 }
                 if (self.attrModel.alignment == .left){
@@ -44,14 +44,14 @@ open class RichTVCell: UITableViewCell {
                     self.valueRichLabel.snp.remakeConstraints { make in
                         make.top.bottom.equalTo(self.contentView)
                         make.left.equalTo(self.titleRichLabel.snp.right)
-                        make.right.equalTo(self.contentView).offset(-10)
+                        make.right.equalTo(self.contentView).offset(-self.attrModel.space)
                     }
                 }else{
                     self.valueRichLabel.textAlignment = .right
                     self.valueRichLabel.snp.remakeConstraints { make in
                         make.top.bottom.equalTo(self.contentView)
                         make.left.greaterThanOrEqualTo(self.titleRichLabel.snp.right).offset(14)
-                        make.right.equalTo(self.contentView).offset(-10)
+                        make.right.equalTo(self.contentView).offset(-self.attrModel.space)
                     }
                 }
                 self.valueRichLabel.attributedText =  self.attrModel.value
