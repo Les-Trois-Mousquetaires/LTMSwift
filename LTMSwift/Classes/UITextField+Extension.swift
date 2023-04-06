@@ -32,7 +32,7 @@ public extension UITextField{
      输入框限制原因
      
      - parameter limitReason 触发限制的原因
-      1: 0开头 2:小数点开头 3:已输入小数点，再次输入小数点 4:小数位数超出限制 5:超过最大值限制，6:最大长度
+    2:小数点开头 3:已输入小数点，再次输入小数点 4:小数位数超出限制 5:超过最大值限制，6:最大长度
      */
     @IBInspectable var limitBlock: ((_ limitReason: Int) -> Void)? {
         set {
@@ -96,16 +96,7 @@ public extension UITextField{
         else {
             return
         }
-        /// 0开头，或者空格不允许
-        if (prospectiveText.hasPrefix("0")){
-            self.text = ""
-            guard let block = self.limitBlock else {
-                return
-            }
-            block(1)
-            return
-        }
-        
+        /// 小数点开头不允许
         if (prospectiveText.hasPrefix(".")){
             self.text = ""
             guard let block = self.limitBlock else {
