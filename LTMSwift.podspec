@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.5.8'
+  s.version          = '0.5.9'
   s.summary          = 'Swift 项目常用组件库.'
 
 # This description is used to generate tags and improve search results.

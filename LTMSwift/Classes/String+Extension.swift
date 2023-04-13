@@ -196,6 +196,32 @@ public extension String{
         
         return image
     }
+    
+    /**
+     生成二维码图片
+     
+     - parameter bgColor 二维码背景颜色
+     - parameter qrColor 二维码线条颜色
+     - returns 图片
+     */
+    func createQRImage(_ bgColor: UIColor = .white, _ qrColor: UIColor = .black) -> UIImage?{
+        let data = self.data(using: .utf8, allowLossyConversion: false)
+        // 创建一个二维码的滤镜
+        let qrFilter = CIFilter(name: "CIQRCodeGenerator")!
+        qrFilter.setDefaults()
+        qrFilter.setValue(data, forKey: "inputMessage")
+        qrFilter.setValue("H", forKey: "inputCorrectionLevel")
+        let qrCIImage = qrFilter.outputImage
+        
+        // 创建一个颜色滤镜
+        let colorFilter = CIFilter(name: "CIFalseColor")!
+        colorFilter.setDefaults()
+        colorFilter.setValue(qrCIImage, forKey: "inputImage")
+        colorFilter.setValue(CIColor(color: qrColor), forKey: "inputColor0")
+        colorFilter.setValue(CIColor(color: bgColor), forKey: "inputColor1")
+        
+        return UIImage(ciImage: colorFilter.outputImage!.transformed(by: CGAffineTransform(scaleX: 10, y: 10)))
+    }
 }
 
 //MARK: - 手机号字符串
@@ -256,7 +282,7 @@ public extension String{
     }
 }
 
-
+//MARK: - 字符串计算高度、宽度
 public extension String{
     /**
      计算文本高度

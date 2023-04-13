@@ -6,39 +6,39 @@ PODS:
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
   - HandyJSON (5.0.2)
-  - LTMSwift (0.5.8):
-    - LTMSwift/CoreData (= 0.5.8)
-    - LTMSwift/Extension (= 0.5.8)
-    - LTMSwift/Gradient (= 0.5.8)
-    - LTMSwift/HUDManage (= 0.5.8)
-    - LTMSwift/Keyboard (= 0.5.8)
-    - LTMSwift/Margin (= 0.5.8)
-    - LTMSwift/Network (= 0.5.8)
-    - LTMSwift/PopView (= 0.5.8)
-    - LTMSwift/RichView (= 0.5.8)
-    - LTMSwift/Scan (= 0.5.8)
-    - LTMSwift/TimePicker (= 0.5.8)
-  - LTMSwift/CoreData (0.5.8)
-  - LTMSwift/Extension (0.5.8)
-  - LTMSwift/Gradient (0.5.8):
+  - LTMSwift (0.5.9):
+    - LTMSwift/CoreData (= 0.5.9)
+    - LTMSwift/Extension (= 0.5.9)
+    - LTMSwift/Gradient (= 0.5.9)
+    - LTMSwift/HUDManage (= 0.5.9)
+    - LTMSwift/Keyboard (= 0.5.9)
+    - LTMSwift/Margin (= 0.5.9)
+    - LTMSwift/Network (= 0.5.9)
+    - LTMSwift/PopView (= 0.5.9)
+    - LTMSwift/RichView (= 0.5.9)
+    - LTMSwift/Scan (= 0.5.9)
+    - LTMSwift/TimePicker (= 0.5.9)
+  - LTMSwift/CoreData (0.5.9)
+  - LTMSwift/Extension (0.5.9)
+  - LTMSwift/Gradient (0.5.9):
     - LTMSwift/Extension
-  - LTMSwift/HUDManage (0.5.8)
-  - LTMSwift/Keyboard (0.5.8):
+  - LTMSwift/HUDManage (0.5.9)
+  - LTMSwift/Keyboard (0.5.9):
     - LTMSwift/Extension
     - SnapKit
-  - LTMSwift/Margin (0.5.8)
-  - LTMSwift/Network (0.5.8):
+  - LTMSwift/Margin (0.5.9)
+  - LTMSwift/Network (0.5.9):
     - HandyJSON
     - Moya
-  - LTMSwift/PopView (0.5.8)
-  - LTMSwift/RichView (0.5.8):
+  - LTMSwift/PopView (0.5.9)
+  - LTMSwift/RichView (0.5.9):
     - LTMSwift/Extension
     - SnapKit
     - YYText
-  - LTMSwift/Scan (0.5.8):
+  - LTMSwift/Scan (0.5.9):
     - LTMSwift/Extension
     - SnapKit
-  - LTMSwift/TimePicker (0.5.8):
+  - LTMSwift/TimePicker (0.5.9):
     - LTMSwift/Extension
     - SnapKit
   - Moya (15.0.0):
@@ -70,7 +70,7 @@ SPEC CHECKSUMS:
   Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
-  LTMSwift: 0e8673add1cef7ac6aa60a4fd9ee839de2c022fd
+  LTMSwift: 977d9936da6d5246276cd251bebec45ebdb1ce28
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
   YYText: 5c461d709e24d55a182d1441c41dc639a18a4849
