@@ -263,6 +263,39 @@ public extension Date {
         }
     }
     
+    /// 本月第一天
+    var monthDay: Date {
+        set{
+            
+        }get{
+            let calendar = Calendar.current
+            var components = DateComponents()
+            components.year = self.year
+            components.month = self.month
+            components.day = 1
+            components.hour = 23
+            components.minute = 59
+            components.second = 59
+            
+            return calendar.date(from: components)!
+        }
+    }
+    
+    /// 本月最后一天
+    var monthLastDay: Date {
+        set{
+            
+        }get{
+            let calendar = Calendar.current
+            var components = DateComponents()
+            components.year = self.year
+            components.month = self.month
+            components.day = self.days
+            
+            return calendar.date(from: components)!
+        }
+    }
+    
     /// 当月天数
     var days: Int{
         set{

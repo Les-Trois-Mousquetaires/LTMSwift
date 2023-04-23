@@ -256,6 +256,29 @@ public extension String{
         
         return "\(start) \(center) \(end)"
     }
+    
+    /// 隐藏身份证中间内容
+    func idCard3_4() -> String{
+        if (self.count < 7){
+            return self
+        }
+        
+        return self.subString(to: 3) + "********" + self.subString(from: self.count - 4)
+    }
+    
+    /// 隐藏银行卡中间内容
+    func bankCard4_4() -> String{
+        if (self.count < 9){
+            return self
+        }
+        
+        return self.subString(to: 4) + " **** **** " + self.subString(from: self.count - 4)
+    }
+    
+    /// 计算Range
+    func range(of: String) -> NSRange{
+        return (self as NSString).range(of: of)
+    }
 }
 
 //MARK: - 字符串正则
