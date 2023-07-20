@@ -222,6 +222,22 @@ public extension String{
         
         return UIImage(ciImage: colorFilter.outputImage!.transformed(by: CGAffineTransform(scaleX: 10, y: 10)))
     }
+    
+    /**
+     字符串汉字转拼音
+     */
+    func toPinYin() ->String{
+        //转化为可变字符串
+        let mString = NSMutableString(string: self)
+        //转化为带声调的拼音
+        CFStringTransform(mString, nil, kCFStringTransformToLatin, false)
+        //转化为不带声调
+        CFStringTransform(mString, nil, kCFStringTransformStripDiacritics, false)
+        //转化为不可变字符串
+        let string = NSString(string: mString)
+        //去除字符串之间的空格
+        return string.replacingOccurrences(of: " ", with: "")
+    }
 }
 
 //MARK: - 手机号字符串
