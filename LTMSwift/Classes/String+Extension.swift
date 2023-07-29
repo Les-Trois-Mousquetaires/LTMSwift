@@ -8,28 +8,81 @@
 import Foundation
 import UIKit
 
+//MARK: - NSString
+public extension String{
+    /// 字符串布尔值
+    var boolValue: Bool{
+        return NSString(string: self).boolValue
+    }
+    
+    /// 字符串Int32值
+    var intValue: Int32{
+        return NSString(string: self).intValue
+    }
+    
+    /// 字符串Int值
+    var integerValue: Int{
+        return NSString(string: self).integerValue
+    }
+    
+    /// 字符串double值
+    var doubleValue: Double{
+        return NSString(string: self).doubleValue
+    }
+    
+    /// 字符串float值
+    var floatValue: Float{
+        return NSString(string: self).floatValue
+    }
+    
+    /// 计算自身Range
+    var selfRange: NSRange{
+        return self.range(of: self)
+    }
+    
+    /// 计算Range
+    func range(of: String) -> NSRange{
+        return (self as NSString).range(of: of)
+    }
+}
+
+public extension String {
+    /// 字符串前加空格
+    var insertNullAtFirst: String {
+        return " " + self
+    }
+    
+    /// 字符串删除空格
+    var replacingSpace: String {
+        return self.replacingOccurrences(of: " ", with: "")
+    }
+}
+
+//MARK: - 字符串操作
 public extension String{
     //从0索引处开始查找是否包含指定的字符串，返回Int类型的索引
     //返回第一次出现的指定子字符串在此字符串中的索引
-    func findFirst(_ sub:String)->Int {
+    func findFirst(_ sub:String) -> Int {
         var pos = -1
         if let range = range(of:sub, options: .literal ) {
             if !range.isEmpty {
                 pos = self.distance(from:startIndex, to:range.lowerBound)
             }
         }
+        
         return pos
     }
     
     //从0索引处开始查找是否包含指定的字符串，返回Int类型的索引
     //返回最后出现的指定子字符串在此字符串中的索引
-    func findLast(_ sub:String)->Int {
+    func findLast(_ sub:String) -> Int {
         var pos = -1
         if let range = range(of:sub, options: .backwards ) {
             if !range.isEmpty {
                 pos = self.distance(from:startIndex, to:range.lowerBound)
             }
         }
+        
         return pos
     }
     
@@ -62,24 +115,6 @@ public extension String{
     }
     
     /**
-     字符串前加空格
-     */
-    func appendFirstNullString() -> String{
-        let mutabString: NSMutableString = NSMutableString()
-        
-        return mutabString.appending(" \(self)")
-    }
-    
-    /**
-     字符串删除空格
-     */
-    func deleteNullString() -> String{
-        let mutabString: NSMutableString = NSMutableString.init(string: self.replacingOccurrences(of: " ", with: ""))
-        
-        return mutabString as String
-    }
-    
-    /**
      修改某段文字字体和颜色
      */
     func changeFontColor(subString: String, font: UIFont, textColor: UIColor)-> NSMutableAttributedString {
@@ -91,94 +126,89 @@ public extension String{
     }
 }
 
+//MARK: - 字符串工具
 public extension String{
-    /**
-     秒级时间戳转时间
-     
-     - parameter dateFormat 时间格式
-     */
-    @available(*, deprecated, message:"Use Date+Extension timeStampToDate().")
-    func secondTimeStampToDate(dateFormat: String!) -> String{
-        if self.isEmpty {
-            return ""
+    /// 手机号 3*4格式
+    var phoneNum3_4: String {
+        if self.count < 8 {
+            return self
+        }
+        let start = self.subString(to: 3)
+        let end = self.subString(from: self.count - 4)
+        
+        return "\(start)****\(end)"
+    }
+    
+    /// 手机号转3 4 4空格格式
+    var phoneNum344: String {
+        if self.count != 11 {
+            return self
+        }
+        let start = self.subString(to: 3)
+        let center = self.subString(from: 3, to: 6)
+        let end = self.subString(from: self.count - 4)
+        
+        return "\(start) \(center) \(end)"
+    }
+    
+    /// 隐藏身份证中间内容
+    var idCard3_4: String {
+        if (self.count < 7){
+            return self
         }
         
-        let interval: TimeInterval = TimeInterval.init(self)!
-        if interval > 0  {
-            let date = Date(timeIntervalSince1970: interval)
-            let dateformatter = DateFormatter()
-            dateformatter.dateFormat = dateFormat
-            return dateformatter.string(from: date)
-        }else {
-            return " "
+        return self.subString(to: 3) + "********" + self.subString(from: self.count - 4)
+    }
+    
+    /// 身份证号转6 8 4空格格式
+    var idCard684: String {
+        if self.count != 18 {
+            return self
+        }
+        let start = self.subString(to: 6)
+        let center = self.subString(from: 6, to: 14)
+        let end = self.subString(from: self.count - 4)
+        
+        return "\(start) \(center) \(end)"
+    }
+    
+    /// 隐藏银行卡中间内容
+    var bankCard4_4: String {
+        if (self.count < 9){
+            return self
+        }
+        
+        return self.subString(to: 4) + " **** **** " + self.subString(from: self.count - 4)
+    }
+    
+    /// 卡号转4位+空格格式
+    var bankCard444: String {
+        if (self.count > 0){
+            var cardNo = self.replacingOccurrences(of: " ", with: "")
+            if cardNo.count > 4 {
+                let index = cardNo.index(cardNo.startIndex, offsetBy: 4)
+                cardNo.insert(" ", at: index)
+            }
+            if cardNo.count > 9 {
+                let index = cardNo.index(cardNo.startIndex, offsetBy: 9)
+                cardNo.insert(" ", at: index)
+            }
+            if cardNo.count > 14 {
+                let index = cardNo.index(cardNo.startIndex, offsetBy: 14)
+                cardNo.insert(" ", at: index)
+            }
+            if cardNo.count > 19 {
+                let index = cardNo.index(cardNo.startIndex, offsetBy: 19)
+                cardNo.insert(" ", at: index)
+            }
+            return cardNo
+        } else {
+            return self
         }
     }
     
-    /**
-     毫秒级时间戳转时间
-     
-     - parameter dateFormat 时间格式
-     */
-    @available(*, deprecated, message:"Use Date+Extension timeStampToDate().")
-    func millisecondTimeStampToDate(dateFormat: String!) -> String{
-        if self.isEmpty {
-            return ""
-        }
-        
-        let interval: TimeInterval = TimeInterval.init(self)!
-        if interval > 0  {
-            let date = Date(timeIntervalSince1970: interval/1000)
-            let dateformatter = DateFormatter()
-            dateformatter.dateFormat = dateFormat
-            
-            return dateformatter.string(from: date)
-        }else {
-            return " "
-        }
-    }
-    
-    /**
-     时间转毫秒级时间戳
-     
-     - parameter dateFormat 时间格式
-     */
-    @available(*, deprecated, message:"Use Date+Extension timestamp().")
-    func dateStringToMillisecondTimeStamp(dateFormat: String!) -> String {
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = dateFormat
-        let date = dateFormatter.date(from: self)
-        let dateStamp:TimeInterval = date!.timeIntervalSince1970
-        let dateNum:Int = Int(dateStamp)*1000
-        
-        return String(dateNum)
-    }
-    
-    /**
-     时间转秒级时间戳
-     
-     - parameter dateFormat 时间格式
-     */
-    @available(*, deprecated, message:"Use Date+Extension timestamp().")
-    func dateStringToSecondTimeStamp(dateFormat: String!) -> String {
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = dateFormat
-        let date = dateFormatter.date(from: self)
-        let dateStamp:TimeInterval = date!.timeIntervalSince1970
-        let dateNum:Int = Int(dateStamp)
-        
-        return String(dateNum)
-    }
-}
-
-public extension String{
-    /**
-     base64编码字符串生成图片
-     
-     - returns 图片
-     */
-    func base64ToImage() -> UIImage?{
+    /// base64编码字符串生成图片
+    var base64Image: UIImage? {
         let base64String = self.replacingOccurrences(of: "data:image/jpg;base64,", with: "")
         //转换尝试判断，有可能返回的数据丢失"=="，如果丢失，swift校验不通过
         var imageData = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters)
@@ -195,6 +225,37 @@ public extension String{
         }
         
         return image
+    }
+    
+    /// 字符串汉字转拼音
+    var pinYin: String {
+        //转化为可变字符串
+        let mString = NSMutableString(string: self)
+        //转化为带声调的拼音
+        CFStringTransform(mString, nil, kCFStringTransformToLatin, false)
+        //转化为不带声调
+        CFStringTransform(mString, nil, kCFStringTransformStripDiacritics, false)
+        //转化为不可变字符串
+        let string = NSString(string: mString)
+        //去除字符串之间的空格
+        return string.replacingOccurrences(of: " ", with: "")
+    }
+    
+    /// 身份证真伪校验
+    var idCardNoCheck: Bool{
+        if self.replacingOccurrences(of: " ", with: "").count != 18 {
+            return false
+        }
+        let calculateList = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2, 0]
+        let checkList = ["1","0","X","9","8","7","6","5","4","3","2",]
+        var sum: Int = 0
+        for index in 0 ..< 17{
+            let curentStr = self.subString(from: index, to: index)
+            sum += (Int(curentStr) ?? 0) * calculateList[index]
+        }
+        let checkIndex = sum % 11
+        
+        return checkList[checkIndex] == self.subString(from: 17, to: 17)
     }
     
     /**
@@ -221,103 +282,6 @@ public extension String{
         colorFilter.setValue(CIColor(color: bgColor), forKey: "inputColor1")
         
         return UIImage(ciImage: colorFilter.outputImage!.transformed(by: CGAffineTransform(scaleX: 10, y: 10)))
-    }
-    
-    /**
-     字符串汉字转拼音
-     */
-    func toPinYin() ->String{
-        //转化为可变字符串
-        let mString = NSMutableString(string: self)
-        //转化为带声调的拼音
-        CFStringTransform(mString, nil, kCFStringTransformToLatin, false)
-        //转化为不带声调
-        CFStringTransform(mString, nil, kCFStringTransformStripDiacritics, false)
-        //转化为不可变字符串
-        let string = NSString(string: mString)
-        //去除字符串之间的空格
-        return string.replacingOccurrences(of: " ", with: "")
-    }
-}
-
-//MARK: - 手机号字符串
-public extension String{
-    /**
-     手机号转3*4格式
-     
-     - returns: 处理后的字符串
-     */
-    func phoneNum3_4() -> String {
-        if self.count < 8 {
-            return self
-        }
-        let start = self.subString(to: 3)
-        let end = self.subString(from: self.count - 4)
-        
-        return "\(start)****\(end)"
-    }
-    
-    /**
-     手机号转3 4 4空格格式
-     
-     - returns: 处理后的字符串
-     */
-    func phoneNum344() -> String {
-        if self.count != 11 {
-            return self
-        }
-        let start = self.subString(to: 3)
-        let center = self.subString(from: 3, to: 6)
-        let end = self.subString(from: self.count - 4)
-        
-        return "\(start) \(center) \(end)"
-    }
-    
-    /// 隐藏身份证中间内容
-    func idCard3_4() -> String{
-        if (self.count < 7){
-            return self
-        }
-        
-        return self.subString(to: 3) + "********" + self.subString(from: self.count - 4)
-    }
-    
-    /// 隐藏银行卡中间内容
-    func bankCard4_4() -> String{
-        if (self.count < 9){
-            return self
-        }
-        
-        return self.subString(to: 4) + " **** **** " + self.subString(from: self.count - 4)
-    }
-    
-    /// 计算Range
-    func range(of: String) -> NSRange{
-        return (self as NSString).range(of: of)
-    }
-}
-
-//MARK: - 字符串正则
-public extension String{
-    /**
-     身份证真伪校验
-     
-     - returns 真假
-     */
-    func idCardNoCheck() -> Bool{
-        if self.replacingOccurrences(of: " ", with: "").count != 18 {
-            return false
-        }
-        let calculateList = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2, 0]
-        let checkList = ["1","0","X","9","8","7","6","5","4","3","2",]
-        var sum: Int = 0
-        for index in 0 ..< 17{
-            let curentStr = self.subString(from: index, to: index)
-            sum += (Int(curentStr) ?? 0) * calculateList[index]
-        }
-        let checkIndex = sum % 11
-        
-        return checkList[checkIndex] == self.subString(from: 17, to: 17)
     }
 }
 

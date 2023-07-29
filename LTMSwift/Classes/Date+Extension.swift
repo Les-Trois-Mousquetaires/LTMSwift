@@ -9,59 +9,6 @@ import Foundation
 
 public extension Date{
     /**
-     时间格式转换及转秒级时间戳
-     
-     - parameter dateFormat 时间展示格式
-     
-     - returns: 转换后时间字符串及时间戳元组
-     */
-    func timestamp(dateFormat: String!) -> (String, String){
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = dateFormat
-        let dateStr = dateFormatter.string(from: self)
-        let timeInterval: TimeInterval = self.timeIntervalSince1970
-        let timeStamp = CLongLong(round(timeInterval*1000))
-        
-        return ("\(dateStr)","\(timeStamp)")
-    }
-    
-    /**
-     时间格式转换及转秒级时间戳
-     
-     - parameter dateFormat 时间展示格式
-     
-     - returns: 转换后时间字符串及时间戳元组
-     */
-    @available(*, deprecated, message:"Use timestamp(dateFormat: String!).")
-    func secondTimestamp(dateFormat: String!) -> (String, String){
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = dateFormat
-        let dateStr = dateFormatter.string(from: self)
-        let timeInterval: TimeInterval = self.timeIntervalSince1970
-        let timeStamp = CLongLong(round(timeInterval))
-        
-        return ("\(dateStr)","\(timeStamp)")
-    }
-    
-    /**
-     时间格式转换及转毫秒级时间戳
-     
-     - parameter dateFormat 时间展示格式
-     
-     - returns: 转换后时间字符串及时间戳元组
-     */
-    @available(*, deprecated, message:"Use timestamp(dateFormat: String!).")
-    func msecondTimestamp(dateFormat: String!) -> (String, String){
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = dateFormat
-        let dateStr = dateFormatter.string(from: self)
-        let timeInterval: TimeInterval = self.timeIntervalSince1970
-        let timeStamp = CLongLong(round(timeInterval*1000))
-        
-        return ("\(dateStr)","\(timeStamp)")
-    }
-    
-    /**
      时间转字符串
      
      - parameter format 转换时间格式
@@ -125,7 +72,11 @@ public extension Date{
      - returns 前进后的时间
      */
     func addingDays(_ days: Int) -> Date{
-        return self.addingHours(24 * days)
+        let calendar: Calendar = Calendar.current
+        var components: DateComponents = DateComponents()
+        components.day = days
+        
+        return calendar.date(byAdding: components, to: self) ?? Date()
     }
     
     /**
@@ -135,7 +86,11 @@ public extension Date{
      - returns 前进后的时间
      */
     func addingHours(_ hours: Int) -> Date{
-        return self.addingMinutes(60 * hours)
+        let calendar: Calendar = Calendar.current
+        var components: DateComponents = DateComponents()
+        components.hour = hours
+        
+        return calendar.date(byAdding: components, to: self) ?? Date()
     }
     
     /**
@@ -145,236 +100,114 @@ public extension Date{
      - returns 前进后的时间
      */
     func addingMinutes(_ minutes: Int) -> Date{
-        return self.addingSeconds(60 * minutes)
+        let calendar: Calendar = Calendar.current
+        var components: DateComponents = DateComponents()
+        components.minute = minutes
+        
+        return calendar.date(byAdding: components, to: self) ?? Date()
     }
     
     /**
-     时间前进几天
+     时间前进几秒
      
-     - parameter days  天数
+     - parameter seconds  秒数
      - returns 前进后的时间
      */
     func addingSeconds(_ seconds: Int) -> Date{
-        let timeInterval: Double = self.timeIntervalSinceReferenceDate + Double(seconds)
+        let calendar: Calendar = Calendar.current
+        var components: DateComponents = DateComponents()
+        components.second = seconds
         
-        return Date.init(timeIntervalSinceReferenceDate: timeInterval)
+        return calendar.date(byAdding: components, to: self) ?? Date()
     }
 }
 
 //MARK: - 时间展示
 public extension Date {
+    
+    /// 毫秒级时间戳
+    var timeStamp: TimeInterval {
+        return self.timeIntervalSince1970 * 1000
+    }
+    
     /// 年
     var year: Int {
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.year, from: self)
-        }
+        return Calendar.current.component(Calendar.Component.year, from: self)
     }
     
     /// 月
     var month: Int {
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.month, from: self)
-        }
+        return Calendar.current.component(Calendar.Component.month, from: self)
     }
     
     /// 日
     var day: Int {
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.day, from: self)
-        }
+        return Calendar.current.component(Calendar.Component.day, from: self)
     }
     
     /// 时
     var hour: Int {
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.hour, from: self)
-        }
+        return Calendar.current.component(Calendar.Component.hour, from: self)
     }
     
     /// 分
     var minute: Int {
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.minute, from: self)
-        }
+        return Calendar.current.component(Calendar.Component.minute, from: self)
     }
     
     /// 秒
     var second: Int {
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.second, from: self)
-        }
+        return Calendar.current.component(Calendar.Component.second, from: self)
     }
     
     /// 纳秒
     var nanosecond: Int {
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.nanosecond, from: self)
-        }
-    }
-    
-    /// 当天开始时间  0:0:0:0
-    var startDate: Date {
-        set{
-            
-        }get{
-            let calendar = Calendar.current
-            var components = DateComponents()
-            components.year = self.year
-            components.month = self.month
-            components.day = self.day
-            components.hour = 0
-            components.minute = 0
-            components.second = 0
-            components.nanosecond = 0
-            
-            return calendar.date(from: components)!
-        }
-    }
-    
-    /// 当天结束时间 23:59:59秒
-    var endDate: Date {
-        set{
-            
-        }get{
-            let calendar = Calendar.current
-            var components = DateComponents()
-            components.year = self.year
-            components.month = self.month
-            components.day = self.day
-            components.hour = 23
-            components.minute = 59
-            components.second = 59
-            
-            return calendar.date(from: components)!
-        }
-    }
-    
-    /// 本月第一天
-    var monthDay: Date {
-        set{
-            
-        }get{
-            let calendar = Calendar.current
-            var components = DateComponents()
-            components.year = self.year
-            components.month = self.month
-            components.day = 1
-            components.hour = 23
-            components.minute = 59
-            components.second = 59
-            
-            return calendar.date(from: components)!
-        }
-    }
-    
-    /// 本月最后一天
-    var monthLastDay: Date {
-        set{
-            
-        }get{
-            let calendar = Calendar.current
-            var components = DateComponents()
-            components.year = self.year
-            components.month = self.month
-            components.day = self.days
-            
-            return calendar.date(from: components)!
-        }
+        return Calendar.current.component(Calendar.Component.nanosecond, from: self)
     }
     
     /// 当月天数
     var days: Int{
-        set{
-            
-        }get{
-            Calendar.current.range(of: Calendar.Component.day, in: Calendar.Component.month, for: self)!.count
-        }
+       return Calendar.current.range(of: Calendar.Component.day, in: Calendar.Component.month, for: self)!.count
     }
     
     /// 星期几
     var weekday: Int{
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.weekday, from: self)
-        }
+       return Calendar.current.component(Calendar.Component.weekday, from: self)
     }
     
     /// 工作日的顺序
     var weekdayOrdinal: Int{
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.weekdayOrdinal, from: self)
-        }
+       return Calendar.current.component(Calendar.Component.weekdayOrdinal, from: self)
     }
     
     /// 月中的第几周
     var weekOfMonth: Int{
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.weekOfMonth, from: self)
-        }
+       return Calendar.current.component(Calendar.Component.weekOfMonth, from: self)
     }
     
     /// 年中的第几周
     var weekOfYear: Int{
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.weekOfYear, from: self)
-        }
+      return Calendar.current.component(Calendar.Component.weekOfYear, from: self)
     }
     
     /// WeekOfYear component (1~53)
     var yearForWeekOfYear: Int{
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.yearForWeekOfYear, from: self)
-        }
+        return Calendar.current.component(Calendar.Component.yearForWeekOfYear, from: self)
     }
     
     /// 季度
     var quarter: Int{
-        set{
-            
-        }get{
-            Calendar.current.component(Calendar.Component.quarter, from: self)
-        }
+        return Calendar.current.component(Calendar.Component.quarter, from: self)
     }
     
     /// 闰年
     var isLeapYear: Bool{
-        set{
-            
-        }get{
-            (self.year % 400 == 0) || (self.year % 100 != 0 && self.year % 4 == 0)
-        }
+        return (self.year % 400 == 0) || (self.year % 100 != 0 && self.year % 4 == 0)
     }
     
     /// 闰月
     var leapMonth: Bool{
-        set{
-            
-        }get{
-            Calendar.current.dateComponents([.quarter], from: self).isLeapMonth ?? false
-        }
+       return Calendar.current.dateComponents([.quarter], from: self).isLeapMonth ?? false
     }
     
     /// 是否在未来
@@ -389,7 +222,7 @@ public extension Date {
     
     /// 是否在本天
     var isToday: Bool {
-        if (fabs(self.timeIntervalSinceNow) >= 60 * 60 * 24){
+        if (fabs(self.timeIntervalSinceNow) >= 24 * 60 * 60 ){
             return false
         }
         return self.day == Date().day && self.month == Date().month && self.year == Date().year
@@ -398,6 +231,72 @@ public extension Date {
     /// 是否在本月
     var isInMonth: Bool {
         return self.month == Date().month && self.year == Date().year
+    }
+    
+    
+    /// 当天开始时间  0:0:0:0
+    var startDate: Date {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = self.year
+        components.month = self.month
+        components.day = self.day
+        
+        return calendar.date(from: components) ?? Date()
+    }
+    
+    /// 当天结束时间 23:59:59秒
+    var endDate: Date {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = self.year
+        components.month = self.month
+        components.day = self.day
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        return calendar.date(from: components) ?? Date()
+    }
+    
+    /// 本周星期一
+    var weekMonday: Date {
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2
+        var components = DateComponents()
+        components.year = self.year
+        components.month = self.month
+        var countDays: Int = 0
+        if(calendar.firstWeekday > self.weekday){
+            countDays = 7 + (self.weekday - calendar.firstWeekday)
+        }else{
+            countDays = self.weekday - calendar.firstWeekday
+        }
+        components.day = self.day - countDays
+        
+        return calendar.date(from: components)!
+    }
+    
+    /// 当月1号
+    var monthDay: Date {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = self.year
+        components.month = self.month
+        components.day = 1
+        
+        return calendar.date(from: components) ?? Date()
+    }
+    
+    /// 月末 本月最后一天
+    var monthLastDay: Date {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = self.year
+        components.month = self.month
+        components.day = self.days
+        
+        return calendar.date(from: components) ?? Date()
     }
     
     //获得当前月份第一天星期几
@@ -427,12 +326,8 @@ public extension String{
         return dateFormatter.date(from:self) ?? Date()
     }
     
-    /**
-     时间戳转时间
-     
-     - returns 时间
-     */
-    func timeStampToDate() -> Date{
+    /// 时间戳转时间
+    var date: Date{
         if self.isEmpty {
             return Date()
         }

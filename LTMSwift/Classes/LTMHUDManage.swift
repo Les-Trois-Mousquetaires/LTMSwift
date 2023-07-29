@@ -21,8 +21,8 @@ private let hudlineSpacing: CGFloat = 3 // 行间距
 open class LTMHUDManage: NSObject {
     // MARK: - HUD相关
     static let instance: LTMHUDManage = LTMHUDManage()
-    /// 是否接收事件 默认接收 如果显示是想屏蔽事件需要把 isReceiveEvent = false
-    static var isReceiveEvent = true
+    /// 是否接收事件 默认不接收 如果显示是想屏蔽事件需要把 isReceiveEvent = true
+    static var isReceiveEvent = false
     class var shared: LTMHUDManage {
         return instance
     }

@@ -37,7 +37,7 @@ public extension NSObject {
             return
         }
         if phoneStr.count > 11 {
-            phoneStr = phoneStr.deleteNullString()
+            phoneStr = phoneStr.replacingSpace
         }
         // 在cell上 保证丝滑....
         DispatchQueue.main.async {

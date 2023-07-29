@@ -124,39 +124,13 @@ public extension String {
 }
 
 public extension String{
-    /**
-     字符串大写MD5
-     
-     - returns: MD5值
-     */
-    func strngToCapitalMD5() -> String{
-        return self.stringToMD5(outputFormat: "X")
-    }
-    
-    /**
-     字符串小写MD5
-     
-     - returns: MD5值
-     */
-    func strngToLowercaseMD5() -> String{
+    /// 字符串MD5
+    var md5: String{
         return self.stringToMD5(outputFormat: "x")
     }
     
-    /**
-     字符串大写SHA1
-     
-     - returns: 哈希值
-     */
-    func strngToCapitalSHA1() -> String {
-        return self.stringToSHA1(outputFormat: "X")
-    }
-    
-    /**
-     字符串小写SHA1
-     
-     - returns: 哈希值
-     */
-    func strngToLowercaseSHA1() -> String {
+    /// 字符串哈希
+    var sha1: String{
         return self.stringToSHA1(outputFormat: "x")
     }
     

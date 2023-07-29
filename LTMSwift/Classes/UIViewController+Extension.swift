@@ -8,13 +8,8 @@
 import Foundation
 
 public extension UIViewController{
-    
-    /**
-     获取根视图
-     
-     - returns 返回根视图
-     */
-    class func getRootVC() -> UIViewController? {
+    /// 获取根视图
+    var rootVC: UIViewController? {
         let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).last
 
         return window?.rootViewController

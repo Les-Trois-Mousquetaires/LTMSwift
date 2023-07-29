@@ -38,10 +38,8 @@ public extension UIView{
 }
 
 public extension UIView{
-    /**
-     View生成图片
-     */
-    func makeImage() -> UIImage{
+    /// View生成图片
+    var image: UIImage {
         //第一个参数表示区域大小。第二个参数表示是否是非透明的，如果需要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, UIScreen.main.scale)
         self.layer.render(in: UIGraphicsGetCurrentContext()!)
@@ -51,10 +49,8 @@ public extension UIView{
         return image!
     }
     
-    /**
-     View生成图片,可以显示layer(分享分时图、k线)
-     */
-    func makeLayerImage() -> UIImage{
+    /// View生成图片,可以显示layer(分享分时图、k线)
+    var layerImage: UIImage {
         //第一个参数表示区域大小。第二个参数表示是否是非透明的，如果需要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0.0)
         self.drawHierarchy(in: self.bounds, afterScreenUpdates: true)
@@ -63,13 +59,11 @@ public extension UIView{
         
         return image!
     }
-    
-    /**
-     将tableview 生成图片
-     */
-    func getTableViewImage() -> UIImage{
+        
+    /// 将scrollView 生成图片
+    var scrollViewImage: UIImage {
         var image = UIImage()
-        let scrollView: UIScrollView = self as! UITableView
+        let scrollView: UIScrollView = self as! UIScrollView
         //第一个参数表示区域大小。第二个参数表示是否是非透明的，如果需要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了
         UIGraphicsBeginImageContextWithOptions(CGSize(width: scrollView.contentSize.width, height: scrollView.contentSize.height), false, 0.0)
         let savedContentOffset: CGPoint = scrollView.contentOffset

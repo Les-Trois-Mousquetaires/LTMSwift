@@ -8,6 +8,7 @@
 import Foundation
 
 public extension UITableView{
+    
     // 列表适配
     func adapt(){
         self.separatorStyle = .none

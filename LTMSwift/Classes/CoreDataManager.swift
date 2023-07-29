@@ -24,6 +24,7 @@ open class CoreDataManager{
             guard let err = error else {
                 return
             }
+            print(storeDescription)
             fatalError("Cannot load core data store.")
         }
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
