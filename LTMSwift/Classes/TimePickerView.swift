@@ -25,10 +25,8 @@ public enum TimePickerMode {
 }
 
 open class TimePickerView: UIView {
-    /// 关闭回调
-    public var cancelBlock: (() -> Void)?
-    /// 确定回调
-    public var sureBlock: ((_ date: Date, _ isLongTime: Bool) -> Void)?
+    /// 时间回调
+    public var dateBlock: ((_ date: Date) -> Void)?
     
     /// 最大时间
     private var curMaxDate: Date = Date()
@@ -63,34 +61,12 @@ open class TimePickerView: UIView {
     /// 当前展示样式 默认 年月日
     public var mode: TimePickerMode = .TimeModleYMDHMS
     
-    private var curLineColor: UIColor = .gray
-    /// 分割线颜色
-    public var lineColor: UIColor {
-        set{
-            self.curLineColor = newValue
-            self.dividerView.backgroundColor = self.curLineColor
-        }get{
-            self.curLineColor
-        }
-    }
-    
-    private var curIsShowLongTime: Bool = true
-    /// 是否展示长期，默认展示
-    public var isShowLongTime: Bool {
-        set{
-            self.curIsShowLongTime = newValue
-            self.longTimeBtn.isHidden = !self.curIsShowLongTime
-        }get{
-            self.curIsShowLongTime
-        }
-    }
-    
     private var curLayerColor: UIColor = .brown
     /// 当前选中框颜色
     public var layerColor: UIColor {
         set{
             self.curLayerColor = newValue
-            let path = UIBezierPath.init(roundedRect: CGRect(x: 10, y: UIScreen.main.bounds.size.width * 3 / 8 + 104, width: UIScreen.main.bounds.size.width - 10 * 2, height: 70), cornerRadius: 5)
+            let path = UIBezierPath.init(roundedRect: CGRect(x: 10, y: UIScreen.main.bounds.size.width / 2 - 35 , width: UIScreen.main.bounds.size.width - 10 * 2, height: 70), cornerRadius: 5)
             let shapeLayer = CAShapeLayer()
             shapeLayer.path = path.cgPath
             shapeLayer.fillColor = UIColor.clear.cgColor
@@ -99,72 +75,6 @@ open class TimePickerView: UIView {
             self.layer.addSublayer(shapeLayer)
         }get{
             self.curLayerColor
-        }
-    }
-    
-    private var curConfirmText: String = ""
-    /// 确认按钮文字
-    public var confirmText: String {
-        set{
-            self.curConfirmText = newValue
-            self.confirmBtn.setTitle(self.curConfirmText)
-        }get{
-            self.curConfirmText
-        }
-    }
-    
-    private var curConfirmColor: UIColor = .black
-    /// 确认按钮文字颜色
-    public var confirmColor: UIColor {
-        set{
-            self.curConfirmColor = newValue
-            self.confirmBtn.setTitleColor(self.curConfirmColor)
-        }get{
-            self.curConfirmColor
-        }
-    }
-    
-    private var curConfirmFont: UIFont = .systemFont(ofSize: 14, weight: .medium)
-    /// 确认按钮文字字号
-    public var confirmFont: UIFont {
-        set{
-            self.curConfirmFont = newValue
-            self.confirmBtn.titleLabel?.font = self.curConfirmFont
-        }get{
-            self.curConfirmFont
-        }
-    }
-    
-    private var curCancelText: String = ""
-    /// 取消按钮文字
-    public var cancelText: String {
-        set{
-            self.curCancelText = newValue
-            self.cancelBtn.setTitle(self.curCancelText)
-        }get{
-            self.curCancelText
-        }
-    }
-    
-    private var curCancelColor: UIColor = .black
-    /// 取消按钮文字颜色
-    public var cancelColor: UIColor {
-        set{
-            self.curCancelColor = newValue
-            self.cancelBtn.setTitleColor(self.cancelColor)
-        }get{
-            self.curCancelColor
-        }
-    }
-    
-    private var curCancelFont: UIFont = .systemFont(ofSize: 14, weight: .medium)
-    /// 取消按钮文字字号
-    public var cancelFont: UIFont {
-        set{
-            self.curCancelFont = newValue
-            self.cancelBtn.titleLabel?.font = self.curCancelFont
-        }get{
-            self.curCancelFont
         }
     }
     
@@ -201,91 +111,11 @@ open class TimePickerView: UIView {
         self.configData()
         self.configUI()
         self.configSelectRow(date: self.defaultDate, yearRow: 501, isScroll: true)
-        self.cancelBtn.addTarget(self, action: #selector(cancelBtnClick), for: .touchUpInside)
-        self.confirmBtn.addTarget(self, action: #selector(confirmBtnClick), for: .touchUpInside)
-        self.longTimeBtn.addTarget(self, action: #selector(longTimeBtnClick), for: .touchUpInside)
-    }
-    
-    @objc func cancelBtnClick(){
-        guard let block = self.cancelBlock else {
-            return
-        }
-        block()
-    }
-    
-    @objc func confirmBtnClick(){
-        guard let block = self.sureBlock else {
-            return
-        }
-        let calendar = Calendar.current
-        var components = DateComponents()
-        components.year = self.selectYear
-        components.month = self.selectMonth
-        components.day = self.selectDay
-        components.hour = self.selectHour
-        components.minute = self.selectMinute
-        components.second = self.selectSecond
-        block(calendar.date(from: components)!, false)
-    }
-    
-    @objc func longTimeBtnClick(){
-        guard let block = self.sureBlock else {
-            return
-        }
-        block(Date(),true)
     }
     
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private lazy var bgView: UIView = {
-        let view = UIView()
-        
-        return view
-    }()
-    
-    private lazy var cancelBtn: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("取消")
-        button.setTitleColor(UIColor.init(hexString: "999999"))
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-        
-        return button
-    }()
-    
-    private lazy var titleLabel : UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.text = "选择日期"
-        
-        return label
-    }()
-    
-    private lazy var confirmBtn: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("确定")
-        button.setTitleColor(UIColor.init(hexString: "0064E7"))
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-        
-        return button
-    }()
-    
-    private lazy var dividerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.init(hexString: "#000000", alpha: 0.05)
-        
-        return view
-    }()
-    
-    private lazy var longTimeBtn: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("长期")
-        button.setTitleColor(UIColor.black)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        
-        return button
-    }()
     
     private lazy var timePickerView: UIPickerView = {
         let pickerView = UIPickerView()
@@ -375,6 +205,19 @@ extension TimePickerView: UIPickerViewDelegate{
         checkDate(row: row)
         checkMaxDate(row: row)
         checkMinDate(row: row)
+        guard let block = self.dateBlock else {
+            return
+        }
+        
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = self.selectYear
+        components.month = self.selectMonth
+        components.day = self.selectDay
+        components.hour = self.selectHour
+        components.minute = self.selectMinute
+        components.second = self.selectSecond
+        block(calendar.date(from: components) ?? Date())
     }
     
     /**
@@ -524,38 +367,10 @@ extension TimePickerView{
     }
     
     func configUI(){
-        self.addSubViews([self.titleLabel,self.cancelBtn,self.confirmBtn,
-                          self.dividerView,
-                          self.longTimeBtn,
-                          self.timePickerView])
-        self.titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(self).offset(20)
-            make.centerX.equalTo(self)
-        }
-        self.cancelBtn.snp.makeConstraints { make in
-            make.centerY.equalTo(self.titleLabel)
-            make.left.equalTo(self).offset(28)
-        }
-        self.confirmBtn.snp.makeConstraints { make in
-            make.centerY.equalTo(self.titleLabel)
-            make.right.equalTo(self).offset(-28)
-        }
-        self.dividerView.snp.makeConstraints { make in
-            make.top.equalTo(self.titleLabel.snp.bottom).offset(20)
-            make.left.right.equalTo(self)
-            make.width.equalTo(UIScreen.main.bounds.size.width)
-            make.height.equalTo(1)
-        }
-        self.longTimeBtn.snp.makeConstraints { make in
-            make.top.equalTo(self.dividerView.snp.bottom).offset(14)
-            make.centerX.equalTo(self)
-            make.height.equalTo(46)
-        }
+        self.addSubview(self.timePickerView)
         self.timePickerView.snp.makeConstraints { make in
-            make.top.equalTo(self.dividerView.snp.bottom).offset(80)
-            make.left.right.equalTo(self)
-            make.height.equalTo(UIScreen.main.bounds.size.width * 3 / 4)
-            make.bottom.equalTo(self).offset(-28)
+            make.edges.equalTo(self)
+            make.height.equalTo(UIScreen.main.bounds.size.width)
         }
     }
 }
