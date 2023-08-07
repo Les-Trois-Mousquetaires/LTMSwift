@@ -56,6 +56,24 @@ public extension String {
     var replacingSpace: String {
         return self.replacingOccurrences(of: " ", with: "")
     }
+    
+    /**
+     小数位展示使用，带逗号
+     
+     - parameter digit 小数位数, 默认四舍五入
+     */
+    func decimalDigit(_ digit: Int) -> String{
+        return NSDecimalNumber(string: self).decimalDigit(digit)
+    }
+    
+    /**
+     小数位给后台传递
+     
+     - parameter digit 小数位数, 默认四舍五入
+     */
+    func decimalDigitParam(_ digit: Int) -> String{
+        return NSDecimalNumber(string: self).decimalDigitParam(digit)
+    }
 }
 
 //MARK: - 字符串操作

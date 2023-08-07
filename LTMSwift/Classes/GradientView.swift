@@ -9,7 +9,21 @@ import Foundation
 
 open class GradientView: UIView {
     /// 是否渐变
-    @IBInspectable public var isGradient: Bool = true
+    @IBInspectable public var isGradient: Bool = true {
+        didSet{
+            setNeedsDisplay()
+            gradientBGLayer?.removeFromSuperlayer()
+            if isGradient {
+                gradientBGLayer = CAGradientLayer()
+                gradientBGLayer!.colors = [startColor.cgColor, endColor.cgColor]
+                gradientBGLayer!.locations = locations
+                gradientBGLayer!.frame = bounds
+                gradientBGLayer!.startPoint = startPoint
+                gradientBGLayer!.endPoint = endPoint
+                self.layer.insertSublayer(gradientBGLayer!, at: 0)
+            }
+        }
+    }
     /// 渐变起始颜色
     @IBInspectable public var startColor: UIColor = .white
     /// 渐变结束颜色
@@ -22,18 +36,4 @@ open class GradientView: UIView {
     @IBInspectable public var endPoint: CGPoint = CGPointMake(1, 1)
     
     private var gradientBGLayer: CAGradientLayer?
-    
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        gradientBGLayer?.removeFromSuperlayer()
-        if isGradient {
-            gradientBGLayer = CAGradientLayer()
-            gradientBGLayer!.colors = [startColor.cgColor, endColor.cgColor]
-            gradientBGLayer!.locations = locations
-            gradientBGLayer!.frame = bounds
-            gradientBGLayer!.startPoint = startPoint
-            gradientBGLayer!.endPoint = endPoint
-            self.layer.insertSublayer(gradientBGLayer!, at: 0)
-        }
-    }
 }

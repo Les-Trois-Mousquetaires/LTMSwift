@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.6.2'
+  s.version          = '0.6.3'
   s.summary          = 'Swift 项目常用组件库.'
 
 # This description is used to generate tags and improve search results.
@@ -43,7 +43,7 @@ Pod::Spec.new do |s|
    end
    
   s.subspec 'Extension' do |ss|
-      ss.source_files = 'LTMSwift/Classes/{*}+{*}.swift'
+      ss.source_files = 'LTMSwift/Classes/{*}+{*}.swift','LTMSwift/Classes/Swizzling.swift'
   end
   
   s.subspec 'Gradient' do |ss|

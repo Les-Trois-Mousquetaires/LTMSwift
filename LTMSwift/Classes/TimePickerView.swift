@@ -61,23 +61,6 @@ open class TimePickerView: UIView {
     /// 当前展示样式 默认 年月日
     public var mode: TimePickerMode = .TimeModleYMDHMS
     
-    private var curLayerColor: UIColor = .brown
-    /// 当前选中框颜色
-    public var layerColor: UIColor {
-        set{
-            self.curLayerColor = newValue
-            let path = UIBezierPath.init(roundedRect: CGRect(x: 10, y: UIScreen.main.bounds.size.width / 2 - 35 , width: UIScreen.main.bounds.size.width - 10 * 2, height: 70), cornerRadius: 5)
-            let shapeLayer = CAShapeLayer()
-            shapeLayer.path = path.cgPath
-            shapeLayer.fillColor = UIColor.clear.cgColor
-            shapeLayer.strokeColor = self.curLayerColor.cgColor
-            shapeLayer.lineWidth = 2
-            self.layer.addSublayer(shapeLayer)
-        }get{
-            self.curLayerColor
-        }
-    }
-    
     private var curPickerColor: UIColor = .black
     /// 滚轮日期文本颜色
     public var pickerColor: UIColor {
