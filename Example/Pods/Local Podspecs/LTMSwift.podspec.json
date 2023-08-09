@@ -1,6 +1,6 @@
 {
   "name": "LTMSwift",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "summary": "Swift 项目常用组件库.",
   "description": "LTMSwift is swift often uselib.\nLTMExtension is Swift Classes folder tool\nLTMExtension is tools folder",
   "homepage": "https://github.com/Les-Trois-Mousquetaires/LTMSwift",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/Les-Trois-Mousquetaires/LTMSwift.git",
-    "tag": "0.6.3"
+    "tag": "0.6.4"
   },
   "platforms": {
     "ios": "11.0"
@@ -30,39 +30,30 @@
     },
     {
       "name": "Extension",
-      "source_files": [
-        "LTMSwift/Classes/{*}+{*}.swift",
-        "LTMSwift/Classes/Swizzling.swift"
-      ]
-    },
-    {
-      "name": "Gradient",
-      "source_files": "LTMSwift/Classes/Gradient{*}.swift",
-      "dependencies": {
-        "LTMSwift/Extension": [
+      "subspecs": [
+        {
+          "name": "UIExtension",
+          "source_files": "LTMSwift/Classes/UI{*}+{*}.swift",
+          "dependencies": {
+            "LTMSwift/Extension/BaseExtension": [
 
-        ]
-      }
+            ]
+          }
+        },
+        {
+          "name": "BaseExtension",
+          "source_files": [
+            "LTMSwift/Classes/A{*}+{*}.swift",
+            "LTMSwift/Classes/D{*}+{*}.swift",
+            "LTMSwift/Classes/N{*}+{*}.swift",
+            "LTMSwift/Classes/S{*}+{*}.swift"
+          ]
+        }
+      ]
     },
     {
       "name": "HUDManage",
       "source_files": "LTMSwift/Classes/LTMHUDManage.swift"
-    },
-    {
-      "name": "Keyboard",
-      "source_files": "LTMSwift/Classes/Keyboard{*}.swift",
-      "dependencies": {
-        "SnapKit": [
-
-        ],
-        "LTMSwift/Extension": [
-
-        ]
-      }
-    },
-    {
-      "name": "Margin",
-      "source_files": "LTMSwift/Classes/Margin{*}.swift"
     },
     {
       "name": "Network",
@@ -81,21 +72,6 @@
       "source_files": "LTMSwift/Classes/Pop{*}.swift"
     },
     {
-      "name": "RichView",
-      "source_files": "LTMSwift/Classes/Rich{*}.swift",
-      "dependencies": {
-        "SnapKit": [
-
-        ],
-        "YYText": [
-
-        ],
-        "LTMSwift/Extension": [
-
-        ]
-      }
-    },
-    {
       "name": "Scan",
       "source_files": "LTMSwift/Classes/Scan{*}.swift",
       "dependencies": {
@@ -108,16 +84,65 @@
       }
     },
     {
-      "name": "TimePicker",
-      "source_files": "LTMSwift/Classes/TimePicker{*}.swift",
-      "dependencies": {
-        "SnapKit": [
+      "name": "UI",
+      "subspecs": [
+        {
+          "name": "Gradient",
+          "source_files": "LTMSwift/Classes/Gradient{*}.swift",
+          "dependencies": {
+            "LTMSwift/Extension": [
 
-        ],
-        "LTMSwift/Extension": [
+            ]
+          }
+        },
+        {
+          "name": "Keyboard",
+          "source_files": "LTMSwift/Classes/Keyboard{*}.swift",
+          "dependencies": {
+            "SnapKit": [
 
-        ]
-      }
+            ],
+            "LTMSwift/Extension": [
+
+            ]
+          }
+        },
+        {
+          "name": "Margin",
+          "source_files": "LTMSwift/Classes/Margin{*}.swift"
+        },
+        {
+          "name": "RichView",
+          "source_files": "LTMSwift/Classes/Rich{*}.swift",
+          "dependencies": {
+            "SnapKit": [
+
+            ],
+            "YYText": [
+
+            ],
+            "LTMSwift/Extension": [
+
+            ]
+          }
+        },
+        {
+          "name": "TimePicker",
+          "source_files": "LTMSwift/Classes/TimePicker{*}.swift",
+          "dependencies": {
+            "SnapKit": [
+
+            ],
+            "LTMSwift/Extension": [
+
+            ]
+          }
+        },
+        {
+          "name": "UISwitch",
+          "source_files": "LTMSwift/Classes/TextSwitch.swift"
+        }
+      ]
     }
   ],
   "swift_version": "5.2"

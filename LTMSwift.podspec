@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.6.3'
+  s.version          = '0.6.4'
   s.summary          = 'Swift 项目常用组件库.'
 
 # This description is used to generate tags and improve search results.
@@ -31,7 +31,6 @@ Pod::Spec.new do |s|
   
   s.ios.deployment_target = '11.0'
 
-#  s.source_files = 'LTMSwift/Classes/**/*'
   s.swift_versions = '5.2'
   # s.resource_bundles = {
   #   'LTMSwift' => ['LTMSwift/Assets/*.png']
@@ -43,26 +42,18 @@ Pod::Spec.new do |s|
    end
    
   s.subspec 'Extension' do |ss|
-      ss.source_files = 'LTMSwift/Classes/{*}+{*}.swift','LTMSwift/Classes/Swizzling.swift'
-  end
-  
-  s.subspec 'Gradient' do |ss|
-      ss.source_files = 'LTMSwift/Classes/Gradient{*}.swift'
-      ss.dependency 'LTMSwift/Extension'
+      ss.subspec 'UIExtension' do |ss|
+          ss.source_files = 'LTMSwift/Classes/UI{*}+{*}.swift'
+          ss.dependency 'LTMSwift/Extension/BaseExtension'
+      end
+      
+      ss.subspec 'BaseExtension' do |ss|
+          ss.source_files = 'LTMSwift/Classes/A{*}+{*}.swift','LTMSwift/Classes/D{*}+{*}.swift','LTMSwift/Classes/N{*}+{*}.swift','LTMSwift/Classes/S{*}+{*}.swift'
+      end
   end
   
   s.subspec 'HUDManage' do |ss|
       ss.source_files = 'LTMSwift/Classes/LTMHUDManage.swift'
-  end
-  
-  s.subspec 'Keyboard' do |ss|
-      ss.source_files = 'LTMSwift/Classes/Keyboard{*}.swift'
-      ss.dependency 'SnapKit'
-      ss.dependency 'LTMSwift/Extension'
-  end
-  
-  s.subspec 'Margin' do |ss|
-      ss.source_files = 'LTMSwift/Classes/Margin{*}.swift'
   end
   
   s.subspec 'Network' do |ss|
@@ -74,13 +65,6 @@ Pod::Spec.new do |s|
   s.subspec 'PopView' do |ss|
       ss.source_files = 'LTMSwift/Classes/Pop{*}.swift'
   end
-  
-  s.subspec 'RichView' do |ss|
-      ss.source_files = 'LTMSwift/Classes/Rich{*}.swift'
-      ss.dependency 'SnapKit'
-      ss.dependency 'YYText'
-      ss.dependency 'LTMSwift/Extension'
-  end
 
   s.subspec 'Scan' do |ss|
       ss.source_files = 'LTMSwift/Classes/Scan{*}.swift'
@@ -88,9 +72,38 @@ Pod::Spec.new do |s|
       ss.dependency 'LTMSwift/Extension'
   end
   
-  s.subspec 'TimePicker' do |ss|
-      ss.source_files = 'LTMSwift/Classes/TimePicker{*}.swift'
-      ss.dependency 'SnapKit'
-      ss.dependency 'LTMSwift/Extension'
+  s.subspec 'UI' do |ss|
+      ss.subspec 'Gradient' do |ss|
+          ss.source_files = 'LTMSwift/Classes/Gradient{*}.swift'
+          ss.dependency 'LTMSwift/Extension'
+      end
+      
+      ss.subspec 'Keyboard' do |ss|
+          ss.source_files = 'LTMSwift/Classes/Keyboard{*}.swift'
+          ss.dependency 'SnapKit'
+          ss.dependency 'LTMSwift/Extension'
+      end
+      
+      ss.subspec 'Margin' do |ss|
+          ss.source_files = 'LTMSwift/Classes/Margin{*}.swift'
+      end
+      
+      ss.subspec 'RichView' do |ss|
+          ss.source_files = 'LTMSwift/Classes/Rich{*}.swift'
+          ss.dependency 'SnapKit'
+          ss.dependency 'YYText'
+          ss.dependency 'LTMSwift/Extension'
+      end
+      
+      ss.subspec 'TimePicker' do |ss|
+          ss.source_files = 'LTMSwift/Classes/TimePicker{*}.swift'
+          ss.dependency 'SnapKit'
+          ss.dependency 'LTMSwift/Extension'
+      end
+      
+      ss.subspec 'UISwitch' do |ss|
+          ss.source_files = 'LTMSwift/Classes/TextSwitch.swift'
+      end
   end
+  
 end
