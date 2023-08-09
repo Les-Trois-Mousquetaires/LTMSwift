@@ -1,6 +1,6 @@
 {
   "name": "LTMSwift",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "summary": "Swift 项目常用组件库.",
   "description": "LTMSwift is swift often uselib.\nLTMExtension is Swift Classes folder tool\nLTMExtension is tools folder",
   "homepage": "https://github.com/Les-Trois-Mousquetaires/LTMSwift",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/Les-Trois-Mousquetaires/LTMSwift.git",
-    "tag": "0.6.4"
+    "tag": "0.6.5"
   },
   "platforms": {
     "ios": "11.0"
@@ -46,7 +46,8 @@
             "LTMSwift/Classes/A{*}+{*}.swift",
             "LTMSwift/Classes/D{*}+{*}.swift",
             "LTMSwift/Classes/N{*}+{*}.swift",
-            "LTMSwift/Classes/S{*}+{*}.swift"
+            "LTMSwift/Classes/S{*}+{*}.swift",
+            "LTMSwift/Classes/Swizzling.swift"
           ]
         }
       ]

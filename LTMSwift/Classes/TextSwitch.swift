@@ -84,23 +84,23 @@ public extension TextSwitch {
     }
 }
 
-public class TextSwitch: UIControl {
+open class TextSwitch: UIControl {
     /// 大小 圆大小
     let SwitchWidth = 67.0, SwitchHeight = 32.0, ThumbTintWidth = 24.0
     /// 动画时间
     let AnimatedTime = 0.3
     
     /// 是否有震动效果
-    var hasShake = true
+    public var hasShake = true
     
     private var curStatus = false
     /// 获取开关状态
-    var isOn: Bool{
+    public var isOn: Bool{
         return self.curStatus
     }
     
     /// 设置开关状态
-    var setOn: Bool {
+    public var setOn: Bool {
         set{
             self.curStatus = newValue
             self.configAnimated(self.curStatus)
@@ -118,7 +118,7 @@ public class TextSwitch: UIControl {
         self.addGestureRecognizer(pan)
     }
     
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -256,7 +256,6 @@ public class TextSwitch: UIControl {
             break
         }
     }
-    
 }
 
 //MARK: - UI
