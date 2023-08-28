@@ -19,13 +19,15 @@ open class RichTVCell: UITableViewCell {
     var model: RichModel {
         set{
             self.attrModel = newValue
+            self.titleRichLabel.text =  ""
+            self.valueRichLabel.text =  ""
+            self.valueTextField.text =  ""
             self.backgroundColor = self.attrModel.cellColor
             self.dividerView.backgroundColor = self.attrModel.lineColor
             self.titleRichLabel.attributedText =  self.attrModel.key
             if (self.attrModel.type == .richLabel){
                 self.valueTextField.isHidden = true
                 self.valueRichLabel.isHidden = false
-                self.valueTextField.text =  ""
                 self.valueRichLabel.textAlignment = self.attrModel.valueTextAlignment
                 if (self.attrModel.titleWidth > 0){
                     self.titleRichLabel.snp.remakeConstraints { make in
@@ -68,7 +70,6 @@ open class RichTVCell: UITableViewCell {
                     self.valueTextField.font = self.attrModel.textFieldFont
                 }
                 self.valueTextField.attributedPlaceholder =  self.attrModel.placeHolder
-                self.valueRichLabel.text =  ""
                 if (self.attrModel.maxLength >= 0){
                     self.valueTextField.maxLength = self.attrModel.maxLength
                 }
