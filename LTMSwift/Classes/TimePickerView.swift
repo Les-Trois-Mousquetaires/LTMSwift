@@ -353,7 +353,7 @@ extension TimePickerView{
         self.addSubview(self.timePickerView)
         self.timePickerView.snp.makeConstraints { make in
             make.edges.equalTo(self)
-            make.height.equalTo(UIScreen.main.bounds.size.width)
+            make.height.equalTo(UIScreen.main.bounds.size.width).priority(.low)
         }
     }
 }

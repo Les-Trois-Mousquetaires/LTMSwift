@@ -32,8 +32,8 @@ open class RichTVCell: UITableViewCell {
                 if (self.attrModel.titleWidth > 0){
                     self.titleRichLabel.snp.remakeConstraints { make in
                         make.top.bottom.equalTo(self.contentView)
-                        make.left.equalTo(self.contentView).offset(self.attrModel.space)
-                        make.width.equalTo(self.attrModel.titleWidth)
+                        make.left.equalTo(self.contentView).offset(self.attrModel.space).priority(.high)
+                        make.width.equalTo(self.attrModel.titleWidth).priority(.high)
                     }
                 }else{
                     self.titleRichLabel.snp.remakeConstraints { make in
