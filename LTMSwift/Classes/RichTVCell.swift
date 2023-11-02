@@ -32,8 +32,8 @@ open class RichTVCell: UITableViewCell {
                 if (self.attrModel.titleWidth > 0){
                     self.titleRichLabel.snp.remakeConstraints { make in
                         make.top.bottom.equalTo(self.contentView)
-                        make.left.equalTo(self.contentView).offset(self.attrModel.space).priority(.high)
-                        make.width.equalTo(self.attrModel.titleWidth).priority(.high)
+                        make.left.equalTo(self.contentView).offset(self.attrModel.space)
+                        make.width.equalTo(self.attrModel.titleWidth)
                     }
                 }else{
                     self.titleRichLabel.snp.remakeConstraints { make in
@@ -103,18 +103,18 @@ open class RichTVCell: UITableViewCell {
                                       self.dividerView])
         self.titleRichLabel.snp.makeConstraints { make in
             make.top.bottom.equalTo(self.contentView)
-            make.left.equalTo(self.contentView).offset(10)
+            make.left.equalTo(self.contentView).offset(14)
         }
         self.valueRichLabel.snp.makeConstraints { make in
             make.top.bottom.equalTo(self.contentView)
             make.left.greaterThanOrEqualTo(self.titleRichLabel.snp.right).offset(14)
-            make.right.equalTo(self.contentView).offset(-10)
+            make.right.equalTo(self.contentView).offset(-14)
         }
         self.valueTextField.snp.makeConstraints { make in
             make.top.bottom.equalTo(self.contentView)
             make.left.greaterThanOrEqualTo(self.titleRichLabel.snp.right).offset(14)
-            make.right.equalTo(self.contentView).offset(-10)
-            make.width.greaterThanOrEqualTo(100)
+            make.right.equalTo(self.contentView).offset(-14)
+            make.width.greaterThanOrEqualTo(100).priority(.low)
         }
         self.dividerView.snp.makeConstraints { make in
             make.left.equalTo(self.contentView).offset(14)

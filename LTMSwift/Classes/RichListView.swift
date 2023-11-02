@@ -15,7 +15,6 @@ open class RichListView: UIView{
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
         self.addSubview(self.tableview)
         self.tableview.snp.makeConstraints { make in
             make.edges.equalTo(self).inset(self.edgeInset)
@@ -69,10 +68,8 @@ open class RichListView: UIView{
         table.delegate = self
         table.dataSource = self
         table.adapt()
-        table.layer.cornerRadius = 5
         table.isScrollEnabled = false
         table.separatorStyle = .none
-        table.backgroundColor = .white
         
         return table
     }()

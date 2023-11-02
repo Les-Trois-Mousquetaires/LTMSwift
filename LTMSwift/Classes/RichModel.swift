@@ -31,9 +31,9 @@ public class RichModel{
     /// 是否展示更新分割线位置
     public var isUpdateLineSpace: Bool = false
     /// 分割线位置
-    public var lineSpace: CGFloat = 9
+    public var lineSpace: CGFloat = 14
     /// 间隔
-    public var space: CGFloat = 10
+    public var space: CGFloat = 14
     /// 高度
     public var height: CGFloat = 44
     /// 视图类型

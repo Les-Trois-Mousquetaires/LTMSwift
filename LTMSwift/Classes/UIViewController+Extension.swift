@@ -17,6 +17,15 @@ public extension UIViewController{
         self.navigationController?.navigationBar.backItem?.setHidesBackButton(true, animated: true)
     }
     
+    /**
+     展示系统返回按钮
+     */
+    func showNavBackItem(){
+        self.navigationController?.navigationItem.setHidesBackButton(false, animated: true)
+        self.navigationItem.setHidesBackButton(false, animated: true)
+        self.navigationController?.navigationBar.backItem?.setHidesBackButton(false, animated: true)
+    }
+    
     /// 获取根视图
     var rootVC: UIViewController? {
         let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).last
