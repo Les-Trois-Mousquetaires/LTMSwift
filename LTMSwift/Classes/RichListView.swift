@@ -12,7 +12,7 @@ open class RichListView: UIView{
     public var eventBlock: ((_ eventKey: String) -> Void)?
     /// textField 响应Block
     public var textFieldEventBlock: ((_ eventKey: String, _ content: String) -> Void)?
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(self.tableview)
@@ -37,6 +37,15 @@ open class RichListView: UIView{
             self.tableview.reloadData()
         }get{
             self.listData
+        }
+    }
+    
+    /// 拐角半径
+    public var radius: CGFloat {
+        set{
+            self.tableview.layer.cornerRadius = newValue
+        }get{
+            0
         }
     }
     
@@ -69,7 +78,7 @@ open class RichListView: UIView{
         table.dataSource = self
         table.adapt()
         table.isScrollEnabled = false
-        table.separatorStyle = .none
+        table.backgroundColor = .clear
         
         return table
     }()
