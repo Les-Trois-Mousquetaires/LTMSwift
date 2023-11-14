@@ -13,6 +13,10 @@ public enum RichItemType {
     case textfield
     /// 富文本
     case richLabel
+    /// 富文本加图片
+    case richLabelImage
+    /// 开关
+    case textSwitch
 }
 
 //MARK: - 双富文本模型
@@ -32,7 +36,7 @@ public class RichModel{
     public var isUpdateLineSpace: Bool = false
     /// 分割线位置
     public var lineSpace: CGFloat = 14
-    /// 间隔
+    /// 标题左间距
     public var space: CGFloat = 14
     /// 高度
     public var height: CGFloat = 44
@@ -42,25 +46,30 @@ public class RichModel{
     public var cellColor: UIColor = .white
     /// 分割线颜色 默认灰色
     public var lineColor: UIColor = .gray
-    
-    //MARK: - 仅richLabel 有效
+}
+
+/// 富文本模型
+public class RichLabelModel: RichModel {
     /// 标题宽度
     public var titleWidth: CGFloat = 0
-    /// 标题和内容内容对齐方式
-    public var alignment: NSTextAlignment = .right
-    /// 内容换行对齐方式
-    public var valueTextAlignment: NSTextAlignment = .left
     
-    //MARK: - 仅Textfield 有效
+    public override init() {
+        super.init()
+        self.type = .richLabel
+    }
+}
+
+/// 输入框模型
+public class RichTextFieldModel: RichModel {
     /// 是否可以输入
     public var isEnabled: Bool = true
-    /// Textfield 键盘
+    /// 键盘
     public var keyboard: UIKeyboardType = .default
-    /// 仅Textfield  有效 且无value值
+    /// 占位文本
     public var placeHolder: NSMutableAttributedString = NSMutableAttributedString()
-    /// Textfield 文本颜色 仅输入时有效
+    /// 文本颜色
     public var textFieldTextColor: UIColor = .black
-    /// Textfield 文本颜色 仅输入时有效
+    /// 字体
     public var textFieldFont: UIFont = .systemFont(ofSize: 14)
     /// 最大值
     public var maxNumber: NSNumber = -1
@@ -70,4 +79,58 @@ public class RichModel{
     public var maxLength: Int = -1
     /// 限制回调
     public var limitBlock: ((_ limitReason: Int) -> Void)?
+    
+    public override init() {
+        super.init()
+        self.type = .textfield
+    }
+}
+
+/// 富文本加图片模型
+public class RichLabelImageModel: RichLabelModel {
+    /// 图片名称
+    public var imageName: String = ""
+    /// 图片
+    public var imageSize: CGSize = CGSize(width: 24, height: 24)
+    /// 图片文本间距
+    public var textImageSpace: CGFloat = 4
+    /// 图片右间距
+    public var rightSpace: CGFloat = 6
+    
+    public override init() {
+        super.init()
+        self.type = .richLabelImage
+    }
+}
+/// 开关模型
+public class RichTextSwitchModel: RichModel {
+    /// 开关透明度
+    public var alpha: CGFloat = 1
+    /// 开关是否有用
+    public var isEnabled: Bool = true
+    /// 设置开关状态
+    public var status: Bool = false
+    /// 震动
+    public var hasShake: Bool = true
+    /// 开的背景颜色
+    public var onTintColor: UIColor = .green
+    /// 开的字体颜色
+    public var onTextColor: UIColor = .white
+    /// 开的文字
+    public var onText: String = "是"
+    /// 关的背景颜色
+    public var offTintColor: UIColor = .gray
+    /// 关的字体颜色
+    public var offTextColor: UIColor = .white
+    /// 关的文字
+    public var offText: String = "否"
+    /// 开关的字号
+    public var textFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
+    /// 开关圆形部位的颜色
+    public var thumbTintColor: UIColor = .white
+    
+    public override init() {
+        super.init()
+        self.type = .textSwitch
+    }
 }

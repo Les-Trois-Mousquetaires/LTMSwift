@@ -8,10 +8,14 @@
 import SnapKit
 
 open class RichListView: UIView{
-    /// 响应Block
-    public var eventBlock: ((_ eventKey: String) -> Void)?
-    /// textField 响应Block
-    public var textFieldEventBlock: ((_ eventKey: String, _ content: String) -> Void)?
+    /**
+     响应Block
+     
+     eventKey 响应Key
+     text 输入框内容
+     isOn 开关状态
+     */
+    public var eventBlock: ((_ eventKey: String, _ text: String, _ isOn: Bool) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -86,19 +90,40 @@ open class RichListView: UIView{
 
 extension RichListView: UITableViewDelegate, UITableViewDataSource{
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: "RichTVCell") as? RichTVCell
-        if cell == nil{
-            cell = RichTVCell.init(style: .default, reuseIdentifier: "RichTVCell")
+        let data = self.listData[indexPath.row]
+        switch data.type {
+        case .textfield:
+            var cell: RichTextFieldTVCell = tableView.dequeueReusableCell(withIdentifier: "RichTextFieldTVCell") as? RichTextFieldTVCell ?? RichTextFieldTVCell.init(style: .default, reuseIdentifier: "RichTextFieldTVCell")
+            cell.model = data
+            cell.textFieldEvnentBlock = {[weak self] text in
+                self?.clickEvent(data, text, false)
+            }
+            
+            return cell
+        case .richLabel:
+            var cell: RichLabelTVCell = tableView.dequeueReusableCell(withIdentifier: "RichLabelTVCell") as? RichLabelTVCell ?? RichLabelTVCell.init(style: .default, reuseIdentifier: "RichLabelTVCell")
+            cell.model = data
+            cell.eventBlock = {[weak self] in
+                self?.clickEvent(data, "", false)
+            }
+            
+            return cell
+        case .richLabelImage:
+            var cell = tableView.dequeueReusableCell(withIdentifier: "RichLabelImageTVCell") as? RichLabelImageTVCell ?? RichLabelImageTVCell.init(style: .default, reuseIdentifier: "RichLabelImageTVCell")
+            cell.model = data
+            cell.eventBlock = {[weak self] in
+                self?.clickEvent(data, "", false)
+            }
+            
+            return cell
+        case .textSwitch:
+            var cell = tableView.dequeueReusableCell(withIdentifier: "RichTextSwitchTVCell") as? RichTextSwitchTVCell ?? RichTextSwitchTVCell.init(style: .default, reuseIdentifier: "RichTextSwitchTVCell")
+            cell.model = data
+            cell.textSwitchBlock = {[weak self] isOn in
+                self?.clickEvent(data, "", isOn)
+            }
+            return cell
         }
-        let model = self.listData[indexPath.row]
-        cell?.model = model
-        cell?.eventBlock = {[weak self] in
-            self?.clickEvent(model)
-        }
-        cell?.textFieldEvnentBlock = {[weak self] text in
-            self?.textFieldEvent(model, text)
-        }
-        return cell!
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -110,21 +135,13 @@ extension RichListView: UITableViewDelegate, UITableViewDataSource{
     }
     
     /// 处理点击事件
-    private func clickEvent(_ model: RichModel){
+    private func clickEvent(_ data: RichModel, _ text: String, _ isOn: Bool){
         self.tableview.endEditing(true)
-        if model.eventKey.count > 0{
+        if data.eventKey.count > 0{
             guard let block = self.eventBlock else {
                 return
             }
-            block(model.eventKey)
+            block(data.eventKey, text, isOn)
         }
-    }
-    
-    /// textField 响应事件
-    private func textFieldEvent(_ model: RichModel, _ text: String){
-        guard let block = self.textFieldEventBlock else {
-            return
-        }
-        block(model.eventKey, text)
     }
 }
