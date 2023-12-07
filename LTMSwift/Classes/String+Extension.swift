@@ -259,23 +259,6 @@ public extension String{
         return string.replacingOccurrences(of: " ", with: "")
     }
     
-    /// 身份证真伪校验
-    var idCardNoCheck: Bool{
-        if self.replacingOccurrences(of: " ", with: "").count != 18 {
-            return false
-        }
-        let calculateList = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2, 0]
-        let checkList = ["1","0","X","9","8","7","6","5","4","3","2",]
-        var sum: Int = 0
-        for index in 0 ..< 17{
-            let curentStr = self.subString(from: index, to: index)
-            sum += (Int(curentStr) ?? 0) * calculateList[index]
-        }
-        let checkIndex = sum % 11
-        
-        return checkList[checkIndex] == self.subString(from: 17, to: 17)
-    }
-    
     /**
      生成二维码图片
      
@@ -300,6 +283,83 @@ public extension String{
         colorFilter.setValue(CIColor(color: bgColor), forKey: "inputColor1")
         
         return UIImage(ciImage: colorFilter.outputImage!.transformed(by: CGAffineTransform(scaleX: 10, y: 10)))
+    }
+}
+
+//MARK: - 正则及校验
+public extension String {
+    /// 是否是固定电话
+    var isFixedLineTel: Bool {
+        let regex = "^0(10|2[0-5789]|\\d{3})\\d{7,8}$"
+        return self.isMatch(regex)
+    }
+    
+    /// 固定电话
+    var fixedLineTelShow: String {
+        if self.isFixedLineTel {
+            let regex = "^0(10|2[0-5789])\\d{7,8}$"
+            if self.isMatch(regex){
+                return self.subString(to: 3) + "-" + self.subString(from: 3)
+            }else{
+                return self.subString(to: 4) + "-" + self.subString(from: 4)
+            }
+        }
+        
+        return self
+    }
+    
+    /// 是否是400电话
+    var is400Tel: Bool {
+        let regex = "^400[0-9]{7}$"
+        return self.isMatch(regex)
+    }
+    
+    /// 固定电话
+    var tel400Show: String {
+        if self.is400Tel {
+            var result: NSMutableString = NSMutableString(string: self)
+            if self.count > 3 {
+                result.insert("-", at: 3)
+            }
+            if self.count > 7 {
+                result.insert("-", at: 7)
+            }
+            return result as String
+        }
+        
+        return self
+    }
+    
+    /// 是否是手机号
+    var isPhoneNumber: Bool {
+        let regex = "^1[0-9]{10}$"
+        
+        return self.isMatch(regex)
+    }
+        
+    /// 身份证真伪校验
+    var idCardNoCheck: Bool{
+        if self.replacingOccurrences(of: " ", with: "").count != 18 {
+            return false
+        }
+        let calculateList = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2, 0]
+        let checkList = ["1","0","X","9","8","7","6","5","4","3","2",]
+        var sum: Int = 0
+        for index in 0 ..< 17{
+            let curentStr = self.subString(from: index, to: index)
+            sum += (Int(curentStr) ?? 0) * calculateList[index]
+        }
+        let checkIndex = sum % 11
+        
+        return checkList[checkIndex] == self.subString(from: 17, to: 17)
+    }
+        
+    /// 正则
+    func isMatch(_ regex: String ) -> Bool {
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        let result: Bool = predicate.evaluate(with: self)
+        
+        return result
     }
 }
 

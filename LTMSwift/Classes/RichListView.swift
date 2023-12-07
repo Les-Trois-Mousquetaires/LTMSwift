@@ -136,7 +136,6 @@ extension RichListView: UITableViewDelegate, UITableViewDataSource{
     
     /// 处理点击事件
     private func clickEvent(_ data: RichModel, _ text: String, _ isOn: Bool){
-        self.tableview.endEditing(true)
         if data.eventKey.count > 0{
             guard let block = self.eventBlock else {
                 return
