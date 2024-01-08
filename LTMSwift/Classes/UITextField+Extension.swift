@@ -151,11 +151,11 @@ public extension UITextField{
         }
         let lastContent: String = UserDefaults.standard.string(forKey: "UITextFieldLastContent") ?? ""
         let selection = selectedTextRange
-        let result: NSDecimalNumber = NSDecimalNumber.init(string: prospectiveText)
+        let result: NSNumber = NSNumber(value: prospectiveText.doubleValue)
         if (lastContent.count > prospectiveText.count){
             /// 删除操作
         }else{
-            if (result.doubleValue > maxNumber.doubleValue){
+            if (result.compare(maxNumber) == .orderedDescending){
                 text = lastContent
                 prospectiveText = lastContent
                 if ((self.limitBlock) != nil){

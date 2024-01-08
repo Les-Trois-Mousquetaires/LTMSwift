@@ -202,7 +202,7 @@ public extension String{
     /// 卡号转4位+空格格式
     var bankCard444: String {
         if (self.count > 0){
-            var cardNo = self.replacingOccurrences(of: " ", with: "")
+            var cardNo = self.replacingSpace
             if cardNo.count > 4 {
                 let index = cardNo.index(cardNo.startIndex, offsetBy: 4)
                 cardNo.insert(" ", at: index)
@@ -339,7 +339,7 @@ public extension String {
         
     /// 身份证真伪校验
     var idCardNoCheck: Bool{
-        if self.replacingOccurrences(of: " ", with: "").count != 18 {
+        if self.replacingSpace.count != 18 {
             return false
         }
         let calculateList = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2, 0]

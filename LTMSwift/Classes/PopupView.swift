@@ -84,7 +84,7 @@ public class PopupView: UIView {
     public var willDismissCallback: (()->())?
     public var didDismissCallback: (()->())?
 
-    unowned let containerView: UIView
+    let containerView: UIView?
     let contentView: UIView
     let animator: PopupViewAnimator
     var isAnimating = false
@@ -141,17 +141,20 @@ public class PopupView: UIView {
     }
 
     public func display(animated: Bool, completion: (()->())?) {
+        guard let curContainerView = self.containerView else {
+            return
+        }
         if isAnimating {
             return
         }
         isPresenting = true
         isAnimating = true
-        containerView.addSubview(self)
+        curContainerView.addSubview(self)
         self.translatesAutoresizingMaskIntoConstraints = false
-        self.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-        self.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
-        self.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
-        self.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
+        self.topAnchor.constraint(equalTo: curContainerView.topAnchor).isActive = true
+        self.bottomAnchor.constraint(equalTo: curContainerView.bottomAnchor).isActive = true
+        self.leadingAnchor.constraint(equalTo: curContainerView.leadingAnchor).isActive = true
+        self.trailingAnchor.constraint(equalTo: curContainerView.trailingAnchor).isActive = true
 
         willDispalyCallback?()
         animator.display(contentView: contentView, backgroundView: backgroundView, animated: animated, completion: {
