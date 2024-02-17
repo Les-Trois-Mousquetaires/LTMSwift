@@ -99,11 +99,21 @@ open class TextSwitch: UIControl {
         return self.curStatus
     }
     
-    /// 设置开关状态
+    /// 设置开关状态 有动画
     public var setOn: Bool {
         set{
             self.curStatus = newValue
-            self.configAnimated(self.curStatus)
+            self.configHasAnimated(self.curStatus)
+        }get{
+            self.curStatus
+        }
+    }
+    
+    /// 设置开关状态 无动画
+    public var setNoAnimatedOn: Bool {
+        set{
+            self.curStatus = newValue
+            self.configNoAnimated(self.curStatus)
         }get{
             self.curStatus
         }
@@ -180,7 +190,7 @@ open class TextSwitch: UIControl {
 //MARK: - Event
 @objc private extension TextSwitch {
     
-    private func configAnimated(_ on: Bool){
+    private func configHasAnimated(_ on: Bool){
         let margin = (SwitchHeight - ThumbTintWidth) / 2
         let thumbTintWidth = ThumbTintWidth
         let switchWidth = SwitchWidth
@@ -200,6 +210,20 @@ open class TextSwitch: UIControl {
                 self?.onContainerView.frame = CGRect(x: -switchWidth, y: 0, width: switchWidth, height: switchHeight)
                 self?.offContainerView.frame = CGRect(x: 0, y: 0, width: switchWidth, height: switchHeight)
             }
+        }
+    }
+    private func configNoAnimated(_ on: Bool){
+        let margin = (SwitchHeight - ThumbTintWidth) / 2
+        let thumbTintWidth = ThumbTintWidth
+        let switchWidth = SwitchWidth
+        let switchHeight = SwitchHeight
+        
+        if(on){
+            self.onContainerView.frame = CGRect(x: 0, y: 0, width: switchWidth, height: switchHeight)
+            self.offContainerView.frame = CGRect(x: switchWidth, y: 0, width: switchWidth, height: switchHeight)
+        }else{
+            self.onContainerView.frame = CGRect(x: -switchWidth, y: 0, width: switchWidth, height: switchHeight)
+            self.offContainerView.frame = CGRect(x: 0, y: 0, width: switchWidth, height: switchHeight)
         }
     }
     

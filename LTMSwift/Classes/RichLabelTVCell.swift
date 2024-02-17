@@ -91,6 +91,7 @@ open class RichLabelTVCell: UITableViewCell {
     
     private lazy var titleRichLabel: YYLabel = {
         let label = YYLabel()
+        label.numberOfLines = 0
         label.isUserInteractionEnabled = true
         label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)

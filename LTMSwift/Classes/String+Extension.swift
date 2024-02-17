@@ -368,22 +368,20 @@ public extension String{
     /**
      计算文本高度
      
-     - parameter string 文本内容
      - parameter textFont 文本字体
      - parameter width 文本宽度
      */
-    func stringHeight(textFont: UIFont, width: CGFloat) -> CGFloat{
+    func getHeight(textFont: UIFont, width: CGFloat) -> CGFloat{
         return self.boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: [.font: textFont], context: nil).size.height
     }
     
     /**
      计算文本高度
      
-     - parameter string 文本内容
      - parameter textFont 文本字体
      - parameter height 文本高度
      */
-    func stringWidth(textFont: UIFont, height: CGFloat) -> CGFloat{
+    func getWidth(textFont: UIFont, height: CGFloat) -> CGFloat{
         return self.boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: height), options: .usesLineFragmentOrigin, attributes: [.font: textFont], context: nil).size.width
     }
 }

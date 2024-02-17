@@ -24,4 +24,28 @@ public extension NSAttributedString{
                                   attributes: [NSAttributedString.Key.paragraphStyle: style,
                                                NSMutableAttributedString.Key.kern: textSpace])
     }
+    
+    /**
+     计算富文本的高度
+     
+     - parameter width: 最大宽度
+     */
+    @discardableResult
+    func getHeight(_ width : CGFloat) -> CGFloat {
+        let rect = self.boundingRect(with: CGSize.init(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, context: nil)
+        
+        return rect.size.height
+    }
+    
+    /**
+     计算富文本的宽度
+     
+     - parameter height: 最大高度
+     */
+    @discardableResult
+    func getWidth(_ height: CGFloat) -> CGFloat {
+        let rect = self.boundingRect(with: CGSize.init(width: CGFloat(MAXFLOAT), height: height), options: NSStringDrawingOptions.usesLineFragmentOrigin, context: nil)
+        
+        return rect.size.width
+    }
 }
