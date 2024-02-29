@@ -9,9 +9,6 @@ import YYText
 import SnapKit
 
 open class RichLabelImageTVCell: UITableViewCell {
-    /// 响应key
-    public var eventBlock: (() -> Void)?
-    
     private var attrModel = RichLabelImageModel()
     /// 富文本模型
     public var model: RichModel {
@@ -69,15 +66,6 @@ open class RichLabelImageTVCell: UITableViewCell {
             make.bottom.right.equalTo(self.contentView)
             make.height.equalTo(1)
         }
-        let tapGes = UITapGestureRecognizer(target: self, action: #selector(click))
-        self.contentView.addGestureRecognizer(tapGes)
-    }
-    
-    @objc func click(){
-        guard let block = self.eventBlock else{
-            return
-        }
-        block()
     }
     
     required public init?(coder: NSCoder) {

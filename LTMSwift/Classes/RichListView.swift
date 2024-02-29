@@ -103,17 +103,11 @@ extension RichListView: UITableViewDelegate, UITableViewDataSource{
         case .richLabel:
             var cell: RichLabelTVCell = tableView.dequeueReusableCell(withIdentifier: "RichLabelTVCell") as? RichLabelTVCell ?? RichLabelTVCell.init(style: .default, reuseIdentifier: "RichLabelTVCell")
             cell.model = data
-            cell.eventBlock = {[weak self] in
-                self?.clickEvent(data, "", false)
-            }
             
             return cell
         case .richLabelImage:
             var cell = tableView.dequeueReusableCell(withIdentifier: "RichLabelImageTVCell") as? RichLabelImageTVCell ?? RichLabelImageTVCell.init(style: .default, reuseIdentifier: "RichLabelImageTVCell")
             cell.model = data
-            cell.eventBlock = {[weak self] in
-                self?.clickEvent(data, "", false)
-            }
             
             return cell
         case .textSwitch:
@@ -132,6 +126,21 @@ extension RichListView: UITableViewDelegate, UITableViewDataSource{
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         self.listData.count
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let data = self.listData[indexPath.row]
+        switch data.type {
+        case .textfield:
+            break
+        case .richLabel:
+            self.clickEvent(data, "", false)
+        case .richLabelImage:
+            self.clickEvent(data, "", false)
+        case .textSwitch:
+            break
+        }
+        
     }
     
     /// 处理点击事件

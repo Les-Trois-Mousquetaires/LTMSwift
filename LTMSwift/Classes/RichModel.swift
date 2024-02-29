@@ -128,6 +128,8 @@ public class RichTextSwitchModel: RichModel {
     public var textFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
     /// 开关圆形部位的颜色
     public var thumbTintColor: UIColor = .white
+    /// 开关是否有动画
+    public var hasAnimatedOn: Bool = false
     
     public override init() {
         super.init()

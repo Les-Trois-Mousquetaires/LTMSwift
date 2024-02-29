@@ -219,11 +219,19 @@ open class TextSwitch: UIControl {
         let switchHeight = SwitchHeight
         
         if(on){
-            self.onContainerView.frame = CGRect(x: 0, y: 0, width: switchWidth, height: switchHeight)
-            self.offContainerView.frame = CGRect(x: switchWidth, y: 0, width: switchWidth, height: switchHeight)
+            UIView.animate(withDuration: 0.01) {[weak self] in
+                self?.thumbTintView.frame = CGRect(x: switchWidth - margin - thumbTintWidth, y: margin, width: thumbTintWidth, height: thumbTintWidth)
+            } completion: {[weak self] result in
+                self?.onContainerView.frame = CGRect(x: 0, y: 0, width: switchWidth, height: switchHeight)
+                self?.offContainerView.frame = CGRect(x: switchWidth, y: 0, width: switchWidth, height: switchHeight)
+            }
         }else{
-            self.onContainerView.frame = CGRect(x: -switchWidth, y: 0, width: switchWidth, height: switchHeight)
-            self.offContainerView.frame = CGRect(x: 0, y: 0, width: switchWidth, height: switchHeight)
+            UIView.animate(withDuration: 0.01) {[weak self] in
+                self?.thumbTintView.frame = CGRect(x: margin, y: margin, width: thumbTintWidth, height: thumbTintWidth)
+            } completion: {[weak self] result in
+                self?.onContainerView.frame = CGRect(x: -switchWidth, y: 0, width: switchWidth, height: switchHeight)
+                self?.offContainerView.frame = CGRect(x: 0, y: 0, width: switchWidth, height: switchHeight)
+            }
         }
     }
     

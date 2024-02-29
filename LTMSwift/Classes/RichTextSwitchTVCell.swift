@@ -35,7 +35,11 @@ open class RichTextSwitchTVCell: UITableViewCell {
             self.textSwitch.offText = self.attrModel.offText
             self.textSwitch.offTextColor = self.attrModel.offTextColor
             self.textSwitch.offTintColor = self.attrModel.offTintColor
-            self.textSwitch.setOn = self.attrModel.status
+            if self.attrModel.hasAnimatedOn {
+                self.textSwitch.setOn = self.attrModel.status
+            }else{
+                self.textSwitch.setNoAnimatedOn = self.attrModel.status
+            }
             self.textSwitch.textFont = self.attrModel.textFont
             self.textSwitch.thumbTintColor = self.attrModel.thumbTintColor
             self.textSwitch.alpha = self.attrModel.alpha
