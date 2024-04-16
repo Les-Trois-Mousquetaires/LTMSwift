@@ -132,4 +132,48 @@ public extension UIImage{
         }
         return resultImage
     }
+    
+    /**
+     图片压缩
+     - parameter maxLength 图片大小 默认10M
+     - returns 压缩后的数据
+     */
+    func compressData(maxLength: Int = 10 * 1024 * 1024) -> Data {
+        var compression: CGFloat = 1
+        guard var data = self.jpegData(compressionQuality: compression), data.count > maxLength else {
+            return self.jpegData(compressionQuality: compression) ?? Data()
+        }
+        // 压缩大小
+        var max: CGFloat = 1
+        var min: CGFloat = 0
+        for _  in 0..<6 {
+            compression = (max + min) / 2
+            data = self.jpegData(compressionQuality: compression)!
+            if CGFloat(data.count) < CGFloat(maxLength) * 0.9 {
+                min = compression
+            } else if data.count > maxLength {
+                max = compression
+            } else {
+                break
+            }
+        }
+        var resultImage: UIImage = UIImage(data: data)!
+        if data.count < maxLength {
+            return data
+        }
+        // 压缩大小
+        var lastDataLength: Int = 0
+        while data.count > maxLength && data.count != lastDataLength {
+            lastDataLength = data.count
+            let ratio: CGFloat = CGFloat(maxLength) / CGFloat(data.count)
+            let size: CGSize = CGSize(width: Int(resultImage.size.width * sqrt(ratio)),
+                                      height: Int(resultImage.size.height * sqrt(ratio)))
+            UIGraphicsBeginImageContext(size)
+            resultImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+            resultImage = UIGraphicsGetImageFromCurrentImageContext()!
+            UIGraphicsEndImageContext()
+            data = resultImage.jpegData(compressionQuality: compression)!
+        }
+        return data
+    }
 }

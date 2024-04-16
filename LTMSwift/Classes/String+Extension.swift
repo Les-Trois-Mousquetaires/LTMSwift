@@ -157,6 +157,23 @@ public extension String{
         return "\(start)****\(end)"
     }
     
+    /// 格式化展示电话
+    var telFormat: String {
+        if self.isPhoneNumber {
+            let start = self.subString(to: 3)
+            let center = self.subString(from: 3, to: 6)
+            let end = self.subString(from: self.count - 4)
+            
+            return "\(start) \(center) \(end)"
+        }else if self.is400Tel {
+            return self.tel400Show
+        }else if self.isFixedLineTel {
+            return self.fixedLineTelShow
+        }
+
+        return self
+    }
+    
     /// 手机号转3 4 4空格格式
     var phoneNum344: String {
         if self.count != 11 {
