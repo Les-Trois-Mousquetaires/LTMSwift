@@ -283,6 +283,9 @@ extension TimePickerView: UIPickerViewDelegate{
         components.year = self.selectYear
         components.month = self.selectMonth
         components.day = self.selectDay
+        components.hour = self.selectHour
+        components.minute = self.selectMinute
+        components.second = self.selectSecond
         let selectDate = calendar.date(from: components)!
         if(selectDate.compare(self.maxDate) == .orderedDescending){
             configSelectRow(date: self.maxDate, yearRow: row - (self.selectYear - self.maxDate.year), isScroll: true)
@@ -295,6 +298,9 @@ extension TimePickerView: UIPickerViewDelegate{
         components.year = self.selectYear
         components.month = self.selectMonth
         components.day = self.selectDay
+        components.hour = self.selectHour
+        components.minute = self.selectMinute
+        components.second = self.selectSecond
         let selectDate = calendar.date(from: components)!
         if(self.minDate.compare(selectDate) == .orderedDescending){
             configSelectRow(date: self.minDate, yearRow: row + (self.minDate.year - self.selectYear), isScroll: true)

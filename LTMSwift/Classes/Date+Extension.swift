@@ -120,6 +120,24 @@ public extension Date{
         
         return calendar.date(byAdding: components, to: self) ?? Date()
     }
+    
+    /**
+     两个时间相差
+     
+     - parameter date 目标时间 比自身大
+     
+     hours 小时 minutes分钟 seconds秒
+     */
+    func timeDifference(_ date: Date) -> (hours: Int, minutes: Int, seconds: Int) {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour, .minute, .second], from: self, to: date)
+        
+        let hours = components.hour ?? 0
+        let minutes = components.minute ?? 0
+        let seconds = components.second ?? 0
+        
+        return (hours, minutes, seconds)
+    }
 }
 
 //MARK: - 时间展示

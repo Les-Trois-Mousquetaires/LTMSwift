@@ -89,6 +89,31 @@ public extension UIButton {
 
 //MARK: - UIButton设置标题、颜色、图片
 public extension UIButton {
+    /// 设置富文本标题
+    func setAttrTitle(_ attr: NSAttributedString){
+        self.setAttributedTitle(attr, for: .normal)
+        self.setAttributedTitle(attr, for: .selected)
+        self.setAttributedTitle(attr, for: .highlighted)
+    }
+    
+    /**
+     设置背景图片
+     */
+    func setBackgroundImage(_ image: UIImage?){
+        setBackgroundImage(image, for: .normal)
+        setBackgroundImage(image, for: .selected)
+        setBackgroundImage(image, for: .highlighted)
+    }
+    
+    /**
+     设置图片
+     */
+    func setImage(_ image: UIImage?){
+        setImage(image, for: .normal)
+        setImage(image, for: .selected)
+        setImage(image, for: .highlighted)
+    }
+    
     /**
      设置标题
      */
@@ -104,21 +129,5 @@ public extension UIButton {
         setTitleColor(color, for: .normal)
         setTitleColor(color, for: .selected)
         setTitleColor(color, for: .highlighted)
-    }
-    /**
-     设置图片
-     */
-    func setImage(_ image: UIImage?){
-        setImage(image, for: .normal)
-        setImage(image, for: .selected)
-        setImage(image, for: .highlighted)
-    }
-    /**
-     设置背景图片
-     */
-    func setBackgroundImage(_ image: UIImage?){
-        setBackgroundImage(image, for: .normal)
-        setBackgroundImage(image, for: .selected)
-        setBackgroundImage(image, for: .highlighted)
     }
 }

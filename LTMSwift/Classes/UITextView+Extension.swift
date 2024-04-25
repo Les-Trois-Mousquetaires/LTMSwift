@@ -33,6 +33,16 @@ public extension UITextView {
         }
     }
     
+    /// 占位文字字体
+    @IBInspectable var placeholderFont: UIFont {
+        get {
+            return self.placeholderLabel.font
+        }
+        set {
+            self.placeholderLabel.font = newValue
+        }
+    }
+    
     private var placeholderLabel: UILabel {
         get {
             var label = objc_getAssociatedObject(self, UITextView.RuntimeKey.extension_placeholderLabelKey!) as? UILabel
