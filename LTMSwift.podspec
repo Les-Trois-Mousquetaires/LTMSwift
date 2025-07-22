@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LTMSwift'
-  s.version          = '0.7.5'
+  s.version          = '0.8.0'
   s.summary          = 'Swift 项目常用组件库.'
 
 # This description is used to generate tags and improve search results.
@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
   s.author           = { 'kenan' => 'houkenan0620@126.com' }
   s.source           = { :git => 'https://github.com/Les-Trois-Mousquetaires/LTMSwift.git', :tag => s.version.to_s }
   
-  s.ios.deployment_target = '11.0'
+  s.ios.deployment_target = '13.0'
 
   s.swift_versions = '5.2'
   # s.resource_bundles = {
@@ -63,7 +63,7 @@ Pod::Spec.new do |s|
   s.subspec 'Network' do |ss|
       ss.source_files = 'LTMSwift/Classes/LTM{*}.swift'
       ss.dependency 'Moya'
-      ss.dependency 'HandyJSON'
+      ss.dependency 'SmartCodable'
   end
   
   s.subspec 'PopView' do |ss|
@@ -95,7 +95,6 @@ Pod::Spec.new do |s|
       ss.subspec 'RichView' do |ss|
           ss.source_files = 'LTMSwift/Classes/Rich{*}.swift'
           ss.dependency 'SnapKit'
-          ss.dependency 'YYText'
           ss.dependency 'LTMSwift/Extension'
           ss.dependency 'LTMSwift/UI/UISwitch'
       end

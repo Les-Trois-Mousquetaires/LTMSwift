@@ -1,64 +1,64 @@
 PODS:
-  - Alamofire (5.6.4)
+  - Alamofire (5.10.2)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
-  - HandyJSON (5.0.2)
-  - LTMSwift (0.7.5):
-    - LTMSwift/CoreData (= 0.7.5)
-    - LTMSwift/Extension (= 0.7.5)
-    - LTMSwift/HUDManage (= 0.7.5)
-    - LTMSwift/KeyChain (= 0.7.5)
-    - LTMSwift/Network (= 0.7.5)
-    - LTMSwift/PopView (= 0.7.5)
-    - LTMSwift/Scan (= 0.7.5)
-    - LTMSwift/UI (= 0.7.5)
-  - LTMSwift/CoreData (0.7.5)
-  - LTMSwift/Extension (0.7.5):
-    - LTMSwift/Extension/BaseExtension (= 0.7.5)
-    - LTMSwift/Extension/UIExtension (= 0.7.5)
-  - LTMSwift/Extension/BaseExtension (0.7.5)
-  - LTMSwift/Extension/UIExtension (0.7.5):
+  - LTMSwift (0.8.0):
+    - LTMSwift/CoreData (= 0.8.0)
+    - LTMSwift/Extension (= 0.8.0)
+    - LTMSwift/HUDManage (= 0.8.0)
+    - LTMSwift/KeyChain (= 0.8.0)
+    - LTMSwift/Network (= 0.8.0)
+    - LTMSwift/PopView (= 0.8.0)
+    - LTMSwift/Scan (= 0.8.0)
+    - LTMSwift/UI (= 0.8.0)
+  - LTMSwift/CoreData (0.8.0)
+  - LTMSwift/Extension (0.8.0):
+    - LTMSwift/Extension/BaseExtension (= 0.8.0)
+    - LTMSwift/Extension/UIExtension (= 0.8.0)
+  - LTMSwift/Extension/BaseExtension (0.8.0)
+  - LTMSwift/Extension/UIExtension (0.8.0):
     - LTMSwift/Extension/BaseExtension
-  - LTMSwift/HUDManage (0.7.5)
-  - LTMSwift/KeyChain (0.7.5)
-  - LTMSwift/Network (0.7.5):
-    - HandyJSON
+  - LTMSwift/HUDManage (0.8.0)
+  - LTMSwift/KeyChain (0.8.0)
+  - LTMSwift/Network (0.8.0):
     - Moya
-  - LTMSwift/PopView (0.7.5)
-  - LTMSwift/Scan (0.7.5):
+    - SmartCodable
+  - LTMSwift/PopView (0.8.0)
+  - LTMSwift/Scan (0.8.0):
     - LTMSwift/Extension
     - SnapKit
-  - LTMSwift/UI (0.7.5):
-    - LTMSwift/UI/Gradient (= 0.7.5)
-    - LTMSwift/UI/Keyboard (= 0.7.5)
-    - LTMSwift/UI/Margin (= 0.7.5)
-    - LTMSwift/UI/RichView (= 0.7.5)
-    - LTMSwift/UI/TimePicker (= 0.7.5)
-    - LTMSwift/UI/UISwitch (= 0.7.5)
-  - LTMSwift/UI/Gradient (0.7.5):
+  - LTMSwift/UI (0.8.0):
+    - LTMSwift/UI/Gradient (= 0.8.0)
+    - LTMSwift/UI/Keyboard (= 0.8.0)
+    - LTMSwift/UI/Margin (= 0.8.0)
+    - LTMSwift/UI/RichView (= 0.8.0)
+    - LTMSwift/UI/TimePicker (= 0.8.0)
+    - LTMSwift/UI/UISwitch (= 0.8.0)
+  - LTMSwift/UI/Gradient (0.8.0):
     - LTMSwift/Extension
-  - LTMSwift/UI/Keyboard (0.7.5):
+  - LTMSwift/UI/Keyboard (0.8.0):
     - LTMSwift/Extension
     - SnapKit
-  - LTMSwift/UI/Margin (0.7.5)
-  - LTMSwift/UI/RichView (0.7.5):
+  - LTMSwift/UI/Margin (0.8.0)
+  - LTMSwift/UI/RichView (0.8.0):
     - LTMSwift/Extension
     - LTMSwift/UI/UISwitch
     - SnapKit
-    - YYText
-  - LTMSwift/UI/TimePicker (0.7.5):
+  - LTMSwift/UI/TimePicker (0.8.0):
     - LTMSwift/Extension
     - SnapKit
-  - LTMSwift/UI/UISwitch (0.7.5)
+  - LTMSwift/UI/UISwitch (0.8.0)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
   - Moya/Core (15.0.0):
     - Alamofire (~> 5.0)
+  - SmartCodable (5.0.15):
+    - SmartCodable/Core (= 5.0.15)
+  - SmartCodable/Core (5.0.15)
   - SnapKit (5.6.0)
-  - YYText (1.0.7)
 
 DEPENDENCIES:
   - FBSnapshotTestCase (~> 2.1.4)
@@ -67,10 +67,9 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Alamofire
-    - HandyJSON
     - Moya
+    - SmartCodable
     - SnapKit
-    - YYText
   trunk:
     - FBSnapshotTestCase
 
@@ -79,14 +78,13 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
+  Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
-  LTMSwift: 0f3fb3de11aaf5df01a74447fe9b42e71a891669
+  LTMSwift: bdc64fa1ea33a36d2b4ea5592c3295db2d1f337d
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
+  SmartCodable: 8b4680fac3922b63b910ddc442bfcfc96a63ef9e
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
-  YYText: 5c461d709e24d55a182d1441c41dc639a18a4849
 
-PODFILE CHECKSUM: 8ea9eb1fa355c03eb740b79b84aa347a9186b32b
+PODFILE CHECKSUM: ad45b0b9df9daed014645b15134357cbd436151e
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

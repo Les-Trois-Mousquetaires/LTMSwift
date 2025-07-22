@@ -1,6 +1,6 @@
 {
   "name": "LTMSwift",
-  "version": "0.7.5",
+  "version": "0.8.0",
   "summary": "Swift 项目常用组件库.",
   "description": "LTMSwift is swift often uselib.\nLTMExtension is Swift Classes folder tool\nLTMExtension is tools folder",
   "homepage": "https://github.com/Les-Trois-Mousquetaires/LTMSwift",
@@ -13,10 +13,10 @@
   },
   "source": {
     "git": "https://github.com/Les-Trois-Mousquetaires/LTMSwift.git",
-    "tag": "0.7.5"
+    "tag": "0.8.0"
   },
   "platforms": {
-    "ios": "11.0"
+    "ios": "13.0"
   },
   "swift_versions": "5.2",
   "frameworks": [
@@ -35,9 +35,7 @@
           "name": "UIExtension",
           "source_files": "LTMSwift/Classes/UI{*}+{*}.swift",
           "dependencies": {
-            "LTMSwift/Extension/BaseExtension": [
-
-            ]
+            "LTMSwift/Extension/BaseExtension": []
           }
         },
         {
@@ -64,12 +62,8 @@
       "name": "Network",
       "source_files": "LTMSwift/Classes/LTM{*}.swift",
       "dependencies": {
-        "Moya": [
-
-        ],
-        "HandyJSON": [
-
-        ]
+        "Moya": [],
+        "SmartCodable": []
       }
     },
     {
@@ -80,12 +74,8 @@
       "name": "Scan",
       "source_files": "LTMSwift/Classes/Scan{*}.swift",
       "dependencies": {
-        "SnapKit": [
-
-        ],
-        "LTMSwift/Extension": [
-
-        ]
+        "SnapKit": [],
+        "LTMSwift/Extension": []
       }
     },
     {
@@ -95,21 +85,15 @@
           "name": "Gradient",
           "source_files": "LTMSwift/Classes/Gradient{*}.swift",
           "dependencies": {
-            "LTMSwift/Extension": [
-
-            ]
+            "LTMSwift/Extension": []
           }
         },
         {
           "name": "Keyboard",
           "source_files": "LTMSwift/Classes/Keyboard{*}.swift",
           "dependencies": {
-            "SnapKit": [
-
-            ],
-            "LTMSwift/Extension": [
-
-            ]
+            "SnapKit": [],
+            "LTMSwift/Extension": []
           }
         },
         {
@@ -120,30 +104,17 @@
           "name": "RichView",
           "source_files": "LTMSwift/Classes/Rich{*}.swift",
           "dependencies": {
-            "SnapKit": [
-
-            ],
-            "YYText": [
-
-            ],
-            "LTMSwift/Extension": [
-
-            ],
-            "LTMSwift/UI/UISwitch": [
-
-            ]
+            "SnapKit": [],
+            "LTMSwift/Extension": [],
+            "LTMSwift/UI/UISwitch": []
           }
         },
         {
           "name": "TimePicker",
           "source_files": "LTMSwift/Classes/TimePicker{*}.swift",
           "dependencies": {
-            "SnapKit": [
-
-            ],
-            "LTMSwift/Extension": [
-
-            ]
+            "SnapKit": [],
+            "LTMSwift/Extension": []
           }
         },
         {

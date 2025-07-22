@@ -5,7 +5,6 @@
 //  Created by zsn on 2023/11/14.
 //
 
-import YYText
 import SnapKit
 
 open class RichTextSwitchTVCell: UITableViewCell {
@@ -92,8 +91,8 @@ open class RichTextSwitchTVCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var titleRichLabel: YYLabel = {
-        let label = YYLabel()
+    private lazy var titleRichLabel: UILabel = {
+        let label = UILabel()
         label.numberOfLines = 0
         label.isUserInteractionEnabled = true
         label.setContentHuggingPriority(.defaultHigh, for: .horizontal)

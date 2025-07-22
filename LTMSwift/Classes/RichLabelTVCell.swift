@@ -5,7 +5,6 @@
 //  Created by zsn on 2023/11/14.
 //
 
-import YYText
 import SnapKit
 
 open class RichLabelTVCell: UITableViewCell {
@@ -78,8 +77,8 @@ open class RichLabelTVCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var titleRichLabel: YYLabel = {
-        let label = YYLabel()
+    private lazy var titleRichLabel: UILabel = {
+        let label = UILabel()
         label.numberOfLines = 0
         label.isUserInteractionEnabled = true
         label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
@@ -88,8 +87,8 @@ open class RichLabelTVCell: UITableViewCell {
         return label
     }()
     
-    private lazy var valueRichLabel: YYLabel = {
-        let label = YYLabel()
+    private lazy var valueRichLabel: UILabel = {
+        let label = UILabel()
         label.textAlignment = .right
         label.isUserInteractionEnabled = true
         label.numberOfLines = 0

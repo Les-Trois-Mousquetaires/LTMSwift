@@ -87,102 +87,90 @@ public extension UIDevice {
 }
 
 public extension UIDevice {
-    /// 几代
-    var generation: String {
+    
+    func isSimulator() -> Bool {
+#if targetEnvironment(simulator)
+        return true
+#else
+        return false
+#endif
+    }
+    
+     var detailedModel: String {
         var systemInfo = utsname()
         uname(&systemInfo)
-        let machineMirror = Mirror(reflecting: systemInfo.machine)
-        let identifier = machineMirror.children.reduce("") { identifier, element in
-            guard let value = element.value as? Int8, value != 0 else {
-                return identifier
-            }
-            return identifier + String(UnicodeScalar(UInt8(value)))
+        let mirror = Mirror(reflecting: systemInfo.machine)
+        return mirror.children.compactMap {
+            guard let value = $0.value as? Int8, value != 0 else { return nil }
+            return String(UnicodeScalar(UInt8(value)))
+        }.joined()
+    }
+    
+     var sizeModel: (size: String, model: String) {
+        if UIDevice.current.isSimulator() {
+            return ("Simulator", "Simulator")
         }
-        
-        switch identifier {
-        case "iPhone7,2":
-            return "iPhone 6"
-        case "iPhone7,1":
-            return "iPhone 6 Plus"
-        case "iPhone8,1":
-            return "iPhone 6s"
-        case "iPhone8,2":
-            return "iPhone 6s Plus"
-        case "iPhone8,4":
-            return "iPhone SE (1st generation))"
-            
-        case "iPhone9,1","iPhone9,3":
-            return "iPhone 7"
-        case "iPhone9,2","iPhone9,4":
-            return "iPhone 7 Plus"
-            
-        case "iPhone10,1","iPhone10,4":
-            return "iPhone 8"
-        case "iPhone10,2","iPhone10,5":
-            return "iPhone 8 Plus"
-            
-        case "iPhone10,3","iPhone10,6":
-            return "iPhone X"
-        case "iPhone11,2":
-            return "iPhone XS"
-        case "iPhone11,4","iPhone11,6":
-            return "iPhone XS Max"
-        case "iPhone11,8":
-            return "iPhone XR"
-            
-        case "iPhone12,1":
-            return "iPhone 11"
-        case "iPhone12,3":
-            return "iPhone 11 Pro"
-        case "iPhone12,5":
-            return "iPhone 11 Pro Max"
-        case "iPhone12,8":
-            return "iPhone SE (2nd generation))"
-            
-        case "iPhone13,1":
-            return "iPhone 12 mini"
-        case "iPhone13,2":
-            return "iPhone 12"
-        case "iPhone13,3":
-            return "iPhone 12 Pro"
-        case "iPhone13,4":
-            return "iPhone 12 Pro Max"
-            
-        case "iPhone14,4":
-            return "iPhone 13 mini"
-        case "iPhone14,5":
-            return "iPhone 13"
-        case "iPhone14,2":
-            return "iPhone 13 Pro"
-        case "iPhone14,3":
-            return "iPhone 13 Pro Max"
-        case "iPhone14,6":
-            return "iPhone SE (3rd generation))"
-            
-        case "iPhone14,7":
-            return "iPhone 14"
-        case "iPhone14,8":
-            return "iPhone 14 Plus"
-        case "iPhone15,2":
-            return "iPhone 14 Pro"
-        case "iPhone15,3":
-            return "iPhone 14 Pro Max"
-            
-        case "iPhone15,4":
-            return "iPhone 15"
-        case "iPhone15,5":
-            return "iPhone 15 Plus"
-        case "iPhone16,1":
-            return "iPhone 15 Pro"
-        case "iPhone16,2":
-            return "iPhone 15 Pro Max"
-            
-        case "i386","x86_64":
-            return "Simulator"
-            
-        default:
-            return identifier
-        }
+        let deviceMap: [String: (size: String, model: String)] = [
+            "iPhone1,1": ("3.5", "iPhone (1st)"),
+            "iPhone1,2": ("3.5", "iPhone 3G"),
+            "iPhone2,1": ("3.5", "iPhone 3GS"),
+            "iPhone3,1": ("3.5", "iPhone 4"),
+            "iPhone3,3": ("3.5", "iPhone 4"),
+            "iPhone4,1": ("3.5", "iPhone 4S"),
+            "iPhone5,1": ("4.0", "iPhone 5"),
+            "iPhone5,2": ("4.0", "iPhone 5"),
+            "iPhone5,3": ("4.0", "iPhone 5c"),
+            "iPhone5,4": ("4.0", "iPhone 5c"),
+            "iPhone6,1": ("4.0", "iPhone 5s"),
+            "iPhone6,2": ("4.0", "iPhone 5s"),
+            "iPhone7,1": ("5.5", "iPhone 6 Plus"),
+            "iPhone7,2": ("4.7", "iPhone 6"),
+            "iPhone8,1": ("4.7", "iPhone 6s"),
+            "iPhone8,2": ("5.5", "iPhone 6s Plus"),
+            "iPhone8,4": ("4.0", "iPhone SE (1st generation)"),
+            "iPhone9,1": ("4.7", "iPhone 7"),
+            "iPhone9,2": ("5.5", "iPhone 7 Plus"),
+            "iPhone9,3": ("4.7", "iPhone 7"),
+            "iPhone9,4": ("5.5", "iPhone 7 Plus"),
+            "iPhone10,1": ("4.7", "iPhone 8"),
+            "iPhone10,2": ("5.5", "iPhone 8 Plus"),
+            "iPhone10,3": ("5.8", "iPhone X"),
+            "iPhone10,4": ("4.7", "iPhone 8"),
+            "iPhone10,5": ("5.5", "iPhone 8 Plus"),
+            "iPhone10,6": ("5.8", "iPhone X"),
+            "iPhone11,2": ("5.8", "iPhone XS"),
+            "iPhone11,4": ("6.5", "iPhone XS Max"),
+            "iPhone11,6": ("6.5", "iPhone XS Max"),
+            "iPhone11,8": ("6.1", "iPhone XR"),
+            "iPhone12,1": ("6.1", "iPhone 11"),
+            "iPhone12,3": ("5.8", "iPhone 11 Pro"),
+            "iPhone12,5": ("6.5", "iPhone 11 Pro Max"),
+            "iPhone12,8": ("4.7", "iPhone SE (2nd generation)"),
+            "iPhone13,1": ("5.4", "iPhone 12 mini"),
+            "iPhone13,2": ("6.1", "iPhone 12"),
+            "iPhone13,3": ("6.1", "iPhone 12 Pro"),
+            "iPhone13,4": ("6.7", "iPhone 12 Pro Max"),
+            "iPhone14,2": ("6.1", "iPhone 13 Pro"),
+            "iPhone14,3": ("6.7", "iPhone 13 Pro Max"),
+            "iPhone14,4": ("5.4", "iPhone 13 mini"),
+            "iPhone14,5": ("6.1", "iPhone 13"),
+            "iPhone14,6": ("4.7", "iPhone SE (3rd generation)"),
+            "iPhone14,7": ("6.1", "iPhone 14"),
+            "iPhone14,8": ("6.7", "iPhone 14 Plus"),
+            "iPhone15,2": ("6.1", "iPhone 14 Pro"),
+            "iPhone15,3": ("6.7", "iPhone 14 Pro Max"),
+            "iPhone15,4": ("6.1", "iPhone 15"),
+            "iPhone15,5": ("6.7", "iPhone 15 Plus"),
+            "iPhone16,1": ("6.1", "iPhone 15 Pro"),
+            "iPhone16,2": ("6.7", "iPhone 15 Pro Max"),
+            "iPhone17,1": ("6.1", "iPhone 16"),
+            "iPhone17,3": ("6.3", "iPhone 16 Pro"),
+            "iPhone17,2": ("6.7", "iPhone 16 Plus"),
+            "iPhone17,4": ("6.9", "iPhone 16 Pro Max"),
+            "iPhone17,5": ("6.1", "iPhone SE (4th generation)")
+        ]
+        print("detailedModel",self.detailedModel)
+        return deviceMap[self.detailedModel] ?? ("", "")
     }
     
     /// 是否越狱

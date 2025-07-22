@@ -8,66 +8,49 @@
 import Foundation
 import Moya
 
+typealias responseBlcok = ((_ result: Any?) -> Void)
+
 open class LTMNetworkDeal: NSObject {
-    /// 数据成功返回码 与dataValue、msgValue 同一级
-    public var codeValue: String = "code"
-    /// 有效数据返回字段 与codeValue、msgValue 同一级
-    public var dataValue: String = "entity"
-    /// 错误信息返回字段， 与codeValue、dataValue 同一级
-    public var msgValue: String = "message"
     
-    //MARK: - 数据处理中心
-    public func dealWithResult<Model: LTMModel>(targetName: Model,result: Result<Response, MoyaError>, successClosure:((_ result: Any) -> ())? = nil, failureClosure:((_ errorCode: Int, _ errorMessage: String) ->())? = nil){
-        
-        switch result {
-        case let .success(moyaResponse):
-            guard let resultDic: [String: Any] = try? moyaResponse.mapJSON() as? [String : Any] else {
-                DispatchQueue.main.async {
-                    failureClosure?(moyaResponse.statusCode, "数据解析异常")
-                }
+    public var codeKey: String = "code"
+    public var codeSuccess: String = "200"
+    public var dataKey: String = "data"
+    
+    func handleData<T: LTMModel>(model: T, response:Result<Response, MoyaError>, successBlock:((_ result: T?) -> Void)?, failureBlcok: responseBlcok?) {
+        switch response {
+        case .success(let success):
+            guard let data: [String: Any] = try? success.mapJSON() as? [String: Any] else {
                 return
             }
-            switch moyaResponse.statusCode {
+            switch success.statusCode {
             case 200:
-                let code: Int = resultDic[self.codeValue] as? Int ?? moyaResponse.statusCode
+                let code = "\(data[self.codeKey] ?? "")"
                 switch code {
-                case 200:
-                    guard let systemEntity: [String: Any] = resultDic[dataValue] as? [String : Any] else {
-                        DispatchQueue.main.async {
-                            successClosure?(self.successDealWtih(response: resultDic, targetName: targetName ))
-                        }
+                case self.codeSuccess:
+                    guard let result: [String: Any] = data[self.dataKey] as? [String: Any] else {
+                        successBlock?(successHandle(data: data, model: model))
                         return
                     }
-                    DispatchQueue.main.async {
-                        successClosure?(self.successDealWtih(response: systemEntity, targetName: targetName ))
-                    }
-                    
+                    successBlock?(successHandle(data: result, model: model))
                 default:
-                    DispatchQueue.main.async {
-                        failureClosure?(code, self.failureDealWith(response: resultDic) ?? "服务器异常,未确认错误信息")
-                    }
+                    failureBlcok?(failureHandle(data: data))
                 }
             default:
-                DispatchQueue.main.async {
-                    failureClosure?(moyaResponse.statusCode, self.failureDealWith(response: resultDic) ?? "服务器异常,未确认错误信息")
-                }
+                failureBlcok?(failureHandle(data: data))
             }
-        case let .failure(error):
-            print("error \(error)")
-            DispatchQueue.main.async {
-                failureClosure?(error.errorCode, error.errorDescription ?? "网络请求异常,请稍后重试!")
-            }
+        case .failure(let failure):
+            failureBlcok?(failureHandle(data: failure))
         }
     }
     
-    //MARK: - Deal info
-    private func successDealWtih<Model: LTMModel>(response: [String : Any], targetName: Model) -> Any{
-        let resultModel = Model.deserialize(from: response)
+    func successHandle<T: LTMModel>(data: [String: Any], model: T) -> T? {
         
-        return resultModel ?? NSObject()
+        print("当前~~result~~successHandle", data, model)
+        return T.deserialize(from: data)
     }
     
-    open func failureDealWith(response: Any) -> String?{
-        return "failure"
+    func failureHandle(data: Any) -> Any? {
+        
+        return data
     }
 }

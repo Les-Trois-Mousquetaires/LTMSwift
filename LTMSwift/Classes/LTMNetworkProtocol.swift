@@ -5,10 +5,10 @@
 //  Created by zsn on 2022/12/4.
 //
 
-import HandyJSON
+import SmartCodable
 /**
  模型转换中间层
  */
-public protocol LTMModel: HandyJSON{
+public protocol LTMModel: SmartCodable{
     
 }
