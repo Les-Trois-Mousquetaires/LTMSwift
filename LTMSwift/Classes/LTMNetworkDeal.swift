@@ -8,15 +8,13 @@
 import Foundation
 import Moya
 
-typealias responseBlcok = ((_ result: Any?) -> Void)
-
 open class LTMNetworkDeal: NSObject {
     
     public var codeKey: String = "code"
     public var codeSuccess: String = "200"
     public var dataKey: String = "data"
     
-    func handleData<T: LTMModel>(model: T, response:Result<Response, MoyaError>, successBlock:((_ result: T?) -> Void)?, failureBlcok: responseBlcok?) {
+    public func handleData<T: LTMModel>(model: T, response:Result<Response, MoyaError>, successBlock:((_ result: T?) -> Void)?, failureBlcok: ((_ result: Any?) -> Void)?) {
         switch response {
         case .success(let success):
             guard let data: [String: Any] = try? success.mapJSON() as? [String: Any] else {
@@ -43,13 +41,13 @@ open class LTMNetworkDeal: NSObject {
         }
     }
     
-    func successHandle<T: LTMModel>(data: [String: Any], model: T) -> T? {
+    private func successHandle<T: LTMModel>(data: [String: Any], model: T) -> T? {
         
         print("当前~~result~~successHandle", data, model)
         return T.deserialize(from: data)
     }
     
-    func failureHandle(data: Any) -> Any? {
+    open func failureHandle(data: Any) -> Any? {
         
         return data
     }
