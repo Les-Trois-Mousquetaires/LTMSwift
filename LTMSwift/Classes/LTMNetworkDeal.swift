@@ -7,6 +7,7 @@
 
 import Foundation
 import Moya
+import SmartCodable
 
 open class LTMNetworkDeal: NSObject {
     
