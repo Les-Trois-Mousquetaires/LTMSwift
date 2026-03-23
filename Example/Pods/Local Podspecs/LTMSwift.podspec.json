@@ -41,10 +41,7 @@
         {
           "name": "BaseExtension",
           "source_files": [
-            "LTMSwift/Classes/A{*}+{*}.swift",
-            "LTMSwift/Classes/D{*}+{*}.swift",
-            "LTMSwift/Classes/N{*}+{*}.swift",
-            "LTMSwift/Classes/S{*}+{*}.swift",
+            "LTMSwift/Classes/{A,D,N,S}*+*.swift",
             "LTMSwift/Classes/Swizzling.swift"
           ]
         }

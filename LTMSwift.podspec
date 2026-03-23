@@ -48,7 +48,7 @@ Pod::Spec.new do |s|
       end
       
       ss.subspec 'BaseExtension' do |ss|
-          ss.source_files = 'LTMSwift/Classes/A{*}+{*}.swift','LTMSwift/Classes/D{*}+{*}.swift','LTMSwift/Classes/N{*}+{*}.swift','LTMSwift/Classes/S{*}+{*}.swift','LTMSwift/Classes/Swizzling.swift'
+          ss.source_files = 'LTMSwift/Classes/{A,D,N,S}*+*.swift','LTMSwift/Classes/Swizzling.swift'
       end
   end
   

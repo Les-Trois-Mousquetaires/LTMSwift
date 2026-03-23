@@ -51,7 +51,7 @@ public extension NSObject {
     
     /// 获取顶部VC
     var topVC: UIViewController? {
-        return UIApplication.shared.curTopViewController
+        return UIApplication.shared.curTopVC
     }
     
 }

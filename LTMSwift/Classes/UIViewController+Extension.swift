@@ -5,7 +5,7 @@
 //  Created by 柯南 on 2023/1/11.
 //
 
-import Foundation
+import UIKit
 
 public extension UIViewController{
     /**
@@ -26,10 +26,4 @@ public extension UIViewController{
         self.navigationController?.navigationBar.backItem?.setHidesBackButton(false, animated: true)
     }
     
-    /// 获取根视图
-    var rootVC: UIViewController? {
-        let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).last
-
-        return window?.rootViewController
-    }
 }
