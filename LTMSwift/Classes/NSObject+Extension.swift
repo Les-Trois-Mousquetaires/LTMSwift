@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 public extension NSObject {
     // 方法交换
     static func ltm_swizzleMethod(_ cls: AnyClass, originalSelector: Selector, swizzleSelector: Selector){
@@ -50,36 +51,7 @@ public extension NSObject {
     
     /// 获取顶部VC
     var topVC: UIViewController? {
-        
-        guard let keyWindow = UIApplication.shared.windows.filter({$0.isKeyWindow}).first , let rootVC = keyWindow.rootViewController else {
-            return nil
-        }
-        
-        return self.getTopVC(rootVC)
+        return UIApplication.shared.curTopViewController
     }
     
-    private func getTopVC(_ vc: UIViewController?) -> UIViewController? {
-        guard let rootVC = vc else {
-            return nil
-        }
-        if rootVC.isKind(of: UITabBarController.self){
-            guard let tabBarVC = rootVC as? UITabBarController else {
-                return nil
-            }
-            return self.getTopVC(tabBarVC.selectedViewController)
-        }else if rootVC.isKind(of: UINavigationController.self){
-            guard let navVC = rootVC as? UINavigationController else {
-                return nil
-            }
-            return self.getTopVC(navVC.visibleViewController)
-        }
-        if ((rootVC.presentedViewController) != nil){
-            guard let preVC = rootVC.presentedViewController else {
-                return nil
-            }
-            return  self.getTopVC(preVC)
-        }
-        
-        return rootVC
-    }
 }

@@ -6,32 +6,22 @@
 //
 
 import Foundation
+import UIKit
 
 public extension UIDevice {
     /// 是否是刘海屏
     var isBangScreen: Bool {
-        if #available(iOS 11.0, *){
-            guard let window = UIApplication.shared.delegate?.window, let unwrapedWindow = window else {
-                return false
-            }
-            if unwrapedWindow.safeAreaInsets.left > 0 || unwrapedWindow.safeAreaInsets.bottom > 0 {
-                return true
-            }
+        if #available(iOS 11.0, *) {
+            guard let window = UIApplication.shared.curWindow else { return false }
+            return window.safeAreaInsets.left > 0 || window.safeAreaInsets.bottom > 0
         }
-        
         return false
     }
     
     /// 顶部高度
     var topHeight: CGFloat {
-        if #available(iOS 13.0, *) {
-            let scene = UIApplication.shared.connectedScenes.first
-            guard let windowScene = scene as? UIWindowScene else { return 0 }
-            guard let window = windowScene.windows.first else { return 0 }
-            return window.safeAreaInsets.top
-        }
         if #available(iOS 11.0, *) {
-            guard let window = UIApplication.shared.windows.first else { return 0 }
+            guard let window = UIApplication.shared.curWindow else { return 0 }
             return window.safeAreaInsets.top
         }
         return 0
@@ -39,14 +29,8 @@ public extension UIDevice {
     
     /// 底部高度
     var bottomHeight: CGFloat {
-        if #available(iOS 13.0, *) {
-            let scene = UIApplication.shared.connectedScenes.first
-            guard let windowScene = scene as? UIWindowScene else { return 0 }
-            guard let window = windowScene.windows.first else { return 0 }
-            return window.safeAreaInsets.bottom
-        }
         if #available(iOS 11.0, *) {
-            guard let window = UIApplication.shared.windows.first else { return 0 }
+            guard let window = UIApplication.shared.curWindow else { return 0 }
             return window.safeAreaInsets.bottom
         }
         return 0
@@ -55,13 +39,10 @@ public extension UIDevice {
     /// 顶部状态栏高度
     var statusBarHeight: CGFloat {
         if #available(iOS 13.0, *) {
-            let scene = UIApplication.shared.connectedScenes.first
-            guard let windowScene = scene as? UIWindowScene else { return 0 }
-            guard let statusBarManager = windowScene.statusBarManager else { return 0 }
+            guard let statusBarManager = UIApplication.shared.curWindowScene?.statusBarManager else { return 0 }
             return statusBarManager.statusBarFrame.height
-        } else {
-            return UIApplication.shared.statusBarFrame.height
         }
+        return topHeight > 0 ? topHeight : 20
     }
     
     /// 导航栏高度
@@ -96,7 +77,7 @@ public extension UIDevice {
 #endif
     }
     
-     var detailedModel: String {
+    var detailedModel: String {
         var systemInfo = utsname()
         uname(&systemInfo)
         let mirror = Mirror(reflecting: systemInfo.machine)
@@ -106,11 +87,7 @@ public extension UIDevice {
         }.joined()
     }
     
-     var sizeModel: (size: String, model: String) {
-        if UIDevice.current.isSimulator() {
-            return ("Simulator", "Simulator")
-        }
-        let deviceMap: [String: (size: String, model: String)] = [
+    private static let deviceMap: [String: (size: String, model: String)] = [
             "iPhone1,1": ("3.5", "iPhone (第1代)"),
             "iPhone1,2": ("3.5", "iPhone 3G"),
             "iPhone2,1": ("3.5", "iPhone 3GS"),
@@ -267,9 +244,14 @@ public extension UIDevice {
             "iPad16,4": ("11", "iPad Pro 11-inch (M4)"),
             "iPad16,5": ("13", "iPad Pro 13-inch (M4)"),
             "iPad16,6": ("13", "iPad Pro 13-inch (M4)"),
-        ]
-        print("detailedModel",self.detailedModel)
-        if let model = deviceMap[self.detailedModel] {
+    ]
+    
+    var sizeModel: (size: String, model: String) {
+        if UIDevice.current.isSimulator() {
+            return ("Simulator", "Simulator")
+        }
+        
+        if let model = Self.deviceMap[self.detailedModel] {
             return model
         }
         if self.detailedModel.hasPrefix("iPad") {
@@ -289,16 +271,18 @@ public extension UIDevice {
             "/Applications/RockApp.app",
             "/Applications/Icy.app",
             "/Applications/WinterBoard.app",
-            "/Applications/SBSetttings.app",
+            "/Applications/SBSettings.app",
             "/Applications/blackra1n.app",
             "/Applications/IntelliScreen.app",
             "/Applications/Snoop-itConfig.app",
             "/bin/sh",
             "/usr/libexec/sftp-server",
-            "/usr/libexec/ssh-keysign /Library/MobileSubstrate/MobileSubstrate.dylib",
+            "/usr/libexec/ssh-keysign",
+            "/Library/MobileSubstrate/MobileSubstrate.dylib",
             "/bin/bash",
             "/usr/sbin/sshd",
-            "/etc/apt /System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist",
+            "/etc/apt",
+            "/System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist",
             "/System/Library/LaunchDaemons/com.ikey.bbot.plist",
             "/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist",
             "/Library/MobileSubstrate/DynamicLibraries/Veency.plist"
