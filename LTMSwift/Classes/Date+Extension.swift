@@ -185,7 +185,10 @@ public extension Date {
     
     /// 当月天数
     var days: Int{
-       return Calendar.current.range(of: Calendar.Component.day, in: Calendar.Component.month, for: self)!.count
+       guard let range = Calendar.current.range(of: Calendar.Component.day, in: Calendar.Component.month, for: self) else {
+           return 0
+       }
+       return range.count
     }
     
     /// 星期几
@@ -240,10 +243,7 @@ public extension Date {
     
     /// 是否在本天
     var isToday: Bool {
-        if (fabs(self.timeIntervalSinceNow) >= 24 * 60 * 60 ){
-            return false
-        }
-        return self.day == Date().day && self.month == Date().month && self.year == Date().year
+        return Calendar.current.isDateInToday(self)
     }
     
     /// 是否在本月
@@ -292,7 +292,7 @@ public extension Date {
         }
         components.day = self.day - countDays
         
-        return calendar.date(from: components)!
+        return calendar.date(from: components) ?? self.startDate
     }
     
     /// 当月1号
@@ -323,9 +323,11 @@ public extension Date {
         calendar.firstWeekday = 1
         var comp = calendar.dateComponents([.year, .month, .day], from: self)
         comp.day = 1
-        let firstDayInMonth = calendar.date(from: comp)!
-        let weekday = calendar.ordinality(of: Calendar.Component.weekday, in: Calendar.Component.weekOfMonth, for: firstDayInMonth)
-        return weekday! - 1
+        guard let firstDayInMonth = calendar.date(from: comp),
+              let weekday = calendar.ordinality(of: Calendar.Component.weekday, in: Calendar.Component.weekOfMonth, for: firstDayInMonth) else {
+            return 0
+        }
+        return weekday - 1
     }
 }
 
@@ -350,7 +352,9 @@ public extension String{
             return Date()
         }
         
-        let interval: TimeInterval = TimeInterval.init(self)!
+        guard let interval = TimeInterval(self) else {
+            return Date()
+        }
         if (self.count == 13 && interval > 0){
             return Date(timeIntervalSince1970: interval/1000)
         }else if (self.count == 10 && interval > 0){

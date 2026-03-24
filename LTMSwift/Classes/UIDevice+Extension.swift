@@ -11,38 +11,26 @@ import UIKit
 public extension UIDevice {
     /// 是否是刘海屏
     var isBangScreen: Bool {
-        if #available(iOS 11.0, *) {
-            guard let window = UIApplication.shared.curWindow else { return false }
-            return window.safeAreaInsets.left > 0 || window.safeAreaInsets.bottom > 0
-        }
-        return false
+        guard let window = UIApplication.shared.curWindow else { return false }
+        return window.safeAreaInsets.left > 0 || window.safeAreaInsets.bottom > 0
     }
     
     /// 顶部高度
     var topHeight: CGFloat {
-        if #available(iOS 11.0, *) {
-            guard let window = UIApplication.shared.curWindow else { return 0 }
-            return window.safeAreaInsets.top
-        }
-        return 0
+        guard let window = UIApplication.shared.curWindow else { return 0 }
+        return window.safeAreaInsets.top
     }
     
     /// 底部高度
     var bottomHeight: CGFloat {
-        if #available(iOS 11.0, *) {
-            guard let window = UIApplication.shared.curWindow else { return 0 }
-            return window.safeAreaInsets.bottom
-        }
-        return 0
+        guard let window = UIApplication.shared.curWindow else { return 0 }
+        return window.safeAreaInsets.bottom
     }
     
     /// 顶部状态栏高度
     var statusBarHeight: CGFloat {
-        if #available(iOS 13.0, *) {
-            guard let statusBarManager = UIApplication.shared.curWindowScene?.statusBarManager else { return 0 }
-            return statusBarManager.statusBarFrame.height
-        }
-        return topHeight > 0 ? topHeight : 20
+        guard let statusBarManager = UIApplication.shared.curWindowScene?.statusBarManager else { return 0 }
+        return statusBarManager.statusBarFrame.height
     }
     
     /// 导航栏高度

@@ -42,16 +42,12 @@ public extension NSObject {
         }
         // 在cell上 保证丝滑....
         DispatchQueue.main.async {
-            let phoneUrlStr = "telprompt://" + phoneStr
-            if UIApplication.shared.canOpenURL(URL(string: phoneUrlStr)!) {
-                UIApplication.shared.open(URL(string: phoneUrlStr)!, options: [:], completionHandler: nil)
+            let phoneUrlStr = "tel://" + phoneStr
+            guard let phoneUrl = URL(string: phoneUrlStr),
+                  UIApplication.shared.canOpenURL(phoneUrl) else {
+                return
             }
+            UIApplication.shared.open(phoneUrl, options: [:], completionHandler: nil)
         }
     }
-    
-    /// 获取顶部VC
-    var topVC: UIViewController? {
-        return UIApplication.shared.curTopVC
-    }
-    
 }
