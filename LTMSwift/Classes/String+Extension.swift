@@ -78,6 +78,11 @@ public extension String {
 
 //MARK: - 字符串操作
 public extension String{
+    private func clampedIndex(_ offset: Int) -> String.Index {
+        let value = max(0, min(self.count, offset))
+        return self.index(self.startIndex, offsetBy: value)
+    }
+    
     //从0索引处开始查找是否包含指定的字符串，返回Int类型的索引
     //返回第一次出现的指定子字符串在此字符串中的索引
     func findFirst(_ sub:String) -> Int {
@@ -108,8 +113,10 @@ public extension String{
      截取到任意位置
      */
     func subString(to: Int) -> String {
-        let index: String.Index = self.index(startIndex, offsetBy: to)
-        
+        guard !self.isEmpty else {
+            return self
+        }
+        let index = self.clampedIndex(to)
         return String(self[..<index])
     }
     
@@ -117,8 +124,10 @@ public extension String{
      从任意位置开始截取
      */
     func subString(from: Int) -> String {
-        let index: String.Index = self.index(startIndex, offsetBy: from)
-        
+        guard !self.isEmpty else {
+            return self
+        }
+        let index = self.clampedIndex(from)
         return String(self[index ..< endIndex])
     }
     
@@ -126,9 +135,16 @@ public extension String{
      从任意位置开始截取到任意位置
      */
     func subString(from: Int, to: Int) -> String {
-        let beginIndex = self.index(self.startIndex, offsetBy: from)
-        let endIndex = self.index(self.startIndex, offsetBy: to)
-        
+        guard !self.isEmpty else {
+            return self
+        }
+        let lower = max(0, min(self.count - 1, from))
+        let upper = max(0, min(self.count - 1, to))
+        guard lower <= upper else {
+            return ""
+        }
+        let beginIndex = self.index(self.startIndex, offsetBy: lower)
+        let endIndex = self.index(self.startIndex, offsetBy: upper)
         return String(self[beginIndex...endIndex])
     }
     
@@ -138,6 +154,9 @@ public extension String{
     func changeFontColor(subString: String, font: UIFont, textColor: UIColor)-> NSMutableAttributedString {
         let range = (self as NSString).range(of: subString)
         let attStr = NSMutableAttributedString.init(string: self)
+        guard range.location != NSNotFound else {
+            return attStr
+        }
         attStr.addAttributes([NSAttributedString.Key.foregroundColor: textColor, NSAttributedString.Key.font: font], range: range)
         
         return attStr
@@ -245,21 +264,19 @@ public extension String{
     /// base64编码字符串生成图片
     var base64Image: UIImage? {
         let base64String = self.replacingOccurrences(of: "data:image/jpg;base64,", with: "")
-        //转换尝试判断，有可能返回的数据丢失"=="，如果丢失，swift校验不通过
-        var imageData = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters)
-        if imageData == nil {
-            //如果数据不正确，添加"=="重试
-            imageData = Data(base64Encoded: base64String + "==", options: .ignoreUnknownCharacters)
-        }
-        var image:UIImage?
-        if imageData != nil {
-            //            print("图片不为空")
-            image = UIImage(data: imageData!) ?? UIImage() //转换内容
+            .replacingOccurrences(of: "data:image/jpeg;base64,", with: "")
+            .replacingOccurrences(of: "data:image/png;base64,", with: "")
+        let remainder = base64String.count % 4
+        let normalizedBase64: String
+        if remainder == 0 {
+            normalizedBase64 = base64String
         } else {
-            //            print("图片为空")
+            normalizedBase64 = base64String + String(repeating: "=", count: 4 - remainder)
         }
-        
-        return image
+        guard let imageData = Data(base64Encoded: normalizedBase64, options: .ignoreUnknownCharacters) else {
+            return nil
+        }
+        return UIImage(data: imageData)
     }
     
     /// 字符串汉字转拼音
@@ -286,20 +303,26 @@ public extension String{
     func createQRImage(_ bgColor: UIColor = .white, _ qrColor: UIColor = .black) -> UIImage?{
         let data = self.data(using: .utf8, allowLossyConversion: false)
         // 创建一个二维码的滤镜
-        let qrFilter = CIFilter(name: "CIQRCodeGenerator")!
+        guard let qrFilter = CIFilter(name: "CIQRCodeGenerator") else {
+            return nil
+        }
         qrFilter.setDefaults()
         qrFilter.setValue(data, forKey: "inputMessage")
         qrFilter.setValue("H", forKey: "inputCorrectionLevel")
         let qrCIImage = qrFilter.outputImage
         
         // 创建一个颜色滤镜
-        let colorFilter = CIFilter(name: "CIFalseColor")!
+        guard let colorFilter = CIFilter(name: "CIFalseColor") else {
+            return nil
+        }
         colorFilter.setDefaults()
         colorFilter.setValue(qrCIImage, forKey: "inputImage")
         colorFilter.setValue(CIColor(color: qrColor), forKey: "inputColor0")
         colorFilter.setValue(CIColor(color: bgColor), forKey: "inputColor1")
-        
-        return UIImage(ciImage: colorFilter.outputImage!.transformed(by: CGAffineTransform(scaleX: 10, y: 10)))
+        guard let outputImage = colorFilter.outputImage else {
+            return nil
+        }
+        return UIImage(ciImage: outputImage.transformed(by: CGAffineTransform(scaleX: 10, y: 10)))
     }
 }
 
@@ -334,7 +357,7 @@ public extension String {
     /// 固定电话
     var tel400Show: String {
         if self.is400Tel {
-            var result: NSMutableString = NSMutableString(string: self)
+            let result: NSMutableString = NSMutableString(string: self)
             if self.count > 3 {
                 result.insert("-", at: 3)
             }
@@ -368,7 +391,7 @@ public extension String {
         }
         let checkIndex = sum % 11
         
-        return checkList[checkIndex] == self.subString(from: 17, to: 17)
+        return checkList[checkIndex] == self.subString(from: 17, to: 17).uppercased()
     }
         
     /// 正则

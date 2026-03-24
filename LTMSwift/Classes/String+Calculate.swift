@@ -98,40 +98,18 @@ public extension String {
         case RoundingType.bankers:
             tp = NSDecimalNumber.RoundingMode.bankers
         }
-        let roundUp = NSDecimalNumberHandler(roundingMode: tp, scale:Int16(num), raiseOnExactness: false, raiseOnOverflow: false, raiseOnUnderflow: false, raiseOnDivideByZero: true)
-        
-        let discount = NSDecimalNumber(string: self)
-        let subtotal = NSDecimalNumber(string: "0")
-        // 加 保留 2 位小数
-        let total = subtotal.adding(discount, withBehavior: roundUp).stringValue
-        //        let flot = Float(total)!
-        //        let str = String(format: "%.2f", flot)
-        
-        var mutstr = String()
-        
-        if total.contains(".") {
-            let float = total.components(separatedBy: ".").last!;
-            if float.count == Int(num) {
-                mutstr .append(total);
-                return mutstr
-            } else {
-                mutstr.append(total)
-                let all = num - float.count
-                for _ in 1...all {
-                    mutstr += "0"
-                }
-                return mutstr
-            }
-        } else {
-            mutstr.append(total + ".")
-            if num == 0 {
-            } else {
-                for _ in 1...num {
-                    mutstr += "0"
-                }
-            }
-            return mutstr
+        let value = NSDecimalNumber(string: self)
+        if value == NSDecimalNumber.notANumber {
+            return self
         }
-        // 加 保留 2 位小数
+        let safeScale = max(0, num)
+        let behavior = NSDecimalNumberHandler(roundingMode: tp, scale: Int16(safeScale), raiseOnExactness: false, raiseOnOverflow: false, raiseOnUnderflow: false, raiseOnDivideByZero: true)
+        let roundedValue = value.rounding(accordingToBehavior: behavior)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .none
+        formatter.minimumFractionDigits = safeScale
+        formatter.maximumFractionDigits = safeScale
+        formatter.roundingMode = NumberFormatter.RoundingMode(rawValue: tp.rawValue) ?? .halfUp
+        return formatter.string(from: roundedValue) ?? roundedValue.stringValue
     }
 }

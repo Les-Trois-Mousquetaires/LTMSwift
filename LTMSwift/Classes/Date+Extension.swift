@@ -34,7 +34,7 @@ public extension Date{
         var components: DateComponents = DateComponents()
         components.year = years
         
-        return calendar.date(byAdding: components, to: self) ?? Date()
+        return calendar.date(byAdding: components, to: self) ?? self
     }
     
     /**
@@ -48,7 +48,7 @@ public extension Date{
         var components: DateComponents = DateComponents()
         components.month = months
         
-        return calendar.date(byAdding: components, to: self) ?? Date()
+        return calendar.date(byAdding: components, to: self) ?? self
     }
     
     /**
@@ -62,7 +62,7 @@ public extension Date{
         var components: DateComponents = DateComponents()
         components.weekOfYear = weeks
         
-        return calendar.date(byAdding: components, to: self) ?? Date()
+        return calendar.date(byAdding: components, to: self) ?? self
     }
     
     /**
@@ -76,7 +76,7 @@ public extension Date{
         var components: DateComponents = DateComponents()
         components.day = days
         
-        return calendar.date(byAdding: components, to: self) ?? Date()
+        return calendar.date(byAdding: components, to: self) ?? self
     }
     
     /**
@@ -90,7 +90,7 @@ public extension Date{
         var components: DateComponents = DateComponents()
         components.hour = hours
         
-        return calendar.date(byAdding: components, to: self) ?? Date()
+        return calendar.date(byAdding: components, to: self) ?? self
     }
     
     /**
@@ -104,7 +104,7 @@ public extension Date{
         var components: DateComponents = DateComponents()
         components.minute = minutes
         
-        return calendar.date(byAdding: components, to: self) ?? Date()
+        return calendar.date(byAdding: components, to: self) ?? self
     }
     
     /**
@@ -118,7 +118,7 @@ public extension Date{
         var components: DateComponents = DateComponents()
         components.second = seconds
         
-        return calendar.date(byAdding: components, to: self) ?? Date()
+        return calendar.date(byAdding: components, to: self) ?? self
     }
     
     /**
@@ -248,33 +248,23 @@ public extension Date {
     
     /// 是否在本月
     var isInMonth: Bool {
-        return self.month == Date().month && self.year == Date().year
+        return Calendar.current.isDate(self, equalTo: Date(), toGranularity: .month)
     }
     
     
     /// 当天开始时间  0:0:0:0
     var startDate: Date {
-        let calendar = Calendar.current
-        var components = DateComponents()
-        components.year = self.year
-        components.month = self.month
-        components.day = self.day
-        
-        return calendar.date(from: components) ?? Date()
+        return Calendar.current.startOfDay(for: self)
     }
     
     /// 当天结束时间 23:59:59秒
     var endDate: Date {
         let calendar = Calendar.current
-        var components = DateComponents()
-        components.year = self.year
-        components.month = self.month
-        components.day = self.day
-        components.hour = 23
-        components.minute = 59
-        components.second = 59
-        
-        return calendar.date(from: components) ?? Date()
+        let startOfDay = calendar.startOfDay(for: self)
+        guard let startOfNextDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
+            return self
+        }
+        return startOfNextDay.addingTimeInterval(-1)
     }
     
     /// 本周星期一
@@ -303,7 +293,7 @@ public extension Date {
         components.month = self.month
         components.day = 1
         
-        return calendar.date(from: components) ?? Date()
+        return calendar.date(from: components) ?? self.startDate
     }
     
     /// 月末 本月最后一天
@@ -314,7 +304,7 @@ public extension Date {
         components.month = self.month
         components.day = self.days
         
-        return calendar.date(from: components) ?? Date()
+        return calendar.date(from: components) ?? self.endDate
     }
     
     //获得当前月份第一天星期几

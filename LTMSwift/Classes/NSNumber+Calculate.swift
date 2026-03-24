@@ -7,6 +7,13 @@
 
 import Foundation
 public extension NSNumber{
+    private var decimalNumberValue: NSDecimalNumber {
+        if let decimal = self as? NSDecimalNumber {
+            return decimal
+        }
+        return NSDecimalNumber(string: self.stringValue)
+    }
+    
     //    RoundingMode : UInt {
     //        // 全向右靠，向大靠拢
     //    case ceiling = 0
@@ -50,10 +57,11 @@ public extension NSNumber{
      - parameter hasComma 是否包含逗号
      */
     private func decimalDigit(_ digit: Int, _ mode: NumberFormatter.RoundingMode, _ hasComma: Bool) -> String{
+        let safeDigit = max(0, digit)
         let format = NumberFormatter.init()
         format.numberStyle = hasComma == true ? .decimal : .none // 是否带逗号
-        format.minimumFractionDigits = digit // 最少小数位
-        format.maximumFractionDigits = digit // 最多小数位
+        format.minimumFractionDigits = safeDigit // 最少小数位
+        format.maximumFractionDigits = safeDigit // 最多小数位
         format.formatterBehavior = .default
         format.roundingMode = mode
         return format.string(from: self) ?? ""
@@ -65,8 +73,8 @@ public extension NSNumber{
      - parameter num 被加数
      */
     func adding(num:NSNumber) -> NSNumber{
-        let number1 = NSDecimalNumber(string: self.stringValue)
-        let number2 = NSDecimalNumber(string: num.stringValue)
+        let number1 = self.decimalNumberValue
+        let number2 = num.decimalNumberValue
         let sum = number1.adding(number2)
         return sum
     }
@@ -77,8 +85,8 @@ public extension NSNumber{
      - parameter num 被减数
      */
     func subtracting(num:NSNumber) -> NSNumber{
-        let number1 = NSDecimalNumber(string: self.stringValue)
-        let number2 = NSDecimalNumber(string: num.stringValue)
+        let number1 = self.decimalNumberValue
+        let number2 = num.decimalNumberValue
         let sum = number1.subtracting(number2)
         return sum
     }
@@ -89,8 +97,8 @@ public extension NSNumber{
      - parameter num 被乘数
      */
     func multiplying(num:NSNumber) -> NSNumber{
-        let number1 = NSDecimalNumber(string: self.stringValue)
-        let number2 = NSDecimalNumber(string: num.stringValue)
+        let number1 = self.decimalNumberValue
+        let number2 = num.decimalNumberValue
         let sum = number1.multiplying(by: number2)
         return sum
     }
@@ -100,8 +108,11 @@ public extension NSNumber{
      - parameter num 被除数
      */
     func dividing(num:NSNumber) -> NSNumber{
-        let number1 = NSDecimalNumber(string: self.stringValue)
-        let number2 = NSDecimalNumber(string: num.stringValue)
+        let number1 = self.decimalNumberValue
+        let number2 = num.decimalNumberValue
+        if number2 == .zero {
+            return 0
+        }
         let sum = number1.dividing(by: number2)
         return sum
     }

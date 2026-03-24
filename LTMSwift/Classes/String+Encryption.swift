@@ -139,18 +139,22 @@ public extension String{
         let stringLength = CUnsignedInt(self.lengthOfBytes(using: String.Encoding.utf8))
         let digestLength = Int(CC_MD5_DIGEST_LENGTH)
         let result = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLength)
+        defer {
+            result.deallocate()
+        }
         CC_MD5(string, stringLength, result)
         let hash = NSMutableString()
         for i in 0 ..< digestLength{
             hash.appendFormat("%02\(outputFormat)" as NSString, result[i])
         }
-        free(result)
         
         return hash as String
     }
     
     private func stringToSHA1(outputFormat: String) ->String{
-        let data = self.data(using: String.Encoding.utf8)!
+        guard let data = self.data(using: String.Encoding.utf8) else {
+            return ""
+        }
         var digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
         CC_SHA1([UInt8](data), CC_LONG(data.count), &digest)
         let output = NSMutableString(capacity: Int(CC_SHA1_DIGEST_LENGTH))
@@ -161,4 +165,3 @@ public extension String{
         return output as String
     }
 }
-
