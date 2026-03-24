@@ -1,5 +1,5 @@
 //
-//  Ignored.swift
+//  SmartIgnored.swift
 //  SmartCodable
 //
 //  Created by Mccc on 2024/4/30.
@@ -20,16 +20,36 @@ import Foundation
    rather than being overwritten by decoded values.
  */
 @propertyWrapper
-public struct IgnoredKey<T>: Codable {
+public struct SmartIgnored<T>: PropertyWrapperable {
     
     /// The underlying value being wrapped
     public var wrappedValue: T
 
-    /// Determines whether this property should be included in encoding
-    var isEncodable: Bool = true
+    public init(wrappedValue: T) {
+        self.wrappedValue = wrappedValue
+    }
+    public func wrappedValueDidFinishMapping() -> SmartIgnored<T>? {
+        if var temp = wrappedValue as? SmartDecodable {
+            temp.didFinishMapping()
+            return SmartIgnored(wrappedValue: temp as! T)
+        }
+        return nil
+    }
+        
+    /// Creates an instance from any value if possible
+    public static func createInstance(with value: Any) -> SmartIgnored? {
+        if let value = value as? T {
+            return SmartIgnored(wrappedValue: value)
+        }
+        return nil
+    }
     
-
-    /// Initializes an IgnoredKey with a wrapped value and encoding control
+    
+    
+    /// Determines whether this property should be included in encoding
+    var isEncodable: Bool = false
+    
+    /// Initializes an SmartIgnored with a wrapped value and encoding control
     /// - Parameters:
     ///   - wrappedValue: The initial/default value
     ///   - isEncodable: Whether the property should be included in encoding (default: false)
@@ -37,27 +57,20 @@ public struct IgnoredKey<T>: Codable {
         self.wrappedValue = wrappedValue
         self.isEncodable = isEncodable
     }
+}
 
+
+extension SmartIgnored: Codable {
     public init(from decoder: Decoder) throws {
         // Attempt to get default value first
         guard let impl = decoder as? JSONDecoderImpl else {
             wrappedValue = try Patcher<T>.defaultForType()
             return
         }
-        
-        // Support for custom decoding strategies on IgnoredKey properties
-        if let key = impl.codingPath.last {
-            if let tranformer = impl.cache.valueTransformer(for: key, codingPath: impl.codingPath) {
-                if let decoded = tranformer.tranform(value: impl.json) as? T {
-                    wrappedValue = decoded
-                    return
-                }
-            }
-        }
-        
+
         /// Special handling for SmartJSONDecoder parser - throws exceptions to be handled by container
         if let key = CodingUserInfoKey.parsingMark, let _ = impl.userInfo[key] {
-            throw DecodingError.typeMismatch(IgnoredKey<T>.self, DecodingError.Context(
+            throw DecodingError.typeMismatch(SmartIgnored<T>.self, DecodingError.Context(
                 codingPath: decoder.codingPath, debugDescription: "\(Self.self) does not participate in the parsing, please ignore it.")
             )
         }
@@ -70,14 +83,6 @@ public struct IgnoredKey<T>: Codable {
         
         guard isEncodable else { return }
         
-        if let impl = encoder as? JSONEncoderImpl,
-            let key = impl.codingPath.last,
-           let jsonValue = impl.cache.tranform(from: wrappedValue, with: key, codingPath: impl.codingPath),
-            let value = jsonValue.peel as? Encodable {
-            try value.encode(to: encoder)
-            return
-        }
-        
         // Manual encoding for Encodable types, nil otherwise
         if let encodableValue = wrappedValue as? Encodable {
             try encodableValue.encode(to: encoder)
@@ -87,6 +92,8 @@ public struct IgnoredKey<T>: Codable {
         }
     }
 }
+
+
 extension JSONDecoderImpl {
     fileprivate func smartDecode<T>(type: T.Type) throws -> T {
         try cache.initialValue(forKey: codingPath.last, codingPath: codingPath)

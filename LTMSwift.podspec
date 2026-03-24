@@ -63,7 +63,7 @@ Pod::Spec.new do |s|
   s.subspec 'Network' do |ss|
       ss.source_files = 'LTMSwift/Classes/LTM{*}.swift'
       ss.dependency 'Moya'
-      ss.dependency 'SmartCodable'
+      ss.dependency 'SmartCodable', '~> 6.0.1'
   end
   
   s.subspec 'PopView' do |ss|

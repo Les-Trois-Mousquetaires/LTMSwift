@@ -213,7 +213,7 @@ extension SmartAnyImpl {
         case let v as NSNumber:      return .number(v)
         case let v as String:        return .string(v)
         case let v as [String: Any]: return .dict(v.mapValues { convertToSmartAny($0) })
-        case let v as SmartCodable:
+        case let v as SmartCodableX:
             if let dict = v.toDictionary() {
                 return .dict(dict.mapValues { convertToSmartAny($0) })
             }
@@ -230,8 +230,8 @@ extension SmartAnyImpl {
 extension JSONDecoderImpl {
     fileprivate func unwrapSmartAny() throws -> SmartAnyImpl {
         
-        if let tranformer = cache.valueTransformer(for: codingPath.last, codingPath: codingPath) {
-            if let decoded = tranformer.tranform(value: json) as? SmartAnyImpl {
+        if let tranformer = cache.valueTransformer(for: codingPath.last, in: codingPath.dropLast()) {
+            if let decoded = tranformer.transformFromJSON(json) as? SmartAnyImpl {
                 return decoded
             } else {
                 throw DecodingError.dataCorrupted(

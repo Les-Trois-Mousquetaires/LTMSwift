@@ -9,6 +9,6 @@ import SmartCodable
 /**
  模型转换中间层
  */
-public protocol LTMModel: SmartCodable{
+public protocol LTMModel: SmartDecodable, SmartEncodable{
     
 }

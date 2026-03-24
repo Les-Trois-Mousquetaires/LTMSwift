@@ -60,7 +60,9 @@
       "source_files": "LTMSwift/Classes/LTM{*}.swift",
       "dependencies": {
         "Moya": [],
-        "SmartCodable": []
+        "SmartCodable": [
+          "~> 6.0.1"
+        ]
       }
     },
     {

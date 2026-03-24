@@ -34,7 +34,6 @@ extension JSONDecoderImpl {
         if type == CGFloat.self {
             return try unwrapCGFloat() as! T
         }
-        
         if type is _JSONStringDictionaryDecodableMarker.Type {
             return try self.unwrapDictionary(as: type)
         }
@@ -48,8 +47,8 @@ extension JSONDecoderImpl {
     func unwrapFloatingPoint<T: LosslessStringConvertible & BinaryFloatingPoint>(
         from value: JSONValue, for additionalKey: CodingKey? = nil, as type: T.Type) -> T? {
             
-            if let tranformer = cache.valueTransformer(for: additionalKey, codingPath: codingPath) {
-                guard let decoded = tranformer.tranform(value: value) as? T else { return nil }
+            if let tranformer = cache.valueTransformer(for: additionalKey, in: codingPath) {
+                guard let decoded = tranformer.transformFromJSON(value) as? T else { return nil }
                 return decoded
             }
             
@@ -75,8 +74,8 @@ extension JSONDecoderImpl {
     func unwrapFixedWidthInteger<T: FixedWidthInteger>(
         from value: JSONValue, for additionalKey: CodingKey? = nil, as type: T.Type) -> T? {
             
-            if let tranformer = cache.valueTransformer(for: additionalKey, codingPath: codingPath) {
-                return tranformer.tranform(value: value) as? T
+            if let tranformer = cache.valueTransformer(for: additionalKey, in: codingPath) {
+                return tranformer.transformFromJSON(value) as? T
             }
             
             guard case .number(let number) = value else { return nil }
@@ -125,8 +124,8 @@ extension JSONDecoderImpl {
     
     func unwrapBoolValue(from value: JSONValue, for additionalKey: CodingKey? = nil) -> Bool? {
         
-        if let tranformer = cache.valueTransformer(for: additionalKey, codingPath: codingPath) {
-            return tranformer.tranform(value: value) as? Bool
+        if let tranformer = cache.valueTransformer(for: additionalKey, in: codingPath) {
+            return tranformer.transformFromJSON(value) as? Bool
         }
         
         guard case .bool(let bool) = value else { return nil }
@@ -135,8 +134,8 @@ extension JSONDecoderImpl {
     
     func unwrapStringValue(from value: JSONValue, for additionalKey: CodingKey? = nil) -> String? {
         
-        if let tranformer = cache.valueTransformer(for: additionalKey, codingPath: codingPath) {
-            return tranformer.tranform(value: value) as? String
+        if let tranformer = cache.valueTransformer(for: additionalKey, in: codingPath) {
+            return tranformer.transformFromJSON(value) as? String
         }
         
         guard case .string(let string) = value else { return nil }
@@ -144,20 +143,28 @@ extension JSONDecoderImpl {
     }
 }
 
+/// 新开了SingleContainer，此时key已经被添加到codingPath中了。
 extension JSONDecoderImpl {
-    private func unwrapDate() throws -> Date {
-        
-        if let tranformer = cache.valueTransformer(for: codingPath.last, codingPath: codingPath) {
-            if let decoded = tranformer.tranform(value: json) as? Date {
-                return decoded
-            } else {
-                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Encountered Date is not valid , unknown anomaly"))
-            }
+    
+    private func unwrapCGFloat() throws -> CGFloat {
+        guard case .number(let numberString) = self.json else {
+            throw DecodingError.typeMismatch(CGFloat.self, DecodingError.Context(
+                codingPath: self.codingPath,
+                debugDescription: "Expected a JSON number for \(CGFloat.self), but found."))
         }
         
+        guard let doubleValue = Double(numberString) else {
+            throw DecodingError.dataCorrupted(.init(
+                codingPath: self.codingPath,
+                debugDescription: "Parsed JSON number <\(numberString)> is not a valid Double for conversion to \(CGFloat.self)."))
+        }
+        
+        return CGFloat(doubleValue)
+    }
+    
+    private func unwrapDate() throws -> Date {
         let container = SingleValueContainer(impl: self, codingPath: codingPath, json: json)
 
-        
         if let dateDecodingStrategy = self.options.dateDecodingStrategy  {
             switch dateDecodingStrategy {
             case .deferredToDate:
@@ -206,14 +213,7 @@ extension JSONDecoderImpl {
     }
     
     private func unwrapData() throws -> Data {
-        
-        if let tranformer = cache.valueTransformer(for: codingPath.last, codingPath: codingPath) {
-            if let decoded = tranformer.tranform(value: json) as? Data {
-                return decoded
-            }
-            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Encountered Data is not valid Base64."))
-        }
-        
+
         switch self.options.dataDecodingStrategy {
         case .base64:
             let container = SingleValueContainer(impl: self, codingPath: self.codingPath, json: self.json)
@@ -228,17 +228,7 @@ extension JSONDecoderImpl {
     }
     
     private func unwrapURL() throws -> URL {
-        
-        if let tranformer = cache.valueTransformer(for: codingPath.last, codingPath: codingPath) {
-            if let decoded = tranformer.tranform(value: json) as? URL {
-                return decoded
-            }
-            throw DecodingError.dataCorrupted(
-                DecodingError.Context(codingPath: self.codingPath,
-                                      debugDescription: "Invalid URL string."))
-        }
-        
-        
+
         let container = SingleValueContainer(impl: self, codingPath: self.codingPath, json: self.json)
         let string = try container.decode(String.self)
         
@@ -251,16 +241,7 @@ extension JSONDecoderImpl {
     }
     
     private func unwrapDecimal() throws -> Decimal {
-        
-        if let tranformer = cache.valueTransformer(for: codingPath.last, codingPath: codingPath) {
-            if let decoded = tranformer.tranform(value: json) as? Decimal {
-                return decoded
-            }
-            throw DecodingError.dataCorrupted(.init(
-                codingPath: self.codingPath,
-                debugDescription: "Parsed JSON number does not fit in \(Decimal.self)."))
-        }
-        
+
         guard case .number(let numberString) = self.json else {
             throw DecodingError.typeMismatch(Decimal.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: ""))
         }
@@ -275,30 +256,6 @@ extension JSONDecoderImpl {
     }
     
     
-    private func unwrapCGFloat() throws -> CGFloat {
-        if let transformer = cache.valueTransformer(for: codingPath.last, codingPath: codingPath) {
-            if let decoded = transformer.tranform(value: json) as? CGFloat {
-                return decoded
-            }
-            throw DecodingError.dataCorrupted(.init(
-                codingPath: self.codingPath,
-                debugDescription: "Parsed JSON value cannot be transformed to \(CGFloat.self)."))
-        }
-        
-        guard case .number(let numberString) = self.json else {
-            throw DecodingError.typeMismatch(CGFloat.self, DecodingError.Context(
-                codingPath: self.codingPath,
-                debugDescription: "Expected a JSON number for \(CGFloat.self), but found."))
-        }
-        
-        guard let doubleValue = Double(numberString) else {
-            throw DecodingError.dataCorrupted(.init(
-                codingPath: self.codingPath,
-                debugDescription: "Parsed JSON number <\(numberString)> is not a valid Double for conversion to \(CGFloat.self)."))
-        }
-        
-        return CGFloat(doubleValue)
-    }
     
     
     private func unwrapDictionary<T: Decodable>(as: T.Type) throws -> T {
@@ -323,7 +280,7 @@ extension JSONDecoderImpl {
                 from: value,
                 codingPath: newPath,
                 options: self.options)
-            result[key] = try dictType.elementType.createByDirectlyUnwrapping(from: newDecoder)
+            result[key] = try dictType.elementType._eraseCreateByDirectUnwrap(from: newDecoder)
         }
         return result as! T
     }
@@ -343,17 +300,51 @@ extension JSONDecoderImpl {
 
 
 extension Decodable {
-    fileprivate static func createByDirectlyUnwrapping(from decoder: JSONDecoderImpl) throws -> Self {
+    fileprivate static func createByDirectlyUnwrapping<T>(from decoder: JSONDecoderImpl, type: T.Type) throws -> Self {
         if Self.self == URL.self
             || Self.self == Date.self
             || Self.self == Data.self
             || Self.self == Decimal.self
+            || Self.self == CGFloat.self
             || Self.self == SmartAnyImpl.self
             || Self.self is _JSONStringDictionaryDecodableMarker.Type
         {
             return try decoder.unwrap(as: Self.self)
         }
-        return try Self.init(from: decoder)
+        decoder.cache.cacheSnapshot(for: type, codingPath: decoder.codingPath)
+        let decoded = try Self.init(from: decoder)
+        decoder.cache.removeSnapshot(for: type)
+        
+        
+        return decoded
+    }
+    
+    /// createByDirectlyUnwrapping 的 Self 是静态绑定的（一个真正的类型），
+    /// 不能直接通过 Decodable.Type 这样的「存在类型」调用。
+    ///
+    /// 例如：
+    ///     let type: Decodable.Type = Int.self
+    ///     type.createByDirectlyUnwrapping(...)   // ❌ 编译不会通过
+    ///
+    /// Swift 在协议扩展里对 static 方法的规则是：
+    /// - 必须在编译期确定具体的 Self 类型
+    /// - 协议存在类型（Decodable.Type）并不携带这个静态类型信息
+    ///
+    /// unwrapDictionary 的场景里，我们拿到的是
+    ///     dictType.elementType: Decodable.Type
+    /// 这里没有具体的 Self，因此无法直接调 createByDirectlyUnwrapping。
+    ///
+    /// _eraseCreateByDirectUnwrap 做的事很简单：
+    /// - 把静态方法的调用重新包装一层，让 Self = 实际的 metatype 本身
+    /// - 返回值用 Any 消除静态类型要求
+    ///
+    /// 最终可以通过：
+    ///     dictType.elementType._eraseCreateByDirectUnwrap(...)
+    /// 让 Swift 正确推导 Self 并调用真正的解码逻辑。
+    ///
+    /// 本质上，这是一个「存在类型调用协议扩展 static 方法」的逃逸通道。
+    static func _eraseCreateByDirectUnwrap(from decoder: JSONDecoderImpl) throws -> Any {
+        return try self.createByDirectlyUnwrapping(from: decoder, type: self)
     }
 }
 
@@ -363,3 +354,5 @@ internal let _iso8601Formatter: ISO8601DateFormatter = {
     formatter.formatOptions = .withInternetDateTime
     return formatter
 }()
+
+

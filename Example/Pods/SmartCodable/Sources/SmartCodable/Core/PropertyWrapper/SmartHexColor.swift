@@ -11,7 +11,7 @@
  * Usage Example:
  *
  * ```
- struct SomeModel: SmartCodable {
+ struct SomeModel: SmartCodableX {
      @SmartHexColor
      var titleColor: UIColor? = .white
      @SmartHexColor
@@ -31,19 +31,45 @@ public typealias ColorObject = NSColor
 
 
 @propertyWrapper
-public struct SmartHexColor: Codable {
-    public var wrappedValue: ColorObject?
+public struct SmartHexColor: PropertyWrapperable {
     
-    private var encodeHexFormat: HexFormat?
+    public var wrappedValue: ColorObject?
+    public init(wrappedValue: ColorObject?) {
+        self.wrappedValue = wrappedValue
+    }
+    
+    public static func createInstance(with value: Any) -> SmartHexColor? {
+        if let value = value as? ColorObject {
+            return SmartHexColor(wrappedValue: value)
+        }
+        return nil
+    }
+    
+    public func wrappedValueDidFinishMapping() -> SmartHexColor? {
+        return nil
+    }
+    
+    
+    var encodeHexFormat: HexFormat?
 
     public init(wrappedValue: ColorObject?, encodeHexFormat: HexFormat? = nil) {
         self.wrappedValue = wrappedValue
         self.encodeHexFormat = encodeHexFormat
     }
-    
+}
+
+extension SmartHexColor: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let hexString = try container.decode(String.self)
+        
+        
+        guard let impl = decoder as? JSONDecoderImpl else {
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Cannot decode SmartHexColor from '\(hexString)'. Supported formats: HexFormat."
+            )
+        }
         
         guard
             let format = SmartHexColor.HexFormat.format(for: hexString),
@@ -54,11 +80,19 @@ public struct SmartHexColor: Codable {
                 debugDescription: "Cannot decode SmartHexColor from '\(hexString)'. Supported formats: HexFormat."
             )
         }
-        
-        if encodeHexFormat == nil {
-            self.encodeHexFormat = format
-        }
+
         self.wrappedValue = color
+        
+        
+        /**
+         * 虽然初始化赋值时候`public init(wrappedValue: ColorObject?, encodeHexFormat: HexFormat? = nil)` 提供了 `encodeHexFormat`,但是在 `encode` 解析时重新初始化了对象导致赋值的 `encodeHexFormat` 没了。
+         * 通过缓存 `Cache` 获取使用者设置的该值。
+         * 再赋值到新对象的属性上。
+         */
+        if let arr = impl.codingPath.removeFromEnd(1),
+           let hexColor: SmartHexColor = try? impl.cache.initialValue(forKey: impl.codingPath.last, codingPath: arr) {
+            self.encodeHexFormat = hexColor.encodeHexFormat
+        }
     }
     
     
@@ -277,7 +311,7 @@ extension SmartHexColor {
 
 
 
-private extension ColorObject {
+extension ColorObject {
     var rgbaComponents: (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat)? {
 #if os(macOS)
         guard let converted = usingColorSpace(.deviceRGB) else { return nil }

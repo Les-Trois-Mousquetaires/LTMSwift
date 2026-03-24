@@ -8,7 +8,7 @@
 
 
 /// Global coding/decoding configuration namespace for SmartCodable
-public struct SmartCoding {
+public struct SmartCodableOptions {
     /// Number conversion strategy during decoding (default: .strict)
     ///
     /// - Description: Controls how to handle precision loss when converting JSON numbers (e.g., floating-point) to target types (e.g., integer)
@@ -19,15 +19,21 @@ public struct SmartCoding {
     ///     - .rounded:  Returns 3 (rounds to nearest)
     ///
     /// - Note: This only affects decoding process
-    public static var numberConversionStrategy: NumberConversionStrategy {
-        get { _numberConversionStrategy }
-        set {_numberConversionStrategy = newValue }
-    }
+    public static var numberStrategy: NumberConversionStrategy = .strict
 
 
-    private static var _numberConversionStrategy = NumberConversionStrategy.strict
+    /// Whether to treat JSON `null` as a decoded value for `Any`-typed property wrappers (default: `true`)
+    ///
+    /// 在对使用 `Any`（或 Any 支持的属性包装器）进行解码时，决定是否把 JSON 中的 `null` 当作可被解码并赋值到 `Any` 的值。
+    ///
+    /// - Behavior:
+    ///   - 当为 `true`（默认）时：遇到 JSON 字段值为 `null`，属性包装器**不会**把 `NSNull`/`nil` 赋给目标 `Any`，而是跳过赋值（保持属性的默认值或原有值）。
+    ///   - 当为 `false` 时：遇到 JSON 字段值为 `null`，属性包装器会把 `NSNull()`（或解码为 `nil`，取决于你的实现）作为解析结果赋给 `Any`，从而能在运行时检测到该字段为 `null`。
+    public static var ignoreNull: Bool = true
+}
 
-    
+
+extension SmartCodableOptions {
     /// Numeric type conversion strategy
     public enum NumberConversionStrategy {
         /// Strict mode: Must match exactly, otherwise returns nil (default)

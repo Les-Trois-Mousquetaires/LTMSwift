@@ -6,8 +6,7 @@
 //
 
 
-public typealias SmartCodable = SmartDecodable & SmartEncodable
-
+public typealias SmartCodableX = SmartDecodable & SmartEncodable
 
 // 用在泛型解析中
-extension Array: SmartCodable where Element: SmartCodable { }
+extension Array: SmartCodableX where Element: SmartCodableX { }
