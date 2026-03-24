@@ -15,6 +15,7 @@ public extension Date{
      */
     func string(_ format: String = "yyyy-MM-dd") -> String{
         let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = format
         
         return dateFormatter.string(from: self)
@@ -228,7 +229,7 @@ public extension Date {
     
     /// 闰月
     var leapMonth: Bool{
-       return Calendar.current.dateComponents([.quarter], from: self).isLeapMonth ?? false
+       return Calendar.current.dateComponents([.month], from: self).isLeapMonth ?? false
     }
     
     /// 是否在未来
@@ -331,6 +332,7 @@ public extension String{
      */
     func date(format: String = "yyyy-MM-dd") -> Date{
         let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = format
         
         return dateFormatter.date(from:self) ?? Date()

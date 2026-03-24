@@ -6,6 +6,48 @@
 //
 
 import CommonCrypto
+import CryptoKit
+
+public extension String {
+    /// 字符串MD5
+    var md5: String{
+        guard let data = self.data(using: .utf8) else {
+            return ""
+        }
+        return Self.md5(data: data)
+    }
+    
+    /// 字符串哈希
+    var sha1: String{
+        guard let data = self.data(using: .utf8) else {
+            return ""
+        }
+        return Self.sha1(data: data)
+    }
+    
+    /// 字符串SHA256
+    var sha256: String{
+        guard let data = self.data(using: .utf8) else {
+            return ""
+        }
+        return Self.sha256(data: data)
+    }
+    
+    /// 文件路径MD5
+    var fileMD5: String? {
+        return Self.md5(fileAtPath: self)
+    }
+    
+    /// 文件路径SHA1
+    var fileSHA1: String? {
+        return Self.sha1(fileAtPath: self)
+    }
+    
+    /// 文件路径SHA256
+    var fileSHA256: String? {
+        return Self.sha256(fileAtPath: self)
+    }
+}
 
 public extension String {
     /**
@@ -121,47 +163,53 @@ public extension String {
         }
         return nil
     }
-}
-
-public extension String{
-    /// 字符串MD5
-    var md5: String{
-        return self.stringToMD5(outputFormat: "x")
+    
+    /// Data转MD5
+    static func md5(data: Data, uppercased: Bool = false) -> String {
+        let digest = Insecure.MD5.hash(data: data)
+        return Self.hexString(from: digest, uppercased: uppercased)
     }
     
-    /// 字符串哈希
-    var sha1: String{
-        return self.stringToSHA1(outputFormat: "x")
+    /// Data转SHA1
+    static func sha1(data: Data, uppercased: Bool = false) -> String {
+        let digest = Insecure.SHA1.hash(data: data)
+        return Self.hexString(from: digest, uppercased: uppercased)
     }
     
-    private func stringToMD5(outputFormat: String) ->String{
-        let string = self.cString(using: .utf8)
-        let stringLength = CUnsignedInt(self.lengthOfBytes(using: String.Encoding.utf8))
-        let digestLength = Int(CC_MD5_DIGEST_LENGTH)
-        let result = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLength)
-        defer {
-            result.deallocate()
-        }
-        CC_MD5(string, stringLength, result)
-        let hash = NSMutableString()
-        for i in 0 ..< digestLength{
-            hash.appendFormat("%02\(outputFormat)" as NSString, result[i])
-        }
-        
-        return hash as String
+    /// Data转SHA256
+    static func sha256(data: Data, uppercased: Bool = false) -> String {
+        let digest = SHA256.hash(data: data)
+        return Self.hexString(from: digest, uppercased: uppercased)
     }
     
-    private func stringToSHA1(outputFormat: String) ->String{
-        guard let data = self.data(using: String.Encoding.utf8) else {
-            return ""
+    /// 文件路径转MD5
+    static func md5(fileAtPath path: String, uppercased: Bool = false) -> String? {
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else {
+            return nil
         }
-        var digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
-        CC_SHA1([UInt8](data), CC_LONG(data.count), &digest)
-        let output = NSMutableString(capacity: Int(CC_SHA1_DIGEST_LENGTH))
-        for byte in digest {
-            output.appendFormat("%02\(outputFormat)" as NSString, byte)
+        return Self.md5(data: data, uppercased: uppercased)
+    }
+    
+    /// 文件路径转SHA1
+    static func sha1(fileAtPath path: String, uppercased: Bool = false) -> String? {
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else {
+            return nil
         }
-        
-        return output as String
+        return Self.sha1(data: data, uppercased: uppercased)
+    }
+    
+    /// 文件路径转SHA256
+    static func sha256(fileAtPath path: String, uppercased: Bool = false) -> String? {
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else {
+            return nil
+        }
+        return Self.sha256(data: data, uppercased: uppercased)
+    }
+    
+    private static func hexString(from bytes: some Sequence<UInt8>, uppercased: Bool) -> String {
+        return bytes.map { byte in
+            let value = String(format: "%02x", byte)
+            return uppercased ? value.uppercased() : value
+        }.joined()
     }
 }
