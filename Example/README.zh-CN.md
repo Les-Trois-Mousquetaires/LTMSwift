@@ -27,6 +27,30 @@ pod 'LTMSwift/Extension/UIExtension'
 pod 'LTMSwift/Extension/BaseExtension'
 ```
 
+## CoreDataManager 快速上手
+
+```swift
+import LTMSwift
+
+let manager = CoreDataManager.shared
+
+// 1) 设置你自己的 .xcdatamodeld 名称（不带扩展名）
+manager.coreDataName = "AppModel"
+
+// 2) 获取主/后台 context
+let viewContext = manager.managerContext
+let bgContext = manager.backgroundContext
+
+// 3) 安全保存
+manager.saveContent(viewContext)
+manager.saveContent(bgContext)
+
+// 4) 清空某个实体
+manager.clearStorage(entityName: "UserEntity")
+```
+
+提示：`coreDataName` 必须和你项目中的 `.xcdatamodeld` 名称完全一致。
+
 ## Extension 快速上手（按文件）
 
 ### BaseExtension

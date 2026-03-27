@@ -30,6 +30,30 @@ pod 'LTMSwift/Extension/UIExtension'
 pod 'LTMSwift/Extension/BaseExtension'
 ```
 
+## CoreDataManager Quick Start
+
+```swift
+import LTMSwift
+
+let manager = CoreDataManager.shared
+
+// 1) Set your .xcdatamodeld name (without extension)
+manager.coreDataName = "AppModel"
+
+// 2) Use main/background context
+let viewContext = manager.managerContext
+let bgContext = manager.backgroundContext
+
+// 3) Save changes safely
+manager.saveContent(viewContext)
+manager.saveContent(bgContext)
+
+// 4) Clear one entity
+manager.clearStorage(entityName: "UserEntity")
+```
+
+Tip: `coreDataName` must match your app's `.xcdatamodeld` name exactly.
+
 ## Extension Quick Start (By File)
 
 ### BaseExtension

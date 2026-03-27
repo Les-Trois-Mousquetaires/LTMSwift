@@ -1,66 +1,83 @@
 //
 //  CoreDataManager.swift
-//  LTMSwift
 //
-//  Created by 柯南 on 2023/2/17.
+//  2026/3/27.
 //
 
 import CoreData
 
-open class CoreDataManager{
+open class CoreDataManager {
     /// 单例
-    public static let share = CoreDataManager()
-    /// 唯一标识
-    let identifier = "io.ltm.coredata"
+    public static let shared = CoreDataManager()
+
     /// CoreData 文件名
     public var coreDataName = "CoredataName"
-    
-    public lazy var persistenContainer: NSPersistentContainer = {
-        let dataKitBundle = Bundle.main
-        let modelUrl = Bundle.main.url(forResource: self.coreDataName, withExtension: "momd")!
-        let managerObjectModel = NSManagedObjectModel(contentsOf: modelUrl)!
-        let container = NSPersistentContainer(name: self.coreDataName, managedObjectModel: managerObjectModel)
-        container.loadPersistentStores { (storeDescription, error) in
-            guard let err = error else {
-                return
+
+    public lazy var persistentContainer: NSPersistentContainer = {
+        let objectModel = loadManagedObjectModel(named: coreDataName)
+        let container = NSPersistentContainer(name: coreDataName, managedObjectModel: objectModel)
+
+        container.loadPersistentStores { storeDescription, error in
+            if let error {
+                assertionFailure("Cannot load core data store: \(storeDescription.url?.absoluteString ?? "unknown"). Error: \(error)")
             }
-            print(storeDescription)
-            fatalError("Cannot load core data store.")
         }
+
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        
+        container.viewContext.automaticallyMergesChangesFromParent = true
         return container
     }()
-    
+
     public lazy var managerContext: NSManagedObjectContext = {
-        return self.persistenContainer.viewContext
+        persistentContainer.viewContext
     }()
-    
+
     public lazy var backgroundContext: NSManagedObjectContext = {
-        let childContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        childContext.parent = managerContext
-        
-        return childContext
+        let context = persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return context
     }()
-    
+
     public func saveContent(_ moc: NSManagedObjectContext) {
-        guard moc.hasChanges else {
-            return
+        moc.performAndWait {
+            guard moc.hasChanges else {
+                return
+            }
+            do {
+                try moc.save()
+            } catch {
+                assertionFailure("Cannot save core data. Error: \(error)")
+            }
         }
-        do {
-            try moc.save()
-        } catch let error as NSError {
-            fatalError("Cannot save core data. Error: \(error), \(error.userInfo)")
+
+        if let parent = moc.parent {
+            saveContent(parent)
         }
     }
-    
-    public func clearStorange(entityName: String) {
+
+    public func clearStorage(entityName: String) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        batchDeleteRequest.resultType = .resultTypeObjectIDs
+
         do {
-            try managerContext.execute(batchDeleteRequest)
-        } catch let error as NSError {
-            print("Cannot delete local storage for: \(entityName).\nReason: \(error.localizedDescription)")
+            let result = try managerContext.execute(batchDeleteRequest) as? NSBatchDeleteResult
+            if let objectIDs = result?.result as? [NSManagedObjectID], !objectIDs.isEmpty {
+                let changes: [AnyHashable: Any] = [NSDeletedObjectsKey: objectIDs]
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [managerContext, backgroundContext])
+            }
+        } catch {
+            assertionFailure("Cannot delete local storage for: \(entityName). Reason: \(error)")
         }
+    }
+
+    private func loadManagedObjectModel(named name: String) -> NSManagedObjectModel {
+        guard let modelURL = Bundle.main.url(forResource: name, withExtension: "momd") else {
+            fatalError("Core Data model file '\(name).momd' not found in main bundle.")
+        }
+        guard let objectModel = NSManagedObjectModel(contentsOf: modelURL) else {
+            fatalError("Failed to initialize NSManagedObjectModel from url: \(modelURL).")
+        }
+        return objectModel
     }
 }
