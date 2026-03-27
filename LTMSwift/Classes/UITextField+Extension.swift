@@ -19,13 +19,15 @@ public extension UITextField{
 }
 
 /// 最大长度
-fileprivate var kAssociationKeyMaxLength: Int = 0
+fileprivate var kAssociationKeyMaxLength: UInt8 = 0
 /// 小数位 不允许0和空格开头
-fileprivate var kAssociationKeyDigits: Int = 0
+fileprivate var kAssociationKeyDigits: UInt8 = 0
 /// 最大值 不允许0和空格开头
-fileprivate var kAssociationKeyMaxNumber: NSNumber = 0
+fileprivate var kAssociationKeyMaxNumber: UInt8 = 0
 /// 限制回调
-fileprivate var kAssociationKeyLibmitBlock: String = "kAssociationKeyLibmitBlock"
+fileprivate var kAssociationKeyLibmitBlock: UInt8 = 0
+/// 当前输入框上次内容
+fileprivate var kAssociationKeyLastContent: UInt8 = 0
 //MARK: - 设置最大长度
 public extension UITextField{
     /**
@@ -67,9 +69,7 @@ public extension UITextField{
         }
         let selection = selectedTextRange
         if (prospectiveText.count > maxLength){
-            if ((self.limitBlock) != nil){
-                self.limitBlock!(6)
-            }
+            self.limitBlock?(6)
         }
         let indexEndOfText = prospectiveText.index(prospectiveText.startIndex, offsetBy: maxLength)
         let substring = prospectiveText[..<indexEndOfText]
@@ -149,7 +149,7 @@ public extension UITextField{
         else {
             return
         }
-        let lastContent: String = UserDefaults.standard.string(forKey: "UITextFieldLastContent") ?? ""
+        let lastContent: String = (objc_getAssociatedObject(self, &kAssociationKeyLastContent) as? String) ?? ""
         let selection = selectedTextRange
         let result: NSNumber = NSNumber(value: prospectiveText.doubleValue)
         if (lastContent.count > prospectiveText.count){
@@ -158,12 +158,10 @@ public extension UITextField{
             if (result.compare(maxNumber) == .orderedDescending){
                 text = lastContent
                 prospectiveText = lastContent
-                if ((self.limitBlock) != nil){
-                    self.limitBlock!(5)
-                }
+                self.limitBlock?(5)
             }
         }
         selectedTextRange = selection
-        UserDefaults.standard.set(prospectiveText, forKey: "UITextFieldLastContent")
+        objc_setAssociatedObject(self, &kAssociationKeyLastContent, prospectiveText, .OBJC_ASSOCIATION_COPY_NONATOMIC)
     }
 }

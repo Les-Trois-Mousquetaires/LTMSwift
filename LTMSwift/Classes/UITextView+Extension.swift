@@ -5,13 +5,14 @@
 //  Created by 柯南 on 2022/12/24.
 //
 
-import Foundation
+import UIKit
 
 public extension UITextView {
     
     private struct RuntimeKey {
-        static let extension_placeholderLabelKey = UnsafeRawPointer.init(bitPattern: "extension_placeholderLabelKey".hashValue)
-        /// ...其他Key声明
+        static var placeholderLabelKey: UInt8 = 0
+        static var maxLengthKey: UInt8 = 0
+        static var observerRegisteredKey: UInt8 = 0
     }
     /// 占位文字
     @IBInspectable var placeholder: String {
@@ -20,6 +21,7 @@ public extension UITextView {
         }
         set {
             self.placeholderLabel.text = newValue
+            refreshPlaceholderVisibility()
         }
     }
     
@@ -45,37 +47,37 @@ public extension UITextView {
     
     private var placeholderLabel: UILabel {
         get {
-            var label = objc_getAssociatedObject(self, UITextView.RuntimeKey.extension_placeholderLabelKey!) as? UILabel
-            if label == nil { // 不存在是 创建 绑定
-                if (self.font == nil) { // 防止没大小时显示异常 系统默认设置14
+            var label = objc_getAssociatedObject(self, &RuntimeKey.placeholderLabelKey) as? UILabel
+            if label == nil {
+                if self.font == nil {
                     self.font = UIFont.systemFont(ofSize: 14)
                 }
-                label = UILabel.init(frame: self.bounds)
+                label = UILabel(frame: self.bounds)
                 label?.numberOfLines = 0
                 label?.font = self.font
-                label?.textColor = UIColor.lightGray
-                self.addSubview(label!)
-                self.setValue(label!, forKey: "_placeholderLabel")
-                objc_setAssociatedObject(self, UITextView.RuntimeKey.extension_placeholderLabelKey!, label!, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-                self.sendSubviewToBack(label!)
+                label?.textColor = .lightGray
+                if let label {
+                    addSubview(label)
+                    objc_setAssociatedObject(self, &RuntimeKey.placeholderLabelKey, label, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+                    sendSubviewToBack(label)
+                }
+                setupTextChangeObserverIfNeeded()
+                refreshPlaceholderVisibility()
             }
-            return label!
+            return label ?? UILabel()
         }
         set {
-            objc_setAssociatedObject(self, UITextView.RuntimeKey.extension_placeholderLabelKey!, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &RuntimeKey.placeholderLabelKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-}
-
-
-fileprivate var kAssociationKeyMaxLength: Int = 0
-extension UITextView: UITextViewDelegate{
-    @IBInspectable public var maxLength: Int {
+    
+    @IBInspectable var maxLength: Int {
         set {
-            self.delegate = self
-            objc_setAssociatedObject(self, &kAssociationKeyMaxLength, newValue, .OBJC_ASSOCIATION_RETAIN)
+            objc_setAssociatedObject(self, &RuntimeKey.maxLengthKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            setupTextChangeObserverIfNeeded()
+            enforceMaxLengthIfNeeded()
         }get {
-            if let length = objc_getAssociatedObject(self, &kAssociationKeyMaxLength) as? Int {
+            if let length = objc_getAssociatedObject(self, &RuntimeKey.maxLengthKey) as? Int {
                 return length
             } else {
                 return Int.max
@@ -83,11 +85,13 @@ extension UITextView: UITextViewDelegate{
         }
     }
     
-    public func textViewDidChange(_ textView: UITextView) {
-        checkMaxLength(textField: self)
+    @objc private func handleTextDidChange() {
+        enforceMaxLengthIfNeeded()
+        refreshPlaceholderVisibility()
     }
-    @objc func checkMaxLength(textField: UITextView) {
-        guard let prospectiveText = self.text,
+    
+    private func enforceMaxLengthIfNeeded() {
+        guard let prospectiveText = text,
               prospectiveText.count > maxLength
         else {
             return
@@ -98,5 +102,17 @@ extension UITextView: UITextViewDelegate{
         let substring = prospectiveText[..<indexEndOfText]
         text = String(substring)
         selectedTextRange = selection
+    }
+    
+    private func refreshPlaceholderVisibility() {
+        placeholderLabel.frame = bounds.inset(by: textContainerInset)
+        placeholderLabel.isHidden = !(text?.isEmpty ?? true)
+    }
+    
+    private func setupTextChangeObserverIfNeeded() {
+        let isRegistered = (objc_getAssociatedObject(self, &RuntimeKey.observerRegisteredKey) as? Bool) ?? false
+        guard !isRegistered else { return }
+        NotificationCenter.default.addObserver(self, selector: #selector(handleTextDidChange), name: UITextView.textDidChangeNotification, object: self)
+        objc_setAssociatedObject(self, &RuntimeKey.observerRegisteredKey, true, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }

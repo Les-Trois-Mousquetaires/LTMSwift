@@ -254,7 +254,9 @@ public extension UIDevice {
         }
         return ("", "", "")
     }
-    /// 是否越狱
+    /**
+     是否越狱
+     */
     func isJailBreak() -> Bool {
 #if targetEnvironment(simulator)
         return false

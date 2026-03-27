@@ -11,27 +11,20 @@ extension UIScrollView {
     
     /// 截长屏Image
     var captureLongImage: UIImage? {
-        var image: UIImage? = nil
         let savedContentOffset = contentOffset
         let savedFrame = frame
-        
-        contentOffset = .zero
-        frame = CGRect(x: 0, y: 0,
-                       width: contentSize.width,
-                       height: contentSize.height)
-        
-        UIGraphicsBeginImageContext(frame.size)
-        UIGraphicsBeginImageContextWithOptions(
-            CGSize(width: frame.size.width,
-                   height: frame.size.height),
-            false,
-            UIScreen.main.scale)
-        layer.render(in: UIGraphicsGetCurrentContext()!)
-        image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        contentOffset = savedContentOffset
-        frame = savedFrame
 
-        return image
+        contentOffset = .zero
+        frame = CGRect(x: 0, y: 0, width: contentSize.width, height: contentSize.height)
+        defer {
+            contentOffset = savedContentOffset
+            frame = savedFrame
+        }
+
+        UIGraphicsBeginImageContextWithOptions(frame.size, false, UIScreen.main.scale)
+        defer { UIGraphicsEndImageContext() }
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        layer.render(in: context)
+        return UIGraphicsGetImageFromCurrentImageContext()
     }
 }

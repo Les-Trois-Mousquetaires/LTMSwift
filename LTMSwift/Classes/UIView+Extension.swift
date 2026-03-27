@@ -7,6 +7,8 @@
 
 import Foundation
 
+private let ltmDashLineLayerName = "com.ltmswift.dash.line"
+
 public extension UIView{
     /**
      添加多个子视图
@@ -40,38 +42,43 @@ public extension UIView{
 public extension UIView{
     /// View生成图片
     var viewImage: UIImage {
-        //第一个参数表示区域大小。第二个参数表示是否是非透明的，如果需要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, UIScreen.main.scale)
-        self.layer.render(in: UIGraphicsGetCurrentContext()!)
+        guard let context = UIGraphicsGetCurrentContext() else {
+            UIGraphicsEndImageContext()
+            return UIImage()
+        }
+        self.layer.render(in: context)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image!
+        return image ?? UIImage()
     }
     
     /// View生成图片,可以显示layer(分享分时图、k线)
     var layerImage: UIImage {
-        //第一个参数表示区域大小。第二个参数表示是否是非透明的，如果需要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0.0)
         self.drawHierarchy(in: self.bounds, afterScreenUpdates: true)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image!
+        return image ?? UIImage()
     }
         
     /// 将scrollView 生成图片
     var scrollViewImage: UIImage {
+        guard let scrollView = self as? UIScrollView else {
+            return viewImage
+        }
         var image = UIImage()
-        let scrollView: UIScrollView = self as! UIScrollView
-        //第一个参数表示区域大小。第二个参数表示是否是非透明的，如果需要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了
         UIGraphicsBeginImageContextWithOptions(CGSize(width: scrollView.contentSize.width, height: scrollView.contentSize.height), false, 0.0)
         let savedContentOffset: CGPoint = scrollView.contentOffset
         let savedFrame: CGRect = scrollView.frame
         scrollView.contentOffset = CGPoint.zero
         scrollView.frame = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: scrollView.contentSize.width, height: scrollView.contentSize.height))
-        scrollView.layer.render(in: UIGraphicsGetCurrentContext()!)
-        image = UIGraphicsGetImageFromCurrentImageContext()!
+        if let context = UIGraphicsGetCurrentContext() {
+            scrollView.layer.render(in: context)
+        }
+        image = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
         scrollView.contentOffset = savedContentOffset
         scrollView.frame = savedFrame
         UIGraphicsEndImageContext()
@@ -92,7 +99,9 @@ public extension UIView {
      */
     func drawDashLine(lineColor: UIColor, isHorizonal: Bool = true, lineWidth: CGFloat = 1, lineLength: Int = 5, lineSpacing: Int = 5) {
         self.layoutIfNeeded()
+        self.layer.sublayers?.removeAll(where: { $0.name == ltmDashLineLayerName })
         let shapeLayer = CAShapeLayer()
+        shapeLayer.name = ltmDashLineLayerName
         shapeLayer.bounds = self.bounds
         shapeLayer.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
         shapeLayer.fillColor = UIColor.clear.cgColor

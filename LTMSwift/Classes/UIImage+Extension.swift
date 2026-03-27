@@ -14,15 +14,11 @@ public extension UIImage{
      - parameter color 色值
      */
     class func createImage(_ color: UIColor)-> UIImage{
-        let rect = CGRect.init(x: 0.0, y: 0.0, width: 1.0, height: 1.0)
-        UIGraphicsBeginImageContext(rect.size)
-        let context = UIGraphicsGetCurrentContext()
-        context?.setFillColor(color.cgColor)
-        context?.fill(rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return image!
+        let render = UIGraphicsImageRenderer(size: CGSize(width: 1, height: 1))
+        return render.image { context in
+            color.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
+        }
     }
     
     /**
@@ -31,14 +27,12 @@ public extension UIImage{
      - parameter color 色值
      */
     convenience init(color: UIColor) {
-        let rect = CGRect.init(x: 0.0, y: 0.0, width: 1.0, height: 1.0)
-        UIGraphicsBeginImageContext(rect.size)
-        let context = UIGraphicsGetCurrentContext()
-        context?.setFillColor(color.cgColor)
-        context?.fill(rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        self.init(cgImage: (image!.cgImage)!)
+        let image = Self.createImage(color)
+        if let cgImage = image.cgImage {
+            self.init(cgImage: cgImage)
+        } else {
+            self.init()
+        }
     }
     
     /**
@@ -47,16 +41,12 @@ public extension UIImage{
      - parameter slaveImage 拼接图片
      */
     func addSlaveImage(slaveImage: UIImage) -> UIImage{
-        var size = CGSize()
-        size.width = self.size.width
-        size.height = self.size.height + slaveImage.size.height
-        UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
-        self.draw(in: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: self.size.width, height: self.size.height)))
-        slaveImage.draw(in: CGRect(origin: CGPoint(x: 0,y :self.size.height), size: CGSize(width: self.size.width, height: slaveImage.size.height)))
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return image!
+        let size = CGSize(width: self.size.width, height: self.size.height + slaveImage.size.height)
+        let render = UIGraphicsImageRenderer(size: size)
+        return render.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: CGSize(width: self.size.width, height: self.size.height)))
+            slaveImage.draw(in: CGRect(origin: CGPoint(x: 0, y: self.size.height), size: CGSize(width: self.size.width, height: slaveImage.size.height)))
+        }
     }
 }
 
@@ -80,7 +70,7 @@ public extension UIImage{
      */
     class func largerImage(name: String, type: String) -> UIImage? {
         guard let path = Bundle.main.path(forResource: name, ofType: type) else {
-            return UIImage()
+            return nil
         }
         
         return UIImage.init(contentsOfFile: path)
@@ -104,7 +94,8 @@ public extension UIImage{
         var min: CGFloat = 0
         for _  in 0..<6 {
             compression = (max + min) / 2
-            data = self.jpegData(compressionQuality: compression)!
+            guard let compressedData = self.jpegData(compressionQuality: compression) else { break }
+            data = compressedData
             if CGFloat(data.count) < CGFloat(tempMaxLength) * 0.9 {
                 min = compression
             } else if data.count > tempMaxLength {
@@ -113,7 +104,7 @@ public extension UIImage{
                 break
             }
         }
-        var resultImage: UIImage = UIImage(data: data)!
+        var resultImage: UIImage = UIImage(data: data) ?? self
         if data.count < tempMaxLength {
             return resultImage
         }
@@ -124,11 +115,16 @@ public extension UIImage{
             let ratio: CGFloat = CGFloat(tempMaxLength) / CGFloat(data.count)
             let size: CGSize = CGSize(width: Int(resultImage.size.width * sqrt(ratio)),
                                       height: Int(resultImage.size.height * sqrt(ratio)))
-            UIGraphicsBeginImageContext(size)
+            UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
             resultImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-            resultImage = UIGraphicsGetImageFromCurrentImageContext()!
+            guard let resizedImage = UIGraphicsGetImageFromCurrentImageContext() else {
+                UIGraphicsEndImageContext()
+                break
+            }
+            resultImage = resizedImage
             UIGraphicsEndImageContext()
-            data = resultImage.jpegData(compressionQuality: compression)!
+            guard let compressedData = resultImage.jpegData(compressionQuality: compression) else { break }
+            data = compressedData
         }
         return resultImage
     }
@@ -148,7 +144,8 @@ public extension UIImage{
         var min: CGFloat = 0
         for _  in 0..<6 {
             compression = (max + min) / 2
-            data = self.jpegData(compressionQuality: compression)!
+            guard let compressedData = self.jpegData(compressionQuality: compression) else { break }
+            data = compressedData
             if CGFloat(data.count) < CGFloat(maxLength) * 0.9 {
                 min = compression
             } else if data.count > maxLength {
@@ -157,7 +154,7 @@ public extension UIImage{
                 break
             }
         }
-        var resultImage: UIImage = UIImage(data: data)!
+        var resultImage: UIImage = UIImage(data: data) ?? self
         if data.count < maxLength {
             return data
         }
@@ -168,11 +165,16 @@ public extension UIImage{
             let ratio: CGFloat = CGFloat(maxLength) / CGFloat(data.count)
             let size: CGSize = CGSize(width: Int(resultImage.size.width * sqrt(ratio)),
                                       height: Int(resultImage.size.height * sqrt(ratio)))
-            UIGraphicsBeginImageContext(size)
+            UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
             resultImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-            resultImage = UIGraphicsGetImageFromCurrentImageContext()!
+            guard let resizedImage = UIGraphicsGetImageFromCurrentImageContext() else {
+                UIGraphicsEndImageContext()
+                break
+            }
+            resultImage = resizedImage
             UIGraphicsEndImageContext()
-            data = resultImage.jpegData(compressionQuality: compression)!
+            guard let compressedData = resultImage.jpegData(compressionQuality: compression) else { break }
+            data = compressedData
         }
         return data
     }

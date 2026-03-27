@@ -23,24 +23,26 @@ public extension UIColor{
      - parameter alpha 透明度
      */
     convenience init(hexString: String, alpha:CGFloat) {
-        //删除前后多余的空格换行
-        let hexString = hexString.trimmingCharacters(in: .whitespacesAndNewlines)
-        //扫描指定字符串的抽象类,然后scanner会按照你的要求从头到尾扫描这个字符串的每个字符
-        let scanner = Scanner(string: hexString)
-        if hexString.hasPrefix("#") {
-            scanner.scanLocation = 1
+        var normalizedHex = hexString.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        if normalizedHex.hasPrefix("#") {
+            normalizedHex.removeFirst()
+        } else if normalizedHex.hasPrefix("0X") {
+            normalizedHex = String(normalizedHex.dropFirst(2))
         }
-        var color: UInt32 = 0
-        scanner.scanHexInt32(&color)
-        let mask = 0x000000FF
-        let redValue = Int(color >> 16) & mask
-        let greenValue = Int(color >> 8) & mask
-        let blueValue = Int(color) & mask
-        
-        let red = CGFloat(redValue) / 255.0
-        let green = CGFloat(greenValue) / 255.0
-        let blue = CGFloat(blueValue) / 255.0
-        
-        self.init(red: red, green: green, blue: blue, alpha: alpha)
+
+        if normalizedHex.count == 3 {
+            normalizedHex = normalizedHex.map { "\($0)\($0)" }.joined()
+        }
+
+        guard normalizedHex.count == 6,
+              let color = UInt64(normalizedHex, radix: 16) else {
+            self.init(white: 0, alpha: 0)
+            return
+        }
+
+        let red = CGFloat((color & 0xFF0000) >> 16) / 255.0
+        let green = CGFloat((color & 0x00FF00) >> 8) / 255.0
+        let blue = CGFloat(color & 0x0000FF) / 255.0
+        self.init(red: red, green: green, blue: blue, alpha: max(0, min(alpha, 1)))
     }
 }

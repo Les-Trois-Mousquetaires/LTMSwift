@@ -53,7 +53,9 @@ public extension UIButton {
     /// 逆时针方向🔄
     enum Position { case top, left, bottom, right }
     
-    /// 重置图片image与标题title位置(默认间距为0)
+    /**
+     重置图片image与标题title位置(默认间距为0)
+     */
     func imagePosition(_ position: Position, spacing: CGFloat = 0 ) {
         self.sizeToFit()
         
@@ -89,7 +91,9 @@ public extension UIButton {
 
 //MARK: - UIButton设置标题、颜色、图片
 public extension UIButton {
-    /// 设置富文本标题
+    /**
+     设置富文本标题
+     */
     func setAttrTitle(_ attr: NSAttributedString){
         self.setAttributedTitle(attr, for: .normal)
         self.setAttributedTitle(attr, for: .selected)
