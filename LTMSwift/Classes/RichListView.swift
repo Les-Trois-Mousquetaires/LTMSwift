@@ -93,7 +93,7 @@ extension RichListView: UITableViewDelegate, UITableViewDataSource{
         let data = self.listData[indexPath.row]
         switch data.type {
         case .textfield:
-            var cell: RichTextFieldTVCell = tableView.dequeueReusableCell(withIdentifier: "RichTextFieldTVCell") as? RichTextFieldTVCell ?? RichTextFieldTVCell.init(style: .default, reuseIdentifier: "RichTextFieldTVCell")
+            let cell: RichTextFieldTVCell = tableView.dequeueReusableCell(withIdentifier: "RichTextFieldTVCell") as? RichTextFieldTVCell ?? RichTextFieldTVCell.init(style: .default, reuseIdentifier: "RichTextFieldTVCell")
             cell.model = data
             cell.textFieldEvnentBlock = {[weak self] text in
                 self?.clickEvent(data, text, false)
@@ -101,17 +101,17 @@ extension RichListView: UITableViewDelegate, UITableViewDataSource{
             
             return cell
         case .richLabel:
-            var cell: RichLabelTVCell = tableView.dequeueReusableCell(withIdentifier: "RichLabelTVCell") as? RichLabelTVCell ?? RichLabelTVCell.init(style: .default, reuseIdentifier: "RichLabelTVCell")
+            let cell: RichLabelTVCell = tableView.dequeueReusableCell(withIdentifier: "RichLabelTVCell") as? RichLabelTVCell ?? RichLabelTVCell.init(style: .default, reuseIdentifier: "RichLabelTVCell")
             cell.model = data
             
             return cell
         case .richLabelImage:
-            var cell = tableView.dequeueReusableCell(withIdentifier: "RichLabelImageTVCell") as? RichLabelImageTVCell ?? RichLabelImageTVCell.init(style: .default, reuseIdentifier: "RichLabelImageTVCell")
+            let cell = tableView.dequeueReusableCell(withIdentifier: "RichLabelImageTVCell") as? RichLabelImageTVCell ?? RichLabelImageTVCell.init(style: .default, reuseIdentifier: "RichLabelImageTVCell")
             cell.model = data
             
             return cell
         case .textSwitch:
-            var cell = tableView.dequeueReusableCell(withIdentifier: "RichTextSwitchTVCell") as? RichTextSwitchTVCell ?? RichTextSwitchTVCell.init(style: .default, reuseIdentifier: "RichTextSwitchTVCell")
+            let cell = tableView.dequeueReusableCell(withIdentifier: "RichTextSwitchTVCell") as? RichTextSwitchTVCell ?? RichTextSwitchTVCell.init(style: .default, reuseIdentifier: "RichTextSwitchTVCell")
             cell.model = data
             cell.textSwitchBlock = {[weak self] isOn in
                 self?.clickEvent(data, "", isOn)

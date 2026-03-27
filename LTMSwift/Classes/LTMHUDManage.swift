@@ -138,7 +138,7 @@ public extension LTMProgressHUD {
         
         switch type { // 添加 headView
         case .loading:
-            headView = UIActivityIndicatorView(style: .whiteLarge)
+            headView = UIActivityIndicatorView(style: .large)
             (headView as! UIActivityIndicatorView).startAnimating()
             headView.translatesAutoresizingMaskIntoConstraints = false
             mainView.addSubview(headView)

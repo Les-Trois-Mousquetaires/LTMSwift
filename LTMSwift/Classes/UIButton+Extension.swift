@@ -8,7 +8,10 @@
 import Foundation
 import UIKit
 
-fileprivate var rectNameKey:(Character?,Character?,Character?,Character?)
+private var rectTopKey: UInt8 = 0
+private var rectRightKey: UInt8 = 0
+private var rectBottomKey: UInt8 = 0
+private var rectLeftKey: UInt8 = 0
 
 //MARK: - UIButton设置热区
 public extension UIButton{
@@ -24,10 +27,10 @@ public extension UIButton{
                             left:CGFloat,
                             bottom:CGFloat,
                             right:CGFloat){
-        objc_setAssociatedObject(self, &rectNameKey.0, top, .OBJC_ASSOCIATION_COPY_NONATOMIC)
-        objc_setAssociatedObject(self, &rectNameKey.1, right, .OBJC_ASSOCIATION_COPY_NONATOMIC)
-        objc_setAssociatedObject(self, &rectNameKey.2, bottom, .OBJC_ASSOCIATION_COPY_NONATOMIC)
-        objc_setAssociatedObject(self, &rectNameKey.3, left, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        objc_setAssociatedObject(self, &rectTopKey, top, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        objc_setAssociatedObject(self, &rectRightKey, right, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        objc_setAssociatedObject(self, &rectBottomKey, bottom, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        objc_setAssociatedObject(self, &rectLeftKey, left, .OBJC_ASSOCIATION_COPY_NONATOMIC)
     }
     
     /**
@@ -38,10 +41,10 @@ public extension UIButton{
      */
     override func hitTest(_ point: CGPoint,
                                with event: UIEvent?) -> UIView? {
-        if let topEdge = objc_getAssociatedObject(self, &rectNameKey.0) as? CGFloat,
-           let rightEdge = objc_getAssociatedObject(self, &rectNameKey.1) as? CGFloat,
-           let bottomEdge = objc_getAssociatedObject(self, &rectNameKey.2) as? CGFloat,
-           let leftEdge = objc_getAssociatedObject(self, &rectNameKey.3) as? CGFloat{
+        if let topEdge = objc_getAssociatedObject(self, &rectTopKey) as? CGFloat,
+           let rightEdge = objc_getAssociatedObject(self, &rectRightKey) as? CGFloat,
+           let bottomEdge = objc_getAssociatedObject(self, &rectBottomKey) as? CGFloat,
+           let leftEdge = objc_getAssociatedObject(self, &rectLeftKey) as? CGFloat {
             return CGRect(x: bounds.origin.x - leftEdge, y: bounds.origin.y - topEdge, width: bounds.width + leftEdge + rightEdge, height: bounds.height + topEdge + bottomEdge).contains(point) ? self : nil
         }
         return super.hitTest(point, with: event)
