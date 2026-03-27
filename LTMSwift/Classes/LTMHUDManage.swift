@@ -17,23 +17,42 @@ private let hudmaxWidth: CGFloat = (UIScreen.main.bounds.size.width - 100) // �
 private let hudiconWH: CGFloat = 36 // 图片大小
 private let hudlabelSize: CGFloat = 14 // 文本大小
 private let hudlineSpacing: CGFloat = 3 // 行间距
- 
+
+public enum LTMHUDQueueOverflowStrategy {
+    case dropOldest
+    case dropNewest
+}
+
 open class LTMHUDManage: NSObject {
     // MARK: - HUD相关
     static let instance: LTMHUDManage = LTMHUDManage()
     /// 是否接收事件 默认不接收 如果显示是想屏蔽事件需要把 isReceiveEvent = true
     static var isReceiveEvent = false
-    class var shared: LTMHUDManage {
+    /// HUD 队列上限（不包含 loading 单槽）。
+    public static var maxQueueCount: Int = 20
+    /// 连续重复提示的去重时间窗口，0 表示关闭去重。
+    public static var deduplicateInterval: TimeInterval = 0.8
+    /// 队列超限时的丢弃策略。
+    public static var overflowStrategy: LTMHUDQueueOverflowStrategy = .dropOldest
+
+    /// 样式配置
+    public static var contentInset: CGFloat = hudreserved
+    public static var maxTextWidth: CGFloat = hudmaxWidth
+    public static var iconSize: CGFloat = hudiconWH
+    public static var labelFontSize: CGFloat = hudlabelSize
+    public static var lineSpacing: CGFloat = hudlineSpacing
+
+    public class var shared: LTMHUDManage {
         return instance
     }
     
     /// 加载HUD
     /// - Parameter name: 提示语
-   public func ltm_showLoading(_ name: String = "正在加载",_ time: TimeInterval? = nil) {
+   public func ltm_showLoading(_ name: String = "正在加载",_ time: TimeInterval? = nil, interruptCurrent: Bool = false) {
         if time == nil {
-            LTMProgressHUD.show(.loading, name, 60)
+            LTMProgressHUD.show(.loading, name, 60, interruptCurrent: interruptCurrent)
         } else {
-            LTMProgressHUD.show(.loading, name, time ?? 1)
+            LTMProgressHUD.show(.loading, name, time ?? 1, interruptCurrent: interruptCurrent)
         }
     }
     
@@ -43,57 +62,80 @@ open class LTMHUDManage: NSObject {
      - parameter name 提示语
      - parameter delay 延迟时间
      */
-    public func ltm_showtitle(_ name: String?,_ delay: TimeInterval = 1) {
-        LTMProgressHUD.show(.none, name ?? "", delay)
+    public func ltm_showtitle(_ name: String?,_ delay: TimeInterval = 1, priority: Int = 0, interruptCurrent: Bool = false) {
+        LTMProgressHUD.show(.none, name ?? "", delay, priority: priority, interruptCurrent: interruptCurrent)
     }
-    
+
     /**
      显示警告
      
      - parameter name 提示语
      - parameter delay 延迟时间
      */
-    public func ltm_showInfo(_ name: String?,_ delay: TimeInterval = 1) {
-        LTMProgressHUD.show(.info, name ?? "", delay)
+    public func ltm_showInfo(_ name: String?,_ delay: TimeInterval = 1, priority: Int = 0, interruptCurrent: Bool = false) {
+        LTMProgressHUD.show(.info, name ?? "", delay, priority: priority, interruptCurrent: interruptCurrent)
     }
-    
-    /// 隐藏HUD
+
+    /// 隐藏当前 HUD（会继续展示队列中的下一条）
     public func ltm_dismiss() {
         LTMProgressHUD.dismiss()
     }
-    
+
+    /// 清空等待队列（不影响当前正在显示的 HUD）
+    public func ltm_clearQueue() {
+        LTMProgressHUD.clearQueue()
+    }
+
+    /// 立即关闭所有 HUD 并清空队列
+    public func ltm_dismissAll() {
+        LTMProgressHUD.dismissAll()
+    }
+
+    /// 当前等待队列数量（不包含当前正在显示的 HUD）
+    public var ltm_pendingCount: Int {
+        LTMProgressHUD.pendingCount
+    }
+
     /// 成功提示
-    public func ltm_showSuccess(_ name: String) {
-        LTMProgressHUD.show(.success, name, 1)
+    public func ltm_showSuccess(_ name: String, priority: Int = 0, interruptCurrent: Bool = false) {
+        LTMProgressHUD.show(.success, name, 1, priority: priority, interruptCurrent: interruptCurrent)
     }
-    
+
     /// 失败提示
-    public func ltm_showError(_ name: String) {
-        LTMProgressHUD.show(.error, name, 1)
+    public func ltm_showError(_ name: String, priority: Int = 0, interruptCurrent: Bool = false) {
+        LTMProgressHUD.show(.error, name, 1, priority: priority, interruptCurrent: interruptCurrent)
     }
+
 }
 
 public extension UIViewController {
-    /// HUD管理者 使用 HUDManage.ltm_showtitleHUD("HUD")
-    @IBInspectable var HUDManage: LTMHUDManage! {
-        get {
-            return LTMHUDManage.shared
-        }
-        set {}
+    /// HUD管理者，使用 `HUDManage.ltm_showtitle("HUD")`
+    var HUDManage: LTMHUDManage {
+        LTMHUDManage.shared
     }
 }
 
 public extension UIView {
-    /// HUD管理者 使用 HUDManage.ltm_showtitleHUD("HUD")
-    @IBInspectable var HUDManage: LTMHUDManage! {
-        get {
-            return LTMHUDManage.shared
-        }
-        set {}
+    /// HUD管理者，使用 `HUDManage.ltm_showtitle("HUD")`
+    var HUDManage: LTMHUDManage {
+        LTMHUDManage.shared
     }
 }
 
 public typealias HUDCompletedBlock = () -> Void
+
+private struct LTMHUDTask {
+    let id: UInt64
+    let type: LTMProgressHUDType
+    let text: String
+    let time: TimeInterval
+    let priority: Int
+    let completion: HUDCompletedBlock?
+
+    var dedupKey: String {
+        "\(type)-\(text)"
+    }
+}
 
 public enum LTMProgressHUDType {
     case loading // 加载
@@ -113,19 +155,172 @@ public extension LTMProgressHUD {
      - parameter time 消失时间
      - parameter completion 消失时回调
      */
-    class func show(_ type: LTMProgressHUDType,_ text: String,_ time: TimeInterval = 1, completion: HUDCompletedBlock? = nil) {
-        dismiss()
+    class func show(_ type: LTMProgressHUDType,_ text: String,_ time: TimeInterval = 1, priority: Int = 0, interruptCurrent: Bool = false, completion: HUDCompletedBlock? = nil) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                show(type, text, time, priority: priority, interruptCurrent: interruptCurrent, completion: completion)
+            }
+            return
+        }
+
+        idSeed += 1
+        let task = LTMHUDTask(id: idSeed, type: type, text: text, time: time, priority: priority, completion: completion)
+        if interruptCurrent {
+            interruptAndPresent(task)
+        } else {
+            enqueueOrPresent(task)
+        }
+    }
+
+
+    private class func interruptAndPresent(_ task: LTMHUDTask) {
+        if isDuplicate(task) {
+            return
+        }
+
+        dismissCurrent(callCompletion: false, presentNext: false)
+        present(task)
+    }
+
+    class var pendingCount: Int {
+        pendingTasks.count + (pendingLoadingTask == nil ? 0 : 1)
+    }
+
+    class func clearQueue() {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async { clearQueue() }
+            return
+        }
+        pendingTasks.removeAll(keepingCapacity: false)
+        pendingLoadingTask = nil
+        lastEnqueueTimestamp.removeAll(keepingCapacity: false)
+    }
+
+    class func dismissAll() {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async { dismissAll() }
+            return
+        }
+        clearQueue()
+        dismissCurrent(callCompletion: false, presentNext: false)
+    }
+
+    private class func enqueueOrPresent(_ task: LTMHUDTask) {
+        if isDuplicate(task) {
+            return
+        }
+
+        if task.type == .loading {
+            if currentTask == nil {
+                present(task)
+                return
+            }
+
+            if currentTask?.type == .loading {
+                dismissCurrent(callCompletion: false, presentNext: false)
+                present(task)
+                return
+            }
+
+            pendingLoadingTask = task
+            return
+        }
+
+        if currentTask != nil {
+            insertPendingTask(task)
+            trimPendingQueueIfNeeded()
+            return
+        }
+
+        present(task)
+    }
+
+    private class func insertPendingTask(_ task: LTMHUDTask) {
+        let index = pendingTasks.firstIndex(where: { existing in
+            if task.priority == existing.priority {
+                return task.id < existing.id
+            }
+            return task.priority > existing.priority
+        })
+
+        if let index {
+            pendingTasks.insert(task, at: index)
+        } else {
+            pendingTasks.append(task)
+        }
+    }
+
+    private class func trimPendingQueueIfNeeded() {
+        let maxCount = max(1, LTMHUDManage.maxQueueCount)
+        while pendingTasks.count > maxCount {
+            switch LTMHUDManage.overflowStrategy {
+            case .dropOldest:
+                if let index = pendingTasks.indices.min(by: { pendingTasks[$0].id < pendingTasks[$1].id }) {
+                    pendingTasks.remove(at: index)
+                } else {
+                    pendingTasks.removeFirst()
+                }
+            case .dropNewest:
+                if let index = pendingTasks.indices.max(by: { pendingTasks[$0].id < pendingTasks[$1].id }) {
+                    pendingTasks.remove(at: index)
+                } else {
+                    pendingTasks.removeLast()
+                }
+            }
+        }
+    }
+
+    private class func isDuplicate(_ task: LTMHUDTask) -> Bool {
+        guard LTMHUDManage.deduplicateInterval > 0 else { return false }
+
+        let now = Date().timeIntervalSince1970
+        pruneDedupCache(now: now)
+        if let timestamp = lastEnqueueTimestamp[task.dedupKey], now - timestamp <= LTMHUDManage.deduplicateInterval {
+            return true
+        }
+
+        if currentTask?.dedupKey == task.dedupKey { return true }
+        if pendingTasks.contains(where: { $0.dedupKey == task.dedupKey }) { return true }
+        if pendingLoadingTask?.dedupKey == task.dedupKey { return true }
+
+        lastEnqueueTimestamp[task.dedupKey] = now
+        return false
+    }
+
+    private class func pruneDedupCache(now: TimeInterval) {
+        let expiration = max(10, LTMHUDManage.deduplicateInterval * 5)
+        lastEnqueueTimestamp = lastEnqueueTimestamp.filter { now - $0.value <= expiration }
+
+        let maxCacheSize = 512
+        if lastEnqueueTimestamp.count > maxCacheSize {
+            let sorted = lastEnqueueTimestamp.sorted { $0.value < $1.value }
+            let overflow = lastEnqueueTimestamp.count - maxCacheSize
+            for i in 0..<overflow {
+                lastEnqueueTimestamp.removeValue(forKey: sorted[i].key)
+            }
+        }
+    }
+
+    private class func present(_ task: LTMHUDTask) {
+        currentTask = task
         instance.registerDeviceOrientationNotification()
         var isNone: Bool = false
+
+        let reserved = LTMHUDManage.contentInset
+        let iconSize = LTMHUDManage.iconSize
+        let fontSize = LTMHUDManage.labelFontSize
+        let lineSpacing = LTMHUDManage.lineSpacing
+        let maxTextWidth = min(LTMHUDManage.maxTextWidth, UIScreen.main.bounds.width - 40)
+
         let window = UIWindow()
         window.backgroundColor = UIColor.clear
         let mainView = UIView()
         mainView.layer.cornerRadius = 10
         mainView.backgroundColor = UIColor(red:0, green:0, blue:0, alpha: 0.7)
-        
+
         var image = UIImage()
         var headView = UIView()
-        switch type { /// 添加图片
+        switch task.type {
         case .success:
             image = imageOfCheckmark
         case .error:
@@ -135,84 +330,114 @@ public extension LTMProgressHUD {
         default:
             break
         }
-        
-        switch type { // 添加 headView
+
+        switch task.type {
         case .loading:
-            headView = UIActivityIndicatorView(style: .large)
-            (headView as! UIActivityIndicatorView).startAnimating()
+            let indicator = UIActivityIndicatorView(style: .large)
+            indicator.startAnimating()
+            headView = indicator
             headView.translatesAutoresizingMaskIntoConstraints = false
             mainView.addSubview(headView)
-        case .success: // 加了fallthrough后，会直接运行【紧跟的后一个】
-            fallthrough
-        case .error:
-            fallthrough
-        case .info:
+        case .success, .error, .info:
             headView = UIImageView(image: image)
             headView.translatesAutoresizingMaskIntoConstraints = false
             mainView.addSubview(headView)
         case .none:
             isNone = true
         }
-        
-        // label
+
         let label = UILabel()
-        label.text = text
+        label.text = task.text
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: hudlabelSize)
+        label.lineBreakMode = .byTruncatingTail
+        label.font = UIFont.systemFont(ofSize: fontSize)
         label.textColor = UIColor.white
         label.translatesAutoresizingMaskIntoConstraints = false
-        let arr = NSMutableAttributedString(string: text).hud_addLineSpacing(hudlineSpacing)
+        let arr = NSMutableAttributedString(string: task.text).hud_addLineSpacing(lineSpacing)
         label.attributedText = arr
-        
-        var height: CGFloat = text.count > 0 ? arr.hud_getHeight(hudmaxWidth) : 0 // 因为加了行间距 高度不可能=0 (所有用是否有内容来判断)
-        height = height+height/label.font.pointSize*hudlineSpacing
-        var width = arr.hud_getWidth(CGFloat(MAXFLOAT), hudmaxWidth)
-        if !isNone { // 有图标
-            width = height > 0 ? width : hudiconWH
-            height = height > 0 ? height+hudiconWH+hudreserved : hudiconWH
+
+        let screenHeight = UIScreen.main.bounds.height
+        let maxHUDHeight = max(120, screenHeight - 40)
+        let maxTextHeight: CGFloat = isNone
+            ? max(0, maxHUDHeight - reserved * 2)
+            : max(0, maxHUDHeight - reserved * 3 - iconSize)
+
+        let lineHeight = max(1, label.font.lineHeight + lineSpacing)
+        label.numberOfLines = max(1, Int(floor(maxTextHeight / lineHeight)))
+
+        var textHeight: CGFloat = task.text.count > 0 ? arr.hud_getHeight(maxTextWidth) : 0
+        textHeight = min(textHeight + textHeight / label.font.pointSize * lineSpacing, maxTextHeight)
+
+        var width = arr.hud_getWidth(CGFloat(MAXFLOAT), maxTextWidth)
+        var height = textHeight
+        if !isNone {
+            width = height > 0 ? width : iconSize
+            height = height > 0 ? height + iconSize + reserved : iconSize
         }
-        label.textAlignment = NSTextAlignment.center
+        label.textAlignment = .center
         mainView.addSubview(label)
-        
-        if LTMHUDManage.isReceiveEvent == false { // 不接受事件
+
+        let containerMaxHeight = max(120, UIScreen.main.bounds.height - 40)
+        let containerHeight = min(height + reserved * 2, containerMaxHeight)
+
+        if LTMHUDManage.isReceiveEvent == false {
             window.frame = UIScreen.main.bounds
-            mainView.frame = CGRect(x: (UIScreen.main.bounds.size.width-(width+hudreserved*4))/2, y: (UIScreen.main.bounds.size.height-(height+hudreserved*2))/2, width: width+hudreserved*4, height: height+hudreserved*2)
+            mainView.frame = CGRect(x: (UIScreen.main.bounds.size.width - (width + reserved * 4)) / 2,
+                                    y: (UIScreen.main.bounds.size.height - containerHeight) / 2,
+                                    width: width + reserved * 4,
+                                    height: containerHeight)
         } else {
-            let superFrame = CGRect(x: 0, y: 0, width: width+hudreserved*4, height: height+hudreserved*2)
+            let superFrame = CGRect(x: 0, y: 0, width: width + reserved * 4, height: containerHeight)
             window.frame = superFrame
             mainView.frame = superFrame
         }
-        
-        // image
-        if !isNone { // 有图标
-            mainView.addConstraint(NSLayoutConstraint(item: headView, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.lessThanOrEqual, toItem: mainView, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: hudreserved))
-            mainView.addConstraint(NSLayoutConstraint(item: headView, attribute: .centerX, relatedBy: .equal, toItem: mainView, attribute: .centerX, multiplier: 1.0, constant: 0) )
-            mainView.addConstraint(NSLayoutConstraint(item: headView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: hudiconWH))
-            mainView.addConstraint(NSLayoutConstraint(item: headView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: hudiconWH))
+
+        if !isNone {
+            mainView.addConstraint(NSLayoutConstraint(item: headView, attribute: .top, relatedBy: .lessThanOrEqual, toItem: mainView, attribute: .top, multiplier: 1, constant: reserved))
+            mainView.addConstraint(NSLayoutConstraint(item: headView, attribute: .centerX, relatedBy: .equal, toItem: mainView, attribute: .centerX, multiplier: 1.0, constant: 0))
+            mainView.addConstraint(NSLayoutConstraint(item: headView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: iconSize))
+            mainView.addConstraint(NSLayoutConstraint(item: headView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: iconSize))
         }
-        // label
-        if !isNone { // 如果有图标 + 图标高度 图标和文字间距15
-            let labelTop = hudreserved + hudiconWH + hudreserved
-            mainView.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.lessThanOrEqual, toItem: mainView, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: labelTop))
-        } else { // 没有图标 直接居中
-            mainView.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutConstraint.Attribute.centerY, relatedBy: NSLayoutConstraint.Relation.lessThanOrEqual, toItem: mainView, attribute: NSLayoutConstraint.Attribute.centerY, multiplier: 1, constant: 0))
+
+        if !isNone {
+            let labelTop = reserved + iconSize + reserved
+            mainView.addConstraint(NSLayoutConstraint(item: label, attribute: .top, relatedBy: .lessThanOrEqual, toItem: mainView, attribute: .top, multiplier: 1, constant: labelTop))
+        } else {
+            mainView.addConstraint(NSLayoutConstraint(item: label, attribute: .centerY, relatedBy: .lessThanOrEqual, toItem: mainView, attribute: .centerY, multiplier: 1, constant: 0))
         }
-        mainView.addConstraint( NSLayoutConstraint(item: label, attribute: .centerX, relatedBy: .equal, toItem: mainView, attribute: .centerX, multiplier: 1.0, constant: 0) )
-        mainView.addConstraint( NSLayoutConstraint(item: label, attribute: .width, relatedBy: .lessThanOrEqual, toItem: nil, attribute: .width, multiplier: 1.0, constant: hudmaxWidth))
-        mainView.addConstraint( NSLayoutConstraint(item: label, attribute: .height, relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 0) )
+
+        mainView.addConstraint(NSLayoutConstraint(item: label, attribute: .centerX, relatedBy: .equal, toItem: mainView, attribute: .centerX, multiplier: 1.0, constant: 0))
+        mainView.addConstraint(NSLayoutConstraint(item: label, attribute: .width, relatedBy: .lessThanOrEqual, toItem: nil, attribute: .width, multiplier: 1.0, constant: maxTextWidth))
+        mainView.addConstraint(NSLayoutConstraint(item: label, attribute: .height, relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 0))
+
+        if #available(iOS 13.0, *) {
+            window.windowScene = UIApplication.shared.curWindowScene
+        }
         window.windowLevel = UIWindow.Level.alert
         window.center = getCenter()
         window.isHidden = false
         window.addSubview(mainView)
         windowsTemp.append(window)
-        if time != 0 {
-            delayDismiss(time, completion: completion)
+
+        if task.time != 0 {
+            delayDismiss(task.time)
         }
     }
     
     class func dismiss() {
-        timer?.cancel()
-        timer = nil
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                dismiss()
+            }
+            return
+        }
+
+        dismissCurrent(callCompletion: false)
+    }
+
+    private class func dismissCurrent(callCompletion: Bool, presentNext: Bool = true) {
+        dismissWorkItem?.cancel()
+        dismissWorkItem = nil
         instance.removeDeviceOrientationNotification()
         if let currentwindow = windowsTemp.last {
             for view in currentwindow.subviews {
@@ -220,12 +445,37 @@ public extension LTMProgressHUD {
             }
         }
         windowsTemp.removeAll(keepingCapacity: false)
+
+        let completion = currentTask?.completion
+        currentTask = nil
+
+        if callCompletion {
+            completion?()
+        }
+
+        guard presentNext else { return }
+
+        if let loadingTask = pendingLoadingTask {
+            pendingLoadingTask = nil
+            present(loadingTask)
+            return
+        }
+
+        if let nextTask = pendingTasks.first {
+            pendingTasks.removeFirst()
+            present(nextTask)
+        }
     }
 }
 
 open class LTMProgressHUD: NSObject {
     fileprivate static var windowsTemp = [UIWindow]()
-    fileprivate static var timer: DispatchSourceTimer?
+    fileprivate static var dismissWorkItem: DispatchWorkItem?
+    fileprivate static var pendingTasks: [LTMHUDTask] = []
+    fileprivate static var pendingLoadingTask: LTMHUDTask?
+    fileprivate static var currentTask: LTMHUDTask?
+    fileprivate static var idSeed: UInt64 = 0
+    fileprivate static var lastEnqueueTimestamp: [String: TimeInterval] = [:]
     fileprivate static let instance = LTMProgressHUD()
     private struct Cache {
         static var imageOfCheckmark: UIImage?
@@ -239,24 +489,15 @@ open class LTMProgressHUD: NSObject {
     }
     
     // delay dismiss
-    fileprivate class func delayDismiss(_ time: TimeInterval?, completion: HUDCompletedBlock?) {
-        guard let time = time else { return }
+    fileprivate class func delayDismiss(_ time: TimeInterval) {
         guard time > 0 else { return }
-        var timeout = time
-        timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0),
-                                               queue: DispatchQueue.main)// as! DispatchSource
-        timer!.schedule(wallDeadline: .now(), repeating: .seconds(1))
-        timer!.setEventHandler {
-            if timeout <= 0 {
-                DispatchQueue.main.async {
-                    dismiss()
-                    completion?()
-                }
-            } else {
-                timeout -= 1
-            }
+
+        dismissWorkItem?.cancel()
+        let workItem = DispatchWorkItem {
+            dismissCurrent(callCompletion: true)
         }
-        timer!.resume()
+        dismissWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + time, execute: workItem)
     }
     
     // register notification
@@ -328,36 +569,36 @@ open class LTMProgressHUD: NSObject {
     }
     // MARK: - 画勾
     fileprivate class var imageOfCheckmark: UIImage {
-        if (Cache.imageOfCheckmark != nil) {
-            return Cache.imageOfCheckmark!
+        if let image = Cache.imageOfCheckmark {
+            return image
         }
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 36, height: 36), false, 0)
         LTMProgressHUD.draw(.success)
         Cache.imageOfCheckmark = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return Cache.imageOfCheckmark!
+        return Cache.imageOfCheckmark ?? UIImage()
     }
     // MARK: - 画X
     fileprivate class var imageOfCross: UIImage {
-        if (Cache.imageOfCross != nil) {
-            return Cache.imageOfCross!
+        if let image = Cache.imageOfCross {
+            return image
         }
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 36, height: 36), false, 0)
         LTMProgressHUD.draw(.error)
         Cache.imageOfCross = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return Cache.imageOfCross!
+        return Cache.imageOfCross ?? UIImage()
     }
     // MARK: - 画!
     fileprivate class var imageOfInfo: UIImage {
-        if (Cache.imageOfInfo != nil) {
-            return Cache.imageOfInfo!
+        if let image = Cache.imageOfInfo {
+            return image
         }
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 36, height: 36), false, 0)
         LTMProgressHUD.draw(.info)
         Cache.imageOfInfo = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return Cache.imageOfInfo!
+        return Cache.imageOfInfo ?? UIImage()
     }
 }
 

@@ -193,6 +193,59 @@ let modelEn = UIDevice.current.sizeModel.modelEn
 
 Tip: if model is unknown, you can fallback to `UIDevice.current.detailedModel`.
 
+#### `LTMHUDManage.swift`
+
+```swift
+// Access
+// UIViewController / UIView both support: HUDManage.xxx(...)
+
+// 1) Global config (set once, e.g. in AppDelegate)
+LTMHUDManage.isReceiveEvent = false // false: block touch, true: allow touch through
+LTMHUDManage.maxQueueCount = 20
+LTMHUDManage.deduplicateInterval = 0.8
+LTMHUDManage.overflowStrategy = .dropOldest // or .dropNewest
+
+// Style
+LTMHUDManage.maxTextWidth = UIScreen.main.bounds.width - 100
+LTMHUDManage.labelFontSize = 14
+LTMHUDManage.lineSpacing = 3
+LTMHUDManage.contentInset = 15
+LTMHUDManage.iconSize = 36
+
+// 2) Normal queued messages
+HUDManage.ltm_showtitle("Saved")
+HUDManage.ltm_showtitle("Saved in 2s", 2.0)
+HUDManage.ltm_showInfo("Network unstable", 1.5)
+HUDManage.ltm_showSuccess("Done")
+HUDManage.ltm_showError("Request failed")
+
+// 3) Priority (larger value shows earlier in pending queue)
+HUDManage.ltm_showtitle("normal", 1.2, priority: 0)
+HUDManage.ltm_showError("important", priority: 10)
+
+// 4) Immediate interrupt of current HUD
+HUDManage.ltm_showError("interrupt now", priority: 100, interruptCurrent: true)
+HUDManage.ltm_showInfo("show now", 1.0, priority: 50, interruptCurrent: true)
+
+// 5) Loading
+HUDManage.ltm_showLoading() // default: "正在加载", timeout 60s
+HUDManage.ltm_showLoading("Loading...")
+HUDManage.ltm_showLoading("Syncing...", 15)
+HUDManage.ltm_showLoading("Refresh token", nil, interruptCurrent: true)
+
+// 6) Queue/lifecycle control
+let pending = HUDManage.ltm_pendingCount // waiting count, excluding current HUD
+HUDManage.ltm_dismiss()      // dismiss current, then continue queue
+HUDManage.ltm_clearQueue()   // clear waiting queue only
+HUDManage.ltm_dismissAll()   // dismiss current + clear waiting queue
+```
+
+Tips:
+- `priority` only affects queue order; it does not interrupt current HUD.
+- Use `interruptCurrent: true` only for urgent messages.
+- Loading uses single-slot strategy: new loading replaces pending loading.
+- Long text is auto-truncated (`...`) to stay inside screen bounds.
+
 ## Author
 
 coenen, coenen@aliyun.com
