@@ -53,6 +53,16 @@ public extension String{
 }
 
 public extension String {
+    /// 随机字符串（包含大小写字母，可选是否包含数字）
+    static func random(length: Int, includeNumbers: Bool = true) -> String {
+        guard length > 0 else { return "" }
+        let letters = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        let numbers = Array("0123456789")
+        let candidates = includeNumbers ? (letters + numbers) : letters
+        guard !candidates.isEmpty else { return "" }
+        return String((0..<length).compactMap { _ in candidates.randomElement() })
+    }
+
     /// 字符串前加空格
     var insertNullAtFirst: String {
         return " " + self
@@ -79,6 +89,27 @@ public extension String {
      */
     func decimalDigitParam(_ digit: Int) -> String{
         return NSDecimalNumber(string: self).decimalDigitParam(digit)
+    }
+
+    /// JSON字符串转字典
+    var jsonDictionary: [String: Any]? {
+        guard let object = self.jsonObject else { return nil }
+        return object as? [String: Any]
+    }
+
+    /// JSON字符串转数组
+    var jsonArray: [Any]? {
+        guard let object = self.jsonObject else { return nil }
+        return object as? [Any]
+    }
+
+    private var jsonObject: Any? {
+        let trimmedString = self.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedString.isEmpty,
+              let data = trimmedString.data(using: .utf8) else {
+            return nil
+        }
+        return try? JSONSerialization.jsonObject(with: data, options: [.fragmentsAllowed])
     }
 }
 

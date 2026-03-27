@@ -17,3 +17,20 @@ public extension Array where Element: Hashable {
         }
     }
 }
+public extension Array {
+    /// 数组转JSON字符串
+    var jsonString: String? {
+        return self.toJSONString()
+    }
+
+    /// 数组转JSON字符串
+    func toJSONString(prettyPrinted: Bool = false) -> String? {
+        guard JSONSerialization.isValidJSONObject(self) else { return nil }
+        let options: JSONSerialization.WritingOptions = prettyPrinted ? [.prettyPrinted] : []
+        guard let data = try? JSONSerialization.data(withJSONObject: self, options: options) else {
+            return nil
+        }
+        return String(data: data, encoding: .utf8)
+    }
+}
+

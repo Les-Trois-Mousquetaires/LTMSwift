@@ -9,6 +9,18 @@ import CommonCrypto
 import CryptoKit
 
 public extension String {
+    /// Base64编码
+    var base64Encoded: String? {
+        guard let data = self.data(using: .utf8) else { return nil }
+        return data.base64EncodedString()
+    }
+
+    /// Base64解码
+    var base64Decoded: String? {
+        guard let data = Data(base64Encoded: self, options: .ignoreUnknownCharacters) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+
     /// 字符串MD5
     var md5: String{
         guard let data = self.data(using: .utf8) else {
