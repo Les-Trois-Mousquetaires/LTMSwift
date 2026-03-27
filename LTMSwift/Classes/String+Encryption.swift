@@ -58,35 +58,12 @@ public extension String {
      - parameter options 加密方式
      */
     func desEncrypt(key:String, iv:String, options:Int = kCCOptionPKCS7Padding) -> String? {
-        if let keyData = key.data(using: String.Encoding.utf8),
-           let data = self.data(using: String.Encoding.utf8),
-           let cryptData    = NSMutableData(length: Int((data.count)) + kCCBlockSizeDES) {
-            let keyLength              = size_t(kCCKeySizeDES)
-            let operation: CCOperation = UInt32(kCCEncrypt)
-            let algoritm:  CCAlgorithm = UInt32(kCCAlgorithmDES)
-            let options:   CCOptions   = UInt32(options)
-            var numBytesEncrypted :size_t = 0
-            let cryptStatus = CCCrypt(operation,
-                                      algoritm,
-                                      options,
-                                      (keyData as NSData).bytes,
-                                      keyLength,
-                                      iv,
-                                      (data as NSData).bytes,
-                                      data.count,
-                                      cryptData.mutableBytes,
-                                      cryptData.length,
-                                      &numBytesEncrypted)
-            if UInt32(cryptStatus) == UInt32(kCCSuccess) {
-                cryptData.length = Int(numBytesEncrypted)
-                let base64cryptString = cryptData.base64EncodedString(options: .lineLength64Characters)
-                return base64cryptString
-            }
-            else {
-                return nil
-            }
+        guard let keyData = Self.validatedData(from: key, lengths: [kCCKeySizeDES]),
+              let ivData = Self.validatedData(from: iv, lengths: [kCCBlockSizeDES]),
+              let data = self.data(using: .utf8) else {
+            return nil
         }
-        return nil
+        return Self.crypt(input: data, operation: CCOperation(kCCEncrypt), algorithm: CCAlgorithm(kCCAlgorithmDES), options: CCOptions(options), key: keyData, iv: ivData)?.base64EncodedString(options: .lineLength64Characters)
     }
     
     /**
@@ -97,33 +74,13 @@ public extension String {
      - parameter options 解密方式
      */
     func desDecrypt(key:String, iv:String, options:Int = kCCOptionPKCS7Padding) -> String? {
-        if let keyData = key.data(using: String.Encoding.utf8),
-           let data = NSData(base64Encoded: self, options: .ignoreUnknownCharacters),
-           let cryptData    = NSMutableData(length: Int((data.length)) + kCCBlockSizeDES) {
-            let keyLength              = size_t(kCCKeySizeDES)
-            let operation: CCOperation = UInt32(kCCDecrypt)
-            let algoritm:  CCAlgorithm = UInt32(kCCAlgorithmDES)
-            let options:   CCOptions   = UInt32(options)
-            var numBytesEncrypted :size_t = 0
-            let cryptStatus = CCCrypt(operation,
-                                      algoritm,
-                                      options,
-                                      (keyData as NSData).bytes, keyLength,
-                                      iv,
-                                      data.bytes, data.length,
-                                      cryptData.mutableBytes, cryptData.length,
-                                      &numBytesEncrypted)
-            
-            if UInt32(cryptStatus) == UInt32(kCCSuccess) {
-                cryptData.length = Int(numBytesEncrypted)
-                let unencryptedMessage = String(data: cryptData as Data, encoding:String.Encoding.utf8)
-                return unencryptedMessage
-            }
-            else {
-                return nil
-            }
+        guard let keyData = Self.validatedData(from: key, lengths: [kCCKeySizeDES]),
+              let ivData = Self.validatedData(from: iv, lengths: [kCCBlockSizeDES]),
+              let data = Data(base64Encoded: self, options: .ignoreUnknownCharacters),
+              let decryptedData = Self.crypt(input: data, operation: CCOperation(kCCDecrypt), algorithm: CCAlgorithm(kCCAlgorithmDES), options: CCOptions(options), key: keyData, iv: ivData) else {
+            return nil
         }
-        return nil
+        return String(data: decryptedData, encoding: .utf8)
     }
     
     /**
@@ -133,35 +90,12 @@ public extension String {
      - parameter iv 偏移量
      */
     func aesEncrypt(key:String, iv:String, options:Int = kCCOptionPKCS7Padding) -> String? {
-        if let keyData = key.data(using: String.Encoding.utf8),
-           let data = self.data(using: String.Encoding.utf8),
-           let cryptData    = NSMutableData(length: Int((data.count)) + kCCBlockSizeAES128) {
-            let keyLength              = size_t(kCCKeySizeAES256)
-            let operation: CCOperation = UInt32(kCCEncrypt)
-            let algoritm:  CCAlgorithm = UInt32(kCCAlgorithmAES)
-            let options:   CCOptions   = UInt32(options)
-            var numBytesEncrypted :size_t = 0
-            let cryptStatus = CCCrypt(operation,
-                                      algoritm,
-                                      options,
-                                      (keyData as NSData).bytes,
-                                      keyLength,
-                                      iv,
-                                      (data as NSData).bytes,
-                                      data.count,
-                                      cryptData.mutableBytes,
-                                      cryptData.length,
-                                      &numBytesEncrypted)
-            if UInt32(cryptStatus) == UInt32(kCCSuccess) {
-                cryptData.length = Int(numBytesEncrypted)
-                let base64cryptString = cryptData.base64EncodedString(options: .lineLength64Characters)
-                return base64cryptString
-            }
-            else {
-                return nil
-            }
+        guard let keyData = Self.validatedData(from: key, lengths: [kCCKeySizeAES128, kCCKeySizeAES192, kCCKeySizeAES256]),
+              let ivData = Self.validatedData(from: iv, lengths: [kCCBlockSizeAES128]),
+              let data = self.data(using: .utf8) else {
+            return nil
         }
-        return nil
+        return Self.crypt(input: data, operation: CCOperation(kCCEncrypt), algorithm: CCAlgorithm(kCCAlgorithmAES), options: CCOptions(options), key: keyData, iv: ivData)?.base64EncodedString(options: .lineLength64Characters)
     }
     
     /// Data转MD5
@@ -184,26 +118,35 @@ public extension String {
     
     /// 文件路径转MD5
     static func md5(fileAtPath path: String, uppercased: Bool = false) -> String? {
-        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else {
-            return nil
-        }
-        return Self.md5(data: data, uppercased: uppercased)
+        guard let stream = InputStream(fileAtPath: path) else { return nil }
+        stream.open()
+        defer { stream.close() }
+        var hasher = Insecure.MD5()
+        guard Self.updateDigest(&hasher, with: stream) else { return nil }
+        let digest = hasher.finalize()
+        return Self.hexString(from: digest, uppercased: uppercased)
     }
     
     /// 文件路径转SHA1
     static func sha1(fileAtPath path: String, uppercased: Bool = false) -> String? {
-        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else {
-            return nil
-        }
-        return Self.sha1(data: data, uppercased: uppercased)
+        guard let stream = InputStream(fileAtPath: path) else { return nil }
+        stream.open()
+        defer { stream.close() }
+        var hasher = Insecure.SHA1()
+        guard Self.updateDigest(&hasher, with: stream) else { return nil }
+        let digest = hasher.finalize()
+        return Self.hexString(from: digest, uppercased: uppercased)
     }
     
     /// 文件路径转SHA256
     static func sha256(fileAtPath path: String, uppercased: Bool = false) -> String? {
-        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else {
-            return nil
-        }
-        return Self.sha256(data: data, uppercased: uppercased)
+        guard let stream = InputStream(fileAtPath: path) else { return nil }
+        stream.open()
+        defer { stream.close() }
+        var hasher = SHA256()
+        guard Self.updateDigest(&hasher, with: stream) else { return nil }
+        let digest = hasher.finalize()
+        return Self.hexString(from: digest, uppercased: uppercased)
     }
     
     private static func hexString(from bytes: some Sequence<UInt8>, uppercased: Bool) -> String {
@@ -211,5 +154,57 @@ public extension String {
             let value = String(format: "%02x", byte)
             return uppercased ? value.uppercased() : value
         }.joined()
+    }
+
+    private static func validatedData(from value: String, lengths: [Int]) -> Data? {
+        guard let data = value.data(using: .utf8), lengths.contains(data.count) else {
+            return nil
+        }
+        return data
+    }
+
+    private static func crypt(input: Data, operation: CCOperation, algorithm: CCAlgorithm, options: CCOptions, key: Data, iv: Data) -> Data? {
+        let outputLength = input.count + Swift.max(kCCBlockSizeAES128, kCCBlockSizeDES)
+        guard let output = NSMutableData(length: outputLength) else { return nil }
+        var bytesProcessed: size_t = 0
+
+        let status = key.withUnsafeBytes { keyBytes in
+            iv.withUnsafeBytes { ivBytes in
+                input.withUnsafeBytes { inputBytes in
+                    CCCrypt(operation,
+                            algorithm,
+                            options,
+                            keyBytes.baseAddress,
+                            key.count,
+                            ivBytes.baseAddress,
+                            inputBytes.baseAddress,
+                            input.count,
+                            output.mutableBytes,
+                            output.length,
+                            &bytesProcessed)
+                }
+            }
+        }
+
+        guard status == kCCSuccess else { return nil }
+        output.length = bytesProcessed
+        return output as Data
+    }
+
+    private static func updateDigest<H: HashFunction>(_ hasher: inout H, with stream: InputStream, chunkSize: Int = 64 * 1024) -> Bool {
+        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: chunkSize)
+        defer { buffer.deallocate() }
+
+        while stream.hasBytesAvailable {
+            let readCount = stream.read(buffer, maxLength: chunkSize)
+            if readCount < 0 {
+                return false
+            }
+            if readCount == 0 {
+                break
+            }
+            hasher.update(data: Data(bytes: buffer, count: readCount))
+        }
+        return stream.streamStatus != .error
     }
 }

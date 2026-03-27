@@ -7,6 +7,20 @@
 
 import Foundation
 
+private enum LTMDateFormatterPool {
+    static func formatter(for format: String) -> DateFormatter {
+        let key = "com.ltmswift.dateformatter.\(format)"
+        if let formatter = Thread.current.threadDictionary[key] as? DateFormatter {
+            return formatter
+        }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = format
+        Thread.current.threadDictionary[key] = formatter
+        return formatter
+    }
+}
+
 public extension Date{
     /**
      时间转字符串
@@ -14,11 +28,7 @@ public extension Date{
      - parameter format 转换时间格式
      */
     func string(_ format: String = "yyyy-MM-dd") -> String{
-        let dateFormatter: DateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = format
-        
-        return dateFormatter.string(from: self)
+        return LTMDateFormatterPool.formatter(for: format).string(from: self)
     }
 }
 
@@ -330,22 +340,18 @@ public extension String{
      
      - returns 时间
      */
-    func date(format: String = "yyyy-MM-dd") -> Date{
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = format
-        
-        return dateFormatter.date(from:self) ?? Date()
+    func date(format: String = "yyyy-MM-dd") -> Date? {
+        return LTMDateFormatterPool.formatter(for: format).date(from: self)
     }
     
     /// 时间戳转时间
-    var date: Date{
+    var date: Date? {
         if self.isEmpty {
-            return Date()
+            return nil
         }
         
         guard let interval = TimeInterval(self) else {
-            return Date()
+            return nil
         }
         if (self.count == 13 && interval > 0){
             return Date(timeIntervalSince1970: interval/1000)
@@ -353,6 +359,6 @@ public extension String{
             return Date(timeIntervalSince1970: interval)
         }
         
-        return Date()
+        return nil
     }
 }

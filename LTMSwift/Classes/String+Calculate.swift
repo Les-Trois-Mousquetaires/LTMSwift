@@ -68,6 +68,9 @@ public extension String {
     func dividing(num:String) -> String {
         let number1 = NSDecimalNumber(string: self)
         let number2 = NSDecimalNumber(string: num)
+        if number2 == .zero || number2 == NSDecimalNumber.notANumber {
+            return "0"
+        }
         let summation = number1.dividing(by:number2)
         return summation.stringValue
     }

@@ -37,12 +37,18 @@ public extension String{
     
     /// 计算自身Range
     var selfRange: NSRange{
-        return self.range(of: self)
+        return self.nsRange(of: self)
     }
     
     /// 计算Range
+    func nsRange(of text: String) -> NSRange{
+        return (self as NSString).range(of: text)
+    }
+
+    /// 计算Range
+    @available(*, deprecated, renamed: "nsRange(of:)")
     func range(of: String) -> NSRange{
-        return (self as NSString).range(of: of)
+        return self.nsRange(of: of)
     }
 }
 
