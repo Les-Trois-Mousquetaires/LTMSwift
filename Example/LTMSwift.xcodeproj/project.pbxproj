@@ -30,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		0F85C0F22E2F29040013F81E /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
+		0FF61CF02F764FFF00D0E8E3 /* README.zh-CN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "README.zh-CN.md"; sourceTree = "<group>"; };
 		2370E5788FF7457E32A0D2F0 /* Pods_LTMSwift_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LTMSwift_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		27E4AAB029362CDD0020E5CF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		5063ED4061BFC0E01C8E5DA2 /* Pods-LTMSwift_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LTMSwift_Example.debug.xcconfig"; path = "Target Support Files/Pods-LTMSwift_Example/Pods-LTMSwift_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -137,6 +138,7 @@
 				BB257ACAE3D183CC3EA1CD06 /* LTMSwift.podspec */,
 				27E4AAB029362CDD0020E5CF /* README.md */,
 				691A70A1E5860281D20E1083 /* LICENSE */,
+				0FF61CF02F764FFF00D0E8E3 /* README.zh-CN.md */,
 			);
 			name = "Podspec Metadata";
 			sourceTree = "<group>";

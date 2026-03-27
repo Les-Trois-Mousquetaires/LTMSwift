@@ -1,28 +1,25 @@
 # LTMSwift
 
-[中文文档](README.zh-CN.md)
+[English](README.md)
 
 [![CI Status](https://img.shields.io/travis/kenan0620/LTMSwift.svg?style=flat)](https://travis-ci.org/kenan0620/LTMSwift)
 [![Version](https://img.shields.io/cocoapods/v/LTMSwift.svg?style=flat)](https://cocoapods.org/pods/LTMSwift)
 [![License](https://img.shields.io/cocoapods/l/LTMSwift.svg?style=flat)](https://cocoapods.org/pods/LTMSwift)
 [![Platform](https://img.shields.io/cocoapods/p/LTMSwift.svg?style=flat)](https://cocoapods.org/pods/LTMSwift)
 
-## Example
+## 示例工程
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+克隆仓库后，先在 Example 目录执行 `pod install`，再运行示例工程。
 
-## Requirements
+## 安装
 
-## Installation
-
-LTMSwift is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+LTMSwift 支持通过 [CocoaPods](https://cocoapods.org) 安装：
 
 ```ruby
 pod 'LTMSwift'
 ```
 
-If you only need specific modules:
+如仅使用部分模块：
 
 ```ruby
 pod 'LTMSwift/Extension'
@@ -30,7 +27,7 @@ pod 'LTMSwift/Extension/UIExtension'
 pod 'LTMSwift/Extension/BaseExtension'
 ```
 
-## Extension Quick Start (By File)
+## Extension 快速上手（按文件）
 
 ### BaseExtension
 
@@ -42,7 +39,7 @@ let cleaned = raw.removingNullValues()
 let json = cleaned.jsonString
 ```
 
-Tip: `jsonString` is optional, check for `nil` before upload/store.
+提示：`jsonString` 是可选值，上传或存储前建议判空。
 
 #### `Array+Extension.swift`
 
@@ -51,7 +48,7 @@ let array = [1, 2, 3]
 let json = array.jsonString
 ```
 
-Tip: `toJSONString(prettyPrinted: true)` is useful for logs.
+提示：`toJSONString(prettyPrinted: true)` 适合日志调试。
 
 #### `String+Extension.swift`
 
@@ -60,7 +57,7 @@ let json = "{\"name\":\"LTM\"}"
 let obj = json.jsonDictionary
 ```
 
-Tip: invalid JSON returns `nil`.
+提示：非法 JSON 会返回 `nil`。
 
 #### `String+Encryption.swift`
 
@@ -69,7 +66,7 @@ let encoded = "LTMSwift".base64Encoded
 let decoded = encoded?.base64Decoded
 ```
 
-#### `String+Extension.swift` (Random)
+#### `String+Extension.swift`（随机字符串）
 
 ```swift
 let token = String.random(length: 16, includeNumbers: true)
@@ -82,18 +79,18 @@ let token = String.random(length: 16, includeNumbers: true)
 ```swift
 import LTMSwift
 
-// Enable once (e.g. in AppDelegate)
+// 建议在 App 启动后调用一次
 UIControl.enableGlobalDebounce()
 
-// Per-control interval
+// 单控件间隔
 button.ltmDebounceInterval = 1.0
 switchControl.ltmDebounceInterval = 0.5
 
-// Disable debounce on one control
+// 关闭单个控件防抖
 button.ltmDebounceInterval = 0
 ```
 
-Tip: default debounce is `1.0s` for `UIButton`, `0` for other `UIControl`.
+提示：`UIButton` 默认间隔 `1.0s`，其他 `UIControl` 默认 `0`（不拦截）。
 
 #### `UIGestureRecognizer+Debounce.swift`
 
@@ -105,7 +102,7 @@ label.addDebouncedTapGesture(interval: 0.8, target: self, action: #selector(onTa
 @objc private func onTapLabel() {}
 ```
 
-Tip: debounce only applies to this added gesture; other gestures are unaffected.
+提示：仅对该手势生效，不影响你手动添加的其他手势。
 
 #### `UIApplication+Extension.swift`
 
@@ -148,7 +145,7 @@ textField.limitBlock = { reason in
 }
 ```
 
-Tip: `maxLength` / `digits` / `maxNumber` can be used together.
+提示：`maxLength`、`digits`、`maxNumber` 可叠加使用。
 
 #### `UITextView+Extension.swift`
 
@@ -167,12 +164,12 @@ let model = UIDevice.current.sizeModel.model
 let modelEn = UIDevice.current.sizeModel.modelEn
 ```
 
-Tip: if model is unknown, you can fallback to `UIDevice.current.detailedModel`.
+提示：如未匹配到新机型，可用 `UIDevice.current.detailedModel` 兜底显示。
 
-## Author
+## 作者
 
 coenen, coenen@aliyun.com
 
 ## License
 
-LTMSwift is available under the MIT license. See the LICENSE file for more info.
+LTMSwift 基于 MIT 协议开源，详见 LICENSE。
