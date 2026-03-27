@@ -7,12 +7,24 @@
 
 import UIKit
 
+private final class LTMTextViewObserverToken {
+    private let token: NSObjectProtocol
+
+    init(token: NSObjectProtocol) {
+        self.token = token
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(token)
+    }
+}
+
 public extension UITextView {
     
     private struct RuntimeKey {
         static var placeholderLabelKey: UInt8 = 0
         static var maxLengthKey: UInt8 = 0
-        static var observerRegisteredKey: UInt8 = 0
+        static var observerTokenKey: UInt8 = 0
     }
     /// 占位文字
     @IBInspectable var placeholder: String {
@@ -46,29 +58,24 @@ public extension UITextView {
     }
     
     private var placeholderLabel: UILabel {
-        get {
-            var label = objc_getAssociatedObject(self, &RuntimeKey.placeholderLabelKey) as? UILabel
-            if label == nil {
-                if self.font == nil {
-                    self.font = UIFont.systemFont(ofSize: 14)
-                }
-                label = UILabel(frame: self.bounds)
-                label?.numberOfLines = 0
-                label?.font = self.font
-                label?.textColor = .lightGray
-                if let label {
-                    addSubview(label)
-                    objc_setAssociatedObject(self, &RuntimeKey.placeholderLabelKey, label, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-                    sendSubviewToBack(label)
-                }
-                setupTextChangeObserverIfNeeded()
-                refreshPlaceholderVisibility()
-            }
-            return label ?? UILabel()
+        if let label = objc_getAssociatedObject(self, &RuntimeKey.placeholderLabelKey) as? UILabel {
+            return label
         }
-        set {
-            objc_setAssociatedObject(self, &RuntimeKey.placeholderLabelKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+
+        if self.font == nil {
+            self.font = UIFont.systemFont(ofSize: 14)
         }
+
+        let label = UILabel(frame: self.bounds)
+        label.numberOfLines = 0
+        label.font = self.font
+        label.textColor = .lightGray
+        label.isUserInteractionEnabled = false
+        addSubview(label)
+        objc_setAssociatedObject(self, &RuntimeKey.placeholderLabelKey, label, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        setupTextChangeObserverIfNeeded()
+        refreshPlaceholderVisibility()
+        return label
     }
     
     @IBInspectable var maxLength: Int {
@@ -85,7 +92,7 @@ public extension UITextView {
         }
     }
     
-    @objc private func handleTextDidChange() {
+    private func handleTextDidChange() {
         enforceMaxLengthIfNeeded()
         refreshPlaceholderVisibility()
     }
@@ -105,14 +112,26 @@ public extension UITextView {
     }
     
     private func refreshPlaceholderVisibility() {
-        placeholderLabel.frame = bounds.inset(by: textContainerInset)
+        let insetBounds = bounds.inset(by: textContainerInset)
+        let x = insetBounds.origin.x + textContainer.lineFragmentPadding
+        let width = max(0, insetBounds.width - textContainer.lineFragmentPadding * 2)
+        placeholderLabel.frame = CGRect(x: x, y: insetBounds.origin.y, width: width, height: insetBounds.height)
         placeholderLabel.isHidden = !(text?.isEmpty ?? true)
     }
     
     private func setupTextChangeObserverIfNeeded() {
-        let isRegistered = (objc_getAssociatedObject(self, &RuntimeKey.observerRegisteredKey) as? Bool) ?? false
-        guard !isRegistered else { return }
-        NotificationCenter.default.addObserver(self, selector: #selector(handleTextDidChange), name: UITextView.textDidChangeNotification, object: self)
-        objc_setAssociatedObject(self, &RuntimeKey.observerRegisteredKey, true, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        if objc_getAssociatedObject(self, &RuntimeKey.observerTokenKey) != nil {
+            return
+        }
+
+        let token = NotificationCenter.default.addObserver(
+            forName: UITextView.textDidChangeNotification,
+            object: self,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleTextDidChange()
+        }
+        let tokenBox = LTMTextViewObserverToken(token: token)
+        objc_setAssociatedObject(self, &RuntimeKey.observerTokenKey, tokenBox, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }

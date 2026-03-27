@@ -8,6 +8,7 @@
 import Foundation
 
 private let ltmDashLineLayerName = "com.ltmswift.dash.line"
+private let ltmGradientLayerName = "com.ltmswift.gradient.layer"
 
 public extension UIView{
     /**
@@ -27,15 +28,18 @@ public extension UIView{
      - parameter colors 渐变颜色数组
      */
     func setGradient(startPoint: CGPoint?, endPoint: CGPoint?, colors:[Any]){
+        layer.sublayers?.removeAll(where: { $0.name == ltmGradientLayerName })
+
         let gradientLocations:[NSNumber] = [0, 1]
         let gradientLayer = CAGradientLayer()
+        gradientLayer.name = ltmGradientLayerName
         gradientLayer.colors = colors
         gradientLayer.locations = gradientLocations
         
-        gradientLayer.startPoint = startPoint ?? CGPoint.init(x: 0, y: 0)
-        gradientLayer.endPoint = endPoint ?? CGPoint.init(x: 1, y: 0)
-        gradientLayer.frame = self.bounds
-        self.layer.insertSublayer(gradientLayer, at: 0)
+        gradientLayer.startPoint = startPoint ?? CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = endPoint ?? CGPoint(x: 1, y: 0)
+        gradientLayer.frame = bounds
+        layer.insertSublayer(gradientLayer, at: 0)
     }
 }
 
@@ -64,26 +68,12 @@ public extension UIView{
         return image ?? UIImage()
     }
         
-    /// 将scrollView 生成图片
+    /// 将 scrollView 生成长图，非 scrollView 则返回当前 view 截图。
     var scrollViewImage: UIImage {
         guard let scrollView = self as? UIScrollView else {
             return viewImage
         }
-        var image = UIImage()
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: scrollView.contentSize.width, height: scrollView.contentSize.height), false, 0.0)
-        let savedContentOffset: CGPoint = scrollView.contentOffset
-        let savedFrame: CGRect = scrollView.frame
-        scrollView.contentOffset = CGPoint.zero
-        scrollView.frame = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: scrollView.contentSize.width, height: scrollView.contentSize.height))
-        if let context = UIGraphicsGetCurrentContext() {
-            scrollView.layer.render(in: context)
-        }
-        image = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
-        scrollView.contentOffset = savedContentOffset
-        scrollView.frame = savedFrame
-        UIGraphicsEndImageContext()
-        
-        return image
+        return scrollView.captureLongImage ?? UIImage()
     }
 }
 

@@ -36,7 +36,7 @@ public extension UITextField{
      - parameter limitReason 触发限制的原因
     2:小数点开头 3:已输入小数点，再次输入小数点 4:小数位数超出限制 5:超过最大值限制，6:最大长度
      */
-    @IBInspectable var limitBlock: ((_ limitReason: Int) -> Void)? {
+    var limitBlock: ((_ limitReason: Int) -> Void)? {
         set {
             objc_setAssociatedObject(self, &kAssociationKeyLibmitBlock, newValue, .OBJC_ASSOCIATION_RETAIN)
         }get {
