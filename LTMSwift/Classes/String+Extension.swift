@@ -40,7 +40,9 @@ public extension String{
         return self.nsRange(of: self)
     }
     
-    /// 计算Range
+    /**
+     计算Range
+     */
     func nsRange(of text: String) -> NSRange{
         return (self as NSString).range(of: text)
     }
@@ -53,7 +55,13 @@ public extension String{
 }
 
 public extension String {
-    /// 随机字符串（包含大小写字母，可选是否包含数字）
+    /**
+     随机字符串（包含大小写字母，可选是否包含数字）
+
+     - parameter length 随机字符串长度，小于等于0时返回空字符串
+     - parameter includeNumbers 是否包含数字字符
+     - returns 随机结果
+     */
     static func random(length: Int, includeNumbers: Bool = true) -> String {
         guard length > 0 else { return "" }
         let letters = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -91,18 +99,19 @@ public extension String {
         return NSDecimalNumber(string: self).decimalDigitParam(digit)
     }
 
-    /// JSON字符串转字典
+    /// JSON字符串转字典（失败返回nil）
     var jsonDictionary: [String: Any]? {
         guard let object = self.jsonObject else { return nil }
         return object as? [String: Any]
     }
 
-    /// JSON字符串转数组
+    /// JSON字符串转数组（失败返回nil）
     var jsonArray: [Any]? {
         guard let object = self.jsonObject else { return nil }
         return object as? [Any]
     }
 
+    /// 解析 JSON 原始对象（字典/数组/片段）
     private var jsonObject: Any? {
         let trimmedString = self.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedString.isEmpty,
@@ -432,7 +441,9 @@ public extension String {
         return checkList[checkIndex] == clearString.subString(from: 17, to: 17).uppercased()
     }
         
-    /// 正则
+    /**
+     正则
+     */
     func isMatch(_ regex: String ) -> Bool {
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         let result: Bool = predicate.evaluate(with: self)

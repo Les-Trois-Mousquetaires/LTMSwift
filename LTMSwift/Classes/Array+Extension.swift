@@ -23,7 +23,12 @@ public extension Array {
         return self.toJSONString()
     }
 
-    /// 数组转JSON字符串
+    /**
+     数组转JSON字符串
+
+     - parameter prettyPrinted 是否格式化输出
+     - returns JSON字符串，转换失败返回nil
+     */
     func toJSONString(prettyPrinted: Bool = false) -> String? {
         guard JSONSerialization.isValidJSONObject(self) else { return nil }
         let options: JSONSerialization.WritingOptions = prettyPrinted ? [.prettyPrinted] : []
@@ -33,4 +38,3 @@ public extension Array {
         return String(data: data, encoding: .utf8)
     }
 }
-

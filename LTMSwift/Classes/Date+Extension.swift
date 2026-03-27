@@ -336,7 +336,7 @@ public extension Date {
 public extension String{
     
     /**
-     字符串转时间
+     字符串转时间（解析失败返回nil）
      
      - returns 时间
      */
@@ -344,7 +344,7 @@ public extension String{
         return LTMDateFormatterPool.formatter(for: format).date(from: self)
     }
     
-    /// 时间戳转时间
+    /// 时间戳转时间（秒/毫秒，解析失败返回nil）
     var date: Date? {
         if self.isEmpty {
             return nil

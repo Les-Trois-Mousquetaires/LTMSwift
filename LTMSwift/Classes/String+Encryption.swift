@@ -9,13 +9,13 @@ import CommonCrypto
 import CryptoKit
 
 public extension String {
-    /// Base64编码
+    /// Base64编码（UTF-8）
     var base64Encoded: String? {
         guard let data = self.data(using: .utf8) else { return nil }
         return data.base64EncodedString()
     }
 
-    /// Base64解码
+    /// Base64解码（UTF-8，失败返回nil）
     var base64Decoded: String? {
         guard let data = Data(base64Encoded: self, options: .ignoreUnknownCharacters) else { return nil }
         return String(data: data, encoding: .utf8)
@@ -110,25 +110,33 @@ public extension String {
         return Self.crypt(input: data, operation: CCOperation(kCCEncrypt), algorithm: CCAlgorithm(kCCAlgorithmAES), options: CCOptions(options), key: keyData, iv: ivData)?.base64EncodedString(options: .lineLength64Characters)
     }
     
-    /// Data转MD5
+    /**
+     Data转MD5
+     */
     static func md5(data: Data, uppercased: Bool = false) -> String {
         let digest = Insecure.MD5.hash(data: data)
         return Self.hexString(from: digest, uppercased: uppercased)
     }
     
-    /// Data转SHA1
+    /**
+     Data转SHA1
+     */
     static func sha1(data: Data, uppercased: Bool = false) -> String {
         let digest = Insecure.SHA1.hash(data: data)
         return Self.hexString(from: digest, uppercased: uppercased)
     }
     
-    /// Data转SHA256
+    /**
+     Data转SHA256
+     */
     static func sha256(data: Data, uppercased: Bool = false) -> String {
         let digest = SHA256.hash(data: data)
         return Self.hexString(from: digest, uppercased: uppercased)
     }
     
-    /// 文件路径转MD5
+    /**
+     文件路径转MD5
+     */
     static func md5(fileAtPath path: String, uppercased: Bool = false) -> String? {
         guard let stream = InputStream(fileAtPath: path) else { return nil }
         stream.open()
@@ -139,7 +147,9 @@ public extension String {
         return Self.hexString(from: digest, uppercased: uppercased)
     }
     
-    /// 文件路径转SHA1
+    /**
+     文件路径转SHA1
+     */
     static func sha1(fileAtPath path: String, uppercased: Bool = false) -> String? {
         guard let stream = InputStream(fileAtPath: path) else { return nil }
         stream.open()
@@ -150,7 +160,9 @@ public extension String {
         return Self.hexString(from: digest, uppercased: uppercased)
     }
     
-    /// 文件路径转SHA256
+    /**
+     文件路径转SHA256
+     */
     static func sha256(fileAtPath path: String, uppercased: Bool = false) -> String? {
         guard let stream = InputStream(fileAtPath: path) else { return nil }
         stream.open()
@@ -168,6 +180,9 @@ public extension String {
         }.joined()
     }
 
+    /**
+     校验 key / iv 长度并转 UTF-8 Data
+     */
     private static func validatedData(from value: String, lengths: [Int]) -> Data? {
         guard let data = value.data(using: .utf8), lengths.contains(data.count) else {
             return nil
@@ -175,6 +190,9 @@ public extension String {
         return data
     }
 
+    /**
+     统一加解密实现（DES / AES）
+     */
     private static func crypt(input: Data, operation: CCOperation, algorithm: CCAlgorithm, options: CCOptions, key: Data, iv: Data) -> Data? {
         let outputLength = input.count + Swift.max(kCCBlockSizeAES128, kCCBlockSizeDES)
         guard let output = NSMutableData(length: outputLength) else { return nil }
@@ -203,6 +221,9 @@ public extension String {
         return output as Data
     }
 
+    /**
+     以流式方式读取文件并更新哈希，避免整文件载入内存
+     */
     private static func updateDigest<H: HashFunction>(_ hasher: inout H, with stream: InputStream, chunkSize: Int = 64 * 1024) -> Bool {
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: chunkSize)
         defer { buffer.deallocate() }
