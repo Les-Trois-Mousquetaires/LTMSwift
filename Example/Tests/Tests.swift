@@ -5,14 +5,14 @@ final class Tests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        LTMHUDManage.shared.ltm_dismissAll()
+        LTMHUDManage.shared.dismissAll()
         LTMHUDManage.maxQueueCount = 20
         LTMHUDManage.deduplicateInterval = 0.8
         LTMHUDManage.overflowStrategy = .dropOldest
     }
 
     override func tearDown() {
-        LTMHUDManage.shared.ltm_dismissAll()
+        LTMHUDManage.shared.dismissAll()
         super.tearDown()
     }
 
@@ -44,7 +44,7 @@ final class Tests: XCTestCase {
         LTMProgressHUD.show(.none, "B", 1, priority: 0)
         LTMProgressHUD.show(.none, "C", 1, priority: 0)
 
-        XCTAssertEqual(LTMHUDManage.shared.ltm_pendingCount, 2)
+        XCTAssertEqual(LTMHUDManage.shared.pendingCount, 2)
     }
 
     func testHUDDeduplicate() {
@@ -54,7 +54,7 @@ final class Tests: XCTestCase {
         LTMProgressHUD.show(.none, "same", 1, priority: 0)
         LTMProgressHUD.show(.none, "same", 1, priority: 0)
 
-        XCTAssertEqual(LTMHUDManage.shared.ltm_pendingCount, 1)
+        XCTAssertEqual(LTMHUDManage.shared.pendingCount, 1)
     }
 
     func testHUDLoadingSingleSlotReplace() {
@@ -62,7 +62,7 @@ final class Tests: XCTestCase {
         LTMProgressHUD.show(.loading, "loading-1", 1)
         LTMProgressHUD.show(.loading, "loading-2", 1)
 
-        XCTAssertEqual(LTMHUDManage.shared.ltm_pendingCount, 1)
+        XCTAssertEqual(LTMHUDManage.shared.pendingCount, 1)
     }
 
     func testHUDInterruptCurrentViaParameter() {

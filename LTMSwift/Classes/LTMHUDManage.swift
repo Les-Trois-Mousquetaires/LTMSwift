@@ -48,7 +48,7 @@ open class LTMHUDManage: NSObject {
     
     /// 加载HUD
     /// - Parameter name: 提示语
-   public func ltm_showLoading(_ name: String = "正在加载",_ time: TimeInterval? = nil, interruptCurrent: Bool = false) {
+   public func showLoading(_ name: String = "正在加载",_ time: TimeInterval? = nil, interruptCurrent: Bool = false) {
         if time == nil {
             LTMProgressHUD.show(.loading, name, 60, interruptCurrent: interruptCurrent)
         } else {
@@ -62,7 +62,7 @@ open class LTMHUDManage: NSObject {
      - parameter name 提示语
      - parameter delay 延迟时间
      */
-    public func ltm_showtitle(_ name: String?,_ delay: TimeInterval = 1, priority: Int = 0, interruptCurrent: Bool = false) {
+    public func showTitle(_ name: String?,_ delay: TimeInterval = 1, priority: Int = 0, interruptCurrent: Bool = false) {
         LTMProgressHUD.show(.none, name ?? "", delay, priority: priority, interruptCurrent: interruptCurrent)
     }
 
@@ -72,51 +72,51 @@ open class LTMHUDManage: NSObject {
      - parameter name 提示语
      - parameter delay 延迟时间
      */
-    public func ltm_showInfo(_ name: String?,_ delay: TimeInterval = 1, priority: Int = 0, interruptCurrent: Bool = false) {
+    public func showInfo(_ name: String?,_ delay: TimeInterval = 1, priority: Int = 0, interruptCurrent: Bool = false) {
         LTMProgressHUD.show(.info, name ?? "", delay, priority: priority, interruptCurrent: interruptCurrent)
     }
 
     /// 隐藏当前 HUD（会继续展示队列中的下一条）
-    public func ltm_dismiss() {
+    public func dismiss() {
         LTMProgressHUD.dismiss()
     }
 
     /// 清空等待队列（不影响当前正在显示的 HUD）
-    public func ltm_clearQueue() {
+    public func clearQueue() {
         LTMProgressHUD.clearQueue()
     }
 
     /// 立即关闭所有 HUD 并清空队列
-    public func ltm_dismissAll() {
+    public func dismissAll() {
         LTMProgressHUD.dismissAll()
     }
 
     /// 当前等待队列数量（不包含当前正在显示的 HUD）
-    public var ltm_pendingCount: Int {
+    public var pendingCount: Int {
         LTMProgressHUD.pendingCount
     }
 
     /// 成功提示
-    public func ltm_showSuccess(_ name: String, priority: Int = 0, interruptCurrent: Bool = false) {
+    public func showSuccess(_ name: String, priority: Int = 0, interruptCurrent: Bool = false) {
         LTMProgressHUD.show(.success, name, 1, priority: priority, interruptCurrent: interruptCurrent)
     }
 
     /// 失败提示
-    public func ltm_showError(_ name: String, priority: Int = 0, interruptCurrent: Bool = false) {
+    public func showError(_ name: String, priority: Int = 0, interruptCurrent: Bool = false) {
         LTMProgressHUD.show(.error, name, 1, priority: priority, interruptCurrent: interruptCurrent)
     }
 
 }
 
 public extension UIViewController {
-    /// HUD管理者，使用 `HUDManage.ltm_showtitle("HUD")`
+    /// HUD管理者，使用 `HUDManage.showTitle("HUD")`
     var HUDManage: LTMHUDManage {
         LTMHUDManage.shared
     }
 }
 
 public extension UIView {
-    /// HUD管理者，使用 `HUDManage.ltm_showtitle("HUD")`
+    /// HUD管理者，使用 `HUDManage.showTitle("HUD")`
     var HUDManage: LTMHUDManage {
         LTMHUDManage.shared
     }
@@ -410,9 +410,7 @@ public extension LTMProgressHUD {
         mainView.addConstraint(NSLayoutConstraint(item: label, attribute: .width, relatedBy: .lessThanOrEqual, toItem: nil, attribute: .width, multiplier: 1.0, constant: maxTextWidth))
         mainView.addConstraint(NSLayoutConstraint(item: label, attribute: .height, relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 0))
 
-        if #available(iOS 13.0, *) {
-            window.windowScene = UIApplication.shared.curWindowScene
-        }
+        window.windowScene = UIApplication.shared.curWindowScene
         window.windowLevel = UIWindow.Level.alert
         window.center = getCenter()
         window.isHidden = false

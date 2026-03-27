@@ -54,7 +54,7 @@ public extension UIControl {
 
     private static let swizzleOnce: Void = {
         let originalSelector = #selector(UIControl.sendAction(_:to:for:))
-        let swizzledSelector = #selector(UIControl.ltm_sendAction(_:to:for:))
+        let swizzledSelector = #selector(UIControl.debouncedSendAction(_:to:for:))
 
         guard
             let originalMethod = class_getInstanceMethod(UIControl.self, originalSelector),
@@ -66,7 +66,7 @@ public extension UIControl {
         method_exchangeImplementations(originalMethod, swizzledMethod)
     }()
 
-    @objc private func ltm_sendAction(_ action: Selector, to target: Any?, for event: UIEvent?) {
+    @objc private func debouncedSendAction(_ action: Selector, to target: Any?, for event: UIEvent?) {
         if ltmDebounceInterval > 0 {
             let now = Date().timeIntervalSince1970
             if now - ltmDebounceLastActionTime < ltmDebounceInterval {
@@ -75,6 +75,6 @@ public extension UIControl {
             ltmDebounceLastActionTime = now
         }
 
-        ltm_sendAction(action, to: target, for: event)
+        debouncedSendAction(action, to: target, for: event)
     }
 }

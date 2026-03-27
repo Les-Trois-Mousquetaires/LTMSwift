@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 public extension NSObject {
     // 方法交换
-    static func ltm_swizzleMethod(_ cls: AnyClass, originalSelector: Selector, swizzleSelector: Selector){
+    static func swizzleMethod(_ cls: AnyClass, originalSelector: Selector, swizzleSelector: Selector) {
         ltmSwizzleMethod(cls, originalSelector: originalSelector, swizzledSelector: swizzleSelector)
     }
     

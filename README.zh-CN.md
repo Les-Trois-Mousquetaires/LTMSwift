@@ -210,31 +210,31 @@ LTMHUDManage.contentInset = 15
 LTMHUDManage.iconSize = 36
 
 // 2) 普通排队提示
-HUDManage.ltm_showtitle("已保存")
-HUDManage.ltm_showtitle("2秒后消失", 2.0)
-HUDManage.ltm_showInfo("网络不稳定", 1.5)
-HUDManage.ltm_showSuccess("完成")
-HUDManage.ltm_showError("请求失败")
+HUDManage.showTitle("已保存")
+HUDManage.showTitle("2秒后消失", 2.0)
+HUDManage.showInfo("网络不稳定", 1.5)
+HUDManage.showSuccess("完成")
+HUDManage.showError("请求失败")
 
 // 3) 优先级队列（值越大越早展示）
-HUDManage.ltm_showtitle("普通提示", 1.2, priority: 0)
-HUDManage.ltm_showError("重要错误", priority: 10)
+HUDManage.showTitle("普通提示", 1.2, priority: 0)
+HUDManage.showError("重要错误", priority: 10)
 
 // 4) 立即打断当前 HUD
-HUDManage.ltm_showError("立即打断", priority: 100, interruptCurrent: true)
-HUDManage.ltm_showInfo("马上展示", 1.0, priority: 50, interruptCurrent: true)
+HUDManage.showError("立即打断", priority: 100, interruptCurrent: true)
+HUDManage.showInfo("马上展示", 1.0, priority: 50, interruptCurrent: true)
 
 // 5) Loading
-HUDManage.ltm_showLoading() // 默认: "正在加载", 超时 60s
-HUDManage.ltm_showLoading("加载中...")
-HUDManage.ltm_showLoading("正在同步...", 15)
-HUDManage.ltm_showLoading("刷新 token", nil, interruptCurrent: true)
+HUDManage.showLoading() // 默认: "正在加载", 超时 60s
+HUDManage.showLoading("加载中...")
+HUDManage.showLoading("正在同步...", 15)
+HUDManage.showLoading("刷新 token", nil, interruptCurrent: true)
 
 // 6) 队列/生命周期控制
-let pending = HUDManage.ltm_pendingCount // 等待队列数量（不含当前 HUD）
-HUDManage.ltm_dismiss()      // 关闭当前，继续下一个
-HUDManage.ltm_clearQueue()   // 只清空等待队列
-HUDManage.ltm_dismissAll()   // 关闭当前 + 清空等待队列
+let pending = HUDManage.pendingCount // 等待队列数量（不含当前 HUD）
+HUDManage.dismiss()      // 关闭当前，继续下一个
+HUDManage.clearQueue()   // 只清空等待队列
+HUDManage.dismissAll()   // 关闭当前 + 清空等待队列
 ```
 
 提示：
