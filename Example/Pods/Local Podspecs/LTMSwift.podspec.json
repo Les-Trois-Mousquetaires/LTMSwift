@@ -49,7 +49,10 @@
     },
     {
       "name": "HUDManage",
-      "source_files": "LTMSwift/Classes/LTMHUDManage.swift"
+      "source_files": "LTMSwift/Classes/LTMHUDManage.swift",
+      "dependencies": {
+        "LTMSwift/Extension/UIExtension": []
+      }
     },
     {
       "name": "KeyChain",

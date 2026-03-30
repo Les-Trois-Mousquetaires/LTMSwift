@@ -16,7 +16,8 @@ PODS:
   - LTMSwift/Extension/BaseExtension (0.8.3)
   - LTMSwift/Extension/UIExtension (0.8.3):
     - LTMSwift/Extension/BaseExtension
-  - LTMSwift/HUDManage (0.8.3)
+  - LTMSwift/HUDManage (0.8.3):
+    - LTMSwift/Extension/UIExtension
   - LTMSwift/KeyChain (0.8.3)
   - LTMSwift/Network (0.8.3):
     - Moya
@@ -71,7 +72,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: eec6cd8f73b242b59e34153a606a909eb9864b14
-  LTMSwift: f41ace65482e8d3904fa142e697d7acdf6553dbc
+  LTMSwift: 9d739a7befe06f99dc4fbfc01ee6edc883c6e855
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   SmartCodable: b423095dd1041f8b0bacbdcc251814e5d5f583f8
   SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
