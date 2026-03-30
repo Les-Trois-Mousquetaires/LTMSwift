@@ -241,6 +241,128 @@ func readSecureToken() {
 - `errSecInteractionNotAllowed` 做延迟重试（如 300ms~1s）比立即失败更稳。
 - `errSecAuthFailed` 建议限制重试次数，超过阈值直接切密码。
 
+## Network 快速上手（自动刷新 + 自动重试）
+
+```swift
+import LTMSwift
+import Moya
+
+final class NetworkManager: LTMNetworkDeal {
+    static let shared = NetworkManager()
+
+    private lazy var logPlugin = makeLogPlugin()
+    private lazy var loginProvider = MoyaProvider<LoginApi>(plugins: [logPlugin])
+    private lazy var meProvider = MoyaProvider<MeApi>(plugins: [logPlugin])
+
+    private override init() {
+        super.init()
+
+        applyConfig { config in
+            // 可选：全局开关
+            config.enableAutoTokenRefresh = true
+            config.maxAutoRetryCount = 1
+            config.tokenRefreshTimeout = 8
+            config.successStatusCodes = Set(200...299)
+
+            // 可选：重复请求防护
+            config.enableDuplicateRequestGuard = true
+            config.duplicateRequestInterval = 0.5
+
+            // 可选：日志配置（一次配置，全局生效）
+            config.log.isEnabled = true
+            config.log.logHeaders = true
+            config.log.logBody = false
+            config.log.maxBodyLogLength = 4000
+            config.log.redactedKeys.insert("set-cookie")
+            config.log.logger = { message in
+                print(message)
+            }
+
+            // 可选：按 method/path 过滤可自动重试的请求
+            config.autoRetryPathFilter = { method, path in
+                // 例如：下单等接口不自动重试
+                return !(method == "POST" && path.contains("/order/submit"))
+            }
+
+            // 判定是否 token 过期
+            config.tokenExpiredMatcher = { raw in
+                guard let dict = raw as? [String: Any] else { return false }
+                return (dict["code"] as? String) == "403"
+            }
+
+            // token 刷新动作（single-flight）
+            config.tokenRefreshAction = { done in
+                // 刷新成功 done(true) -> 自动重放原请求
+                // 刷新失败 done(false) -> 走 failureBlock
+                done(true)
+            }
+
+            // 刷新失败统一处理
+            config.onTokenRefreshFailed = { raw in
+                print("refresh failed:", raw ?? "nil")
+                // 可在这里统一登出/跳登录
+            }
+
+            // 可选：埋点事件
+            config.networkEventHandler = { event in
+                print("network event:", event)
+            }
+        }
+    }
+
+    func loginRequest(model: UserInfoModel, success: resultBlcok?, failure: resultBlcok?) {
+        request(
+            provider: loginProvider,
+            target: .login,
+            model: model,
+            successBlock: success,
+            failureBlock: failure
+        )
+    }
+
+    func meRequest(model: MeModel, success: resultBlcok?, failure: resultBlcok?) {
+        request(
+            provider: meProvider,
+            target: .me,
+            model: model,
+            successBlock: success,
+            failureBlock: failure
+        )
+    }
+}
+```
+
+业务侧调用示例：
+
+```swift
+NetworkManager.shared.meRequest(model: MeModel()) { result in
+    guard let me = result as? MeModel else { return }
+    print("me success:", me)
+} failure: { error in
+    print("me failed:", error ?? "nil")
+}
+```
+
+说明：
+- 响应字段映射可在 `applyConfig` 里一次配置（`codeKey` / `codeSuccess` / `dataKey`），所有 API 通用。
+- `successStatusCodes` 用于配置 HTTP 成功码范围（默认 `200...299`）。
+- `tokenRefreshTimeout` 可避免刷新动作未回调导致请求悬挂。
+- `enableDuplicateRequestGuard` 可拦截 in-flight 或短时间重复请求。
+- 日志配置也可在 `applyConfig` 统一设置，通过 `makeLogPlugin()` 注入各个 provider；可用 `log.logger` 接入业务日志系统，`log.maxBodyLogLength` 限制日志体长度。
+- `request(...)` 内部仍然调用 Moya 的 `provider.request(...)`，只是额外封装了自动刷新与重试。
+- 使用 `handleData(...)` / `failureHandle(data:)` 作为业务解析与错误映射统一入口。
+- 配置 `tokenExpiredMatcher` + `tokenRefreshAction` 可启用刷新并重试；未配置时请求失败会直接回调。
+
+Token 刷新失败统一处理模板：
+
+```swift
+config.onTokenRefreshFailed = { raw in
+    // 1) 清理本地登录态
+    // 2) 跳转登录页
+    // 3) 上报事件（可携带 raw）
+}
+```
+
 ## Extension 快速上手（按文件）
 
 ### BaseExtension

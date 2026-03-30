@@ -236,6 +236,122 @@ Recommendations:
 - For `errSecInteractionNotAllowed`, delayed retry is usually better than immediate failure.
 - For `errSecAuthFailed`, cap retries and move to password fallback.
 
+## Network Quick Start (Auto Refresh + Retry)
+
+```swift
+import LTMSwift
+import Moya
+
+final class NetworkManager: LTMNetworkDeal {
+    static let shared = NetworkManager()
+
+    private lazy var logPlugin = makeLogPlugin()
+    private lazy var loginProvider = MoyaProvider<LoginApi>(plugins: [logPlugin])
+    private lazy var meProvider = MoyaProvider<MeApi>(plugins: [logPlugin])
+
+    private override init() {
+        super.init()
+
+        applyConfig { config in
+            config.enableAutoTokenRefresh = true
+            config.maxAutoRetryCount = 1
+            config.tokenRefreshTimeout = 8
+            config.successStatusCodes = Set(200...299)
+
+            config.enableDuplicateRequestGuard = true
+            config.duplicateRequestInterval = 0.5
+
+            config.log.isEnabled = true
+            config.log.logHeaders = true
+            config.log.logBody = false
+            config.log.maxBodyLogLength = 4000
+            config.log.redactedKeys.insert("set-cookie")
+            config.log.logger = { message in
+                print(message)
+            }
+
+            config.autoRetryPathFilter = { method, path in
+                // e.g. do not retry payment/order submit APIs
+                return !(method == "POST" && path.contains("/order/submit"))
+            }
+
+            config.tokenExpiredMatcher = { raw in
+                guard let dict = raw as? [String: Any] else { return false }
+                return (dict["code"] as? String) == "403"
+            }
+
+            config.tokenRefreshAction = { done in
+                // do refresh token request here
+                // done(true): refresh success, auto retry original request
+                // done(false): refresh failed, call failure block
+                done(true)
+            }
+
+            config.onTokenRefreshFailed = { raw in
+                // unified failure handling (logout / toast / route to login)
+                print("refresh failed:", raw ?? "nil")
+            }
+
+            config.networkEventHandler = { event in
+                // optional metrics/observability hook
+                print("network event:", event)
+            }
+        }
+    }
+
+    func loginRequest(model: UserInfoModel, success: resultBlcok?, failure: resultBlcok?) {
+        request(
+            provider: loginProvider,
+            target: .login,
+            model: model,
+            successBlock: success,
+            failureBlock: failure
+        )
+    }
+
+    func meRequest(model: MeModel, success: resultBlcok?, failure: resultBlcok?) {
+        request(
+            provider: meProvider,
+            target: .me,
+            model: model,
+            successBlock: success,
+            failureBlock: failure
+        )
+    }
+}
+```
+
+Business-side usage:
+
+```swift
+NetworkManager.shared.meRequest(model: MeModel()) { result in
+    guard let me = result as? MeModel else { return }
+    print("me success:", me)
+} failure: { error in
+    print("me failed:", error ?? "nil")
+}
+```
+
+Notes:
+- Response key mapping is configured once in `applyConfig` (`codeKey` / `codeSuccess` / `dataKey`) and reused by all APIs.
+- `successStatusCodes` allows 2xx success strategy (default `200...299`).
+- `tokenRefreshTimeout` prevents refresh flow from hanging forever if callback is missing.
+- `enableDuplicateRequestGuard` blocks identical requests in-flight or in a short interval.
+- Log config is centralized in `applyConfig`; use `log.logger` to route logs and `log.maxBodyLogLength` to cap payload output.
+- `request(...)` internally uses Moya `provider.request(...)` and adds optional auto refresh + retry.
+- Use `handleData(...)` / `failureHandle(data:)` as unified business parsing and error mapping hooks.
+- Set `tokenExpiredMatcher` + `tokenRefreshAction` to enable refresh+retry; otherwise request failures return directly.
+
+Token refresh failure template:
+
+```swift
+config.onTokenRefreshFailed = { raw in
+    // 1) clear local auth state
+    // 2) route to login page
+    // 3) report event with raw payload
+}
+```
+
 ## Extension Quick Start (By File)
 
 ### BaseExtension

@@ -2,6 +2,7 @@ import XCTest
 import Security
 import LocalAuthentication
 import LTMSwift
+import Moya
 
 final class Tests: XCTestCase {
 
@@ -218,4 +219,266 @@ final class Tests: XCTestCase {
         let access = KeyChain.makeAccessControl(flags: [.userPresence])
         XCTAssertNotNil(access)
     }
+
+    func testNetworkAutoRefreshRetrySuccess() {
+        let deal = LTMNetworkDeal()
+        var refreshCount = 0
+        deal.applyConfig { config in
+            config.callbackOnMainThread = false
+            config.enableAutoTokenRefresh = true
+            config.maxAutoRetryCount = 1
+            config.tokenExpiredMatcher = { raw in
+                guard let dict = raw as? [String: Any], let code = dict["code"] as? String else { return false }
+                return code == "403"
+            }
+            config.tokenRefreshAction = { done in
+                refreshCount += 1
+                done(true)
+            }
+        }
+
+        let provider = MoyaProvider<NetworkStubTarget>(stubClosure: MoyaProvider.immediatelyStub)
+        NetworkStubQueue.shared.set([
+            jsonData(["code": "403", "message": "expired"]),
+            jsonData(["code": "200", "data": ["id": 1, "name": "ok"]])
+        ])
+
+        let successExp = expectation(description: "auto retry success")
+        deal.request(
+            provider: provider,
+            target: .protectedData,
+            model: NetworkTestModel(),
+            successBlock: { result in
+                XCTAssertEqual(result?.id, 1)
+                XCTAssertEqual(result?.name, "ok")
+                successExp.fulfill()
+            },
+            failureBlock: { _ in
+                XCTFail("Should retry and succeed")
+            }
+        )
+
+        wait(for: [successExp], timeout: 2.0)
+        XCTAssertEqual(refreshCount, 1)
+    }
+
+    func testNetworkRefreshFailureCallbackAndFailureOutput() {
+        let deal = LTMNetworkDeal()
+        let refreshFailExp = expectation(description: "refresh failed callback")
+
+        deal.applyConfig { config in
+            config.callbackOnMainThread = false
+            config.enableAutoTokenRefresh = true
+            config.maxAutoRetryCount = 1
+            config.tokenExpiredMatcher = { raw in
+                guard let dict = raw as? [String: Any], let code = dict["code"] as? String else { return false }
+                return code == "403"
+            }
+            config.tokenRefreshAction = { done in done(false) }
+            config.onTokenRefreshFailed = { _ in
+                refreshFailExp.fulfill()
+            }
+        }
+
+        let failureExp = expectation(description: "final failure callback")
+        let provider = MoyaProvider<NetworkStubTarget>(stubClosure: MoyaProvider.immediatelyStub)
+        NetworkStubQueue.shared.set([
+            jsonData(["code": "403", "message": "expired"])
+        ])
+
+        deal.request(
+            provider: provider,
+            target: .protectedData,
+            model: NetworkTestModel(),
+            successBlock: { _ in
+                XCTFail("Refresh failed, should not succeed")
+            },
+            failureBlock: { _ in
+                failureExp.fulfill()
+            }
+        )
+
+        wait(for: [refreshFailExp, failureExp], timeout: 2.0)
+    }
+
+    func testNetworkSingleFlightRefreshForConcurrentRequests() {
+        let deal = LTMNetworkDeal()
+        var refreshCount = 0
+
+        deal.applyConfig { config in
+            config.callbackOnMainThread = false
+            config.enableAutoTokenRefresh = true
+            config.maxAutoRetryCount = 1
+            config.tokenExpiredMatcher = { raw in
+                guard let dict = raw as? [String: Any], let code = dict["code"] as? String else { return false }
+                return code == "403"
+            }
+            config.tokenRefreshAction = { done in
+                refreshCount += 1
+                DispatchQueue.global().asyncAfter(deadline: .now() + 0.05) {
+                    done(true)
+                }
+            }
+        }
+
+        let provider = MoyaProvider<NetworkStubTarget>(stubClosure: MoyaProvider.immediatelyStub)
+        NetworkStubQueue.shared.set([
+            jsonData(["code": "403", "message": "expired-1"]),
+            jsonData(["code": "403", "message": "expired-2"]),
+            jsonData(["code": "200", "data": ["id": 11, "name": "A"]]),
+            jsonData(["code": "200", "data": ["id": 22, "name": "B"]])
+        ])
+
+        let successExp = expectation(description: "two requests success")
+        successExp.expectedFulfillmentCount = 2
+
+        for _ in 0..<2 {
+            deal.request(
+                provider: provider,
+                target: .protectedData,
+                model: NetworkTestModel(),
+                successBlock: { _ in
+                    successExp.fulfill()
+                },
+                failureBlock: { _ in
+                    XCTFail("Both requests should succeed after single refresh")
+                }
+            )
+        }
+
+        wait(for: [successExp], timeout: 3.0)
+        XCTAssertEqual(refreshCount, 1)
+    }
+
+    func testNetworkDuplicateRequestGuardBlocksSameRequest() {
+        let deal = LTMNetworkDeal()
+        deal.applyConfig { config in
+            config.callbackOnMainThread = false
+            config.enableDuplicateRequestGuard = true
+            config.duplicateRequestInterval = 2
+        }
+
+        let provider = MoyaProvider<NetworkStubTarget>(stubClosure: MoyaProvider.immediatelyStub)
+        NetworkStubQueue.shared.set([
+            jsonData(["code": "200", "data": ["id": 1, "name": "ok"]])
+        ])
+
+        let successExp = expectation(description: "first request success")
+        let duplicateExp = expectation(description: "duplicate blocked")
+
+        deal.request(
+            provider: provider,
+            target: .protectedData,
+            model: NetworkTestModel(),
+            successBlock: { _ in
+                successExp.fulfill()
+            },
+            failureBlock: { _ in
+                XCTFail("First request should succeed")
+            }
+        )
+
+        deal.request(
+            provider: provider,
+            target: .protectedData,
+            model: NetworkTestModel(),
+            successBlock: { _ in
+                XCTFail("Duplicate request should be blocked")
+            },
+            failureBlock: { failure in
+                guard let dict = failure as? [String: Any], let error = dict["error"] as? String else {
+                    XCTFail("Expected duplicate error payload")
+                    return
+                }
+                XCTAssertEqual(error, "duplicate-request")
+                duplicateExp.fulfill()
+            }
+        )
+
+        wait(for: [successExp, duplicateExp], timeout: 2.0)
+    }
+
+    func testNetworkRefreshTimeoutFallsBackToFailure() {
+        let deal = LTMNetworkDeal()
+        let refreshFailExp = expectation(description: "refresh timeout callback")
+        let failureExp = expectation(description: "final failure callback")
+
+        deal.applyConfig { config in
+            config.callbackOnMainThread = false
+            config.enableAutoTokenRefresh = true
+            config.maxAutoRetryCount = 1
+            config.tokenRefreshTimeout = 0.05
+            config.tokenExpiredMatcher = { raw in
+                guard let dict = raw as? [String: Any], let code = dict["code"] as? String else { return false }
+                return code == "403"
+            }
+            config.tokenRefreshAction = { _ in
+                // Intentionally do not callback to trigger timeout.
+            }
+            config.onTokenRefreshFailed = { _ in
+                refreshFailExp.fulfill()
+            }
+        }
+
+        let provider = MoyaProvider<NetworkStubTarget>(stubClosure: MoyaProvider.immediatelyStub)
+        NetworkStubQueue.shared.set([
+            jsonData(["code": "403", "message": "expired"])
+        ])
+
+        deal.request(
+            provider: provider,
+            target: .protectedData,
+            model: NetworkTestModel(),
+            successBlock: { _ in
+                XCTFail("Timeout should not succeed")
+            },
+            failureBlock: { _ in
+                failureExp.fulfill()
+            }
+        )
+
+        wait(for: [refreshFailExp, failureExp], timeout: 2.0)
+    }
+}
+
+private struct NetworkTestModel: LTMModel {
+    var id: Int?
+    var name: String?
+}
+
+private enum NetworkStubTarget: TargetType {
+    case protectedData
+
+    var baseURL: URL { URL(string: "https://example.com")! }
+    var path: String { "/protected" }
+    var method: Moya.Method { .get }
+    var sampleData: Data { NetworkStubQueue.shared.next() }
+    var task: Task { .requestPlain }
+    var headers: [String: String]? { nil }
+}
+
+private final class NetworkStubQueue {
+    static let shared = NetworkStubQueue()
+
+    private let lock = NSLock()
+    private var queue: [Data] = []
+
+    func set(_ data: [Data]) {
+        lock.lock()
+        queue = data
+        lock.unlock()
+    }
+
+    func next() -> Data {
+        lock.lock()
+        defer { lock.unlock() }
+        guard !queue.isEmpty else {
+            return jsonData(["code": "200", "data": [:]])
+        }
+        return queue.removeFirst()
+    }
+}
+
+private func jsonData(_ object: [String: Any]) -> Data {
+    (try? JSONSerialization.data(withJSONObject: object, options: [])) ?? Data("{}".utf8)
 }

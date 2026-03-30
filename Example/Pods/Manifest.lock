@@ -1,52 +1,52 @@
 PODS:
   - Alamofire (5.11.1)
-  - LTMSwift (0.8.3):
-    - LTMSwift/CoreData (= 0.8.3)
-    - LTMSwift/Extension (= 0.8.3)
-    - LTMSwift/HUDManage (= 0.8.3)
-    - LTMSwift/KeyChain (= 0.8.3)
-    - LTMSwift/Network (= 0.8.3)
-    - LTMSwift/PopView (= 0.8.3)
-    - LTMSwift/Scan (= 0.8.3)
-    - LTMSwift/UI (= 0.8.3)
-  - LTMSwift/CoreData (0.8.3)
-  - LTMSwift/Extension (0.8.3):
-    - LTMSwift/Extension/BaseExtension (= 0.8.3)
-    - LTMSwift/Extension/UIExtension (= 0.8.3)
-  - LTMSwift/Extension/BaseExtension (0.8.3)
-  - LTMSwift/Extension/UIExtension (0.8.3):
+  - LTMSwift (0.8.4):
+    - LTMSwift/CoreData (= 0.8.4)
+    - LTMSwift/Extension (= 0.8.4)
+    - LTMSwift/HUDManage (= 0.8.4)
+    - LTMSwift/KeyChain (= 0.8.4)
+    - LTMSwift/Network (= 0.8.4)
+    - LTMSwift/PopView (= 0.8.4)
+    - LTMSwift/Scan (= 0.8.4)
+    - LTMSwift/UI (= 0.8.4)
+  - LTMSwift/CoreData (0.8.4)
+  - LTMSwift/Extension (0.8.4):
+    - LTMSwift/Extension/BaseExtension (= 0.8.4)
+    - LTMSwift/Extension/UIExtension (= 0.8.4)
+  - LTMSwift/Extension/BaseExtension (0.8.4)
+  - LTMSwift/Extension/UIExtension (0.8.4):
     - LTMSwift/Extension/BaseExtension
-  - LTMSwift/HUDManage (0.8.3):
+  - LTMSwift/HUDManage (0.8.4):
     - LTMSwift/Extension/UIExtension
-  - LTMSwift/KeyChain (0.8.3)
-  - LTMSwift/Network (0.8.3):
+  - LTMSwift/KeyChain (0.8.4)
+  - LTMSwift/Network (0.8.4):
     - Moya
     - SmartCodable (~> 6.0.1)
-  - LTMSwift/PopView (0.8.3)
-  - LTMSwift/Scan (0.8.3):
+  - LTMSwift/PopView (0.8.4)
+  - LTMSwift/Scan (0.8.4):
     - LTMSwift/Extension
     - SnapKit
-  - LTMSwift/UI (0.8.3):
-    - LTMSwift/UI/Gradient (= 0.8.3)
-    - LTMSwift/UI/Keyboard (= 0.8.3)
-    - LTMSwift/UI/Margin (= 0.8.3)
-    - LTMSwift/UI/RichView (= 0.8.3)
-    - LTMSwift/UI/TimePicker (= 0.8.3)
-    - LTMSwift/UI/UISwitch (= 0.8.3)
-  - LTMSwift/UI/Gradient (0.8.3):
+  - LTMSwift/UI (0.8.4):
+    - LTMSwift/UI/Gradient (= 0.8.4)
+    - LTMSwift/UI/Keyboard (= 0.8.4)
+    - LTMSwift/UI/Margin (= 0.8.4)
+    - LTMSwift/UI/RichView (= 0.8.4)
+    - LTMSwift/UI/TimePicker (= 0.8.4)
+    - LTMSwift/UI/UISwitch (= 0.8.4)
+  - LTMSwift/UI/Gradient (0.8.4):
     - LTMSwift/Extension
-  - LTMSwift/UI/Keyboard (0.8.3):
+  - LTMSwift/UI/Keyboard (0.8.4):
     - LTMSwift/Extension
     - SnapKit
-  - LTMSwift/UI/Margin (0.8.3)
-  - LTMSwift/UI/RichView (0.8.3):
+  - LTMSwift/UI/Margin (0.8.4)
+  - LTMSwift/UI/RichView (0.8.4):
     - LTMSwift/Extension
     - LTMSwift/UI/UISwitch
     - SnapKit
-  - LTMSwift/UI/TimePicker (0.8.3):
+  - LTMSwift/UI/TimePicker (0.8.4):
     - LTMSwift/Extension
     - SnapKit
-  - LTMSwift/UI/UISwitch (0.8.3)
+  - LTMSwift/UI/UISwitch (0.8.4)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
   - Moya/Core (15.0.0):
@@ -72,7 +72,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: eec6cd8f73b242b59e34153a606a909eb9864b14
-  LTMSwift: 9d739a7befe06f99dc4fbfc01ee6edc883c6e855
+  LTMSwift: 0a6d99cba31380170ec1d8ce3d0de0d276cc4337
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   SmartCodable: b423095dd1041f8b0bacbdcc251814e5d5f583f8
   SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
