@@ -54,6 +54,188 @@ manager.clearStorage(entityName: "UserEntity")
 
 Tip: `coreDataName` must match your app's `.xcdatamodeld` name exactly.
 
+## KeyChain Quick Start
+
+```swift
+import LocalAuthentication
+import LTMSwift
+
+let key = "secure.token"
+
+// 1) Basic save/get
+let ok = KeyChain.save(key: key, data: "token_value")
+let value = KeyChain.getData(key: key)
+
+// 2) Biometry-protected item
+let access = KeyChain.makeAccessControl(flags: [.biometryCurrentSet])
+let options = KeyChainQueryOptions(
+    service: "com.demo.auth",
+    account: "token",
+    accessControl: access,
+    authenticationPrompt: "Authenticate to read secure token"
+)
+
+let saveStatus = KeyChain.saveStatus(key: key, data: "secure_token", options: options)
+let read = KeyChain.getDataStatus(key: key, options: options)
+
+if read.status == errSecSuccess {
+    print("token:", read.value ?? "")
+} else {
+    print(KeyChain.statusMessage(read.status))
+}
+
+// 3) Codable object
+struct Profile: Codable { let id: Int; let name: String }
+_ = KeyChain.saveObject(key: "profile", object: Profile(id: 1, name: "LTM"))
+let profile = KeyChain.getObject(key: "profile", as: Profile.self)
+```
+
+Common statuses:
+- `errSecSuccess`: success
+- `errSecUserCanceled`: user canceled biometric prompt
+- `errSecAuthFailed`: biometric failed
+- `errSecInteractionNotAllowed`: current context does not allow interaction
+- `errSecItemNotFound`: item does not exist
+- `errSecNotAvailable`: service/biometry unavailable
+
+Tip: For troubleshooting, prefer `saveStatus/getDataStatus/deleteStatus` + `KeyChain.statusMessage(_:)`.
+
+### KeyChain Migration Notes
+
+- Legacy `NSString` archived data is auto-migrated on first successful read.
+- Recommended migration flow: keep key names unchanged, read once with new API, then persist with `saveStatus`.
+- If historical data may be mixed, prioritize `getDataStatus` so you can log exact status and decide retry/fallback.
+
+### Accessibility Selection Guide
+
+| Scenario | Suggested `accessible` | Notes |
+| --- | --- | --- |
+| General token/session | `kSecAttrAccessibleAfterFirstUnlock` | Available after first unlock, works in background use cases |
+| High-security secrets | `kSecAttrAccessibleWhenUnlockedThisDeviceOnly` | Only when device unlocked, not migrated to another device |
+| Needs device migration | `kSecAttrAccessibleWhenUnlocked` | Can migrate via backup/restore |
+| Long background availability + this device only | `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` | Background-friendly and non-migrating |
+
+### Biometry Full Flow (Save + Read + Result Handling)
+
+```swift
+import LocalAuthentication
+import LTMSwift
+
+let key = "bio.token"
+
+// 1) Build access control
+let access = KeyChain.makeAccessControl(flags: [.biometryCurrentSet, .userPresence])
+
+// 2) Query options for this secure item
+let context = LAContext()
+context.localizedCancelTitle = "Use Password"
+
+let options = KeyChainQueryOptions(
+    service: "com.demo.secure",
+    account: "login_token",
+    accessControl: access,
+    authenticationPrompt: "Authenticate to access secure token",
+    authenticationContext: context
+)
+
+// 3) Save and check whether persistence succeeded
+let saveStatus = KeyChain.saveStatus(key: key, data: "token_123", options: options)
+guard saveStatus == errSecSuccess else {
+    print("save failed:", KeyChain.statusMessage(saveStatus))
+    // e.g. errSecAuthFailed / errSecInteractionNotAllowed / errSecParam
+    return
+}
+
+// 4) Read and determine biometric result from status
+let readResult = KeyChain.getDataStatus(key: key, options: options)
+switch readResult.status {
+case errSecSuccess:
+    print("read success:", readResult.value ?? "")
+case errSecUserCanceled:
+    print("user canceled biometric dialog")
+case errSecAuthFailed:
+    print("biometric verification failed")
+case errSecInteractionNotAllowed:
+    print("interaction not allowed in current app state")
+default:
+    print("read failed:", KeyChain.statusMessage(readResult.status))
+}
+```
+
+### Biometry Behavior Notes
+
+- Biometric success/failure is reflected by read/update status (`errSecSuccess` / `errSecAuthFailed` / `errSecUserCanceled`), not by `makeAccessControl`.
+- `makeAccessControl(...)` only creates a `SecAccessControl?` policy object; `nil` means policy creation failed.
+- `saveStatus == errSecSuccess` means data was actually written.
+- If app is backgrounded or UI interaction is blocked, you may get `errSecInteractionNotAllowed`.
+
+### App-side Unified Error Handling Template
+
+```swift
+import Security
+import LTMSwift
+
+enum SecureReadResult {
+    case success(String)
+    case userCanceled
+    case retryable(String)
+    case fallbackToPassword(String)
+    case fatal(String)
+}
+
+func handleKeychainStatus(_ status: OSStatus, value: String?) -> SecureReadResult {
+    switch status {
+    case errSecSuccess:
+        return .success(value ?? "")
+
+    case errSecUserCanceled:
+        return .userCanceled
+
+    case errSecInteractionNotAllowed:
+        return .retryable("Interaction is not allowed now. Retry shortly.")
+
+    case errSecAuthFailed:
+        return .fallbackToPassword("Biometric verification failed. Use password.")
+
+    case errSecItemNotFound:
+        return .fallbackToPassword("Secure data not found. Please sign in again.")
+
+    default:
+        return .fatal(KeyChain.statusMessage(status))
+    }
+}
+
+func readSecureToken() {
+    let key = "bio.token"
+    let access = KeyChain.makeAccessControl(flags: [.biometryCurrentSet])
+    let options = KeyChainQueryOptions(
+        service: "com.demo.secure",
+        account: "login_token",
+        accessControl: access,
+        authenticationPrompt: "Authenticate to continue"
+    )
+
+    let result = KeyChain.getDataStatus(key: key, options: options)
+    switch handleKeychainStatus(result.status, value: result.value) {
+    case .success(let token):
+        print("read success:", token)
+    case .userCanceled:
+        print("user canceled; keep flow calm")
+    case .retryable(let tip):
+        print("retryable:", tip)
+    case .fallbackToPassword(let tip):
+        print("fallback:", tip)
+    case .fatal(let msg):
+        print("fatal:", msg)
+    }
+}
+```
+
+Recommendations:
+- Treat `errSecUserCanceled` as expected behavior (no global error toast).
+- For `errSecInteractionNotAllowed`, delayed retry is usually better than immediate failure.
+- For `errSecAuthFailed`, cap retries and move to password fallback.
+
 ## Extension Quick Start (By File)
 
 ### BaseExtension

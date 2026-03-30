@@ -51,6 +51,196 @@ manager.clearStorage(entityName: "UserEntity")
 
 提示：`coreDataName` 必须和你项目中的 `.xcdatamodeld` 名称完全一致。
 
+## KeyChain 快速上手
+
+```swift
+import LocalAuthentication
+import LTMSwift
+
+let key = "secure.token"
+
+// 1) 基础读写
+let ok = KeyChain.save(key: key, data: "token_value")
+let value = KeyChain.getData(key: key)
+
+// 2) 生物识别保护条目
+let access = KeyChain.makeAccessControl(flags: [.biometryCurrentSet])
+let options = KeyChainQueryOptions(
+    service: "com.demo.auth",
+    account: "token",
+    accessControl: access,
+    authenticationPrompt: "验证身份以读取安全令牌"
+)
+
+let saveStatus = KeyChain.saveStatus(key: key, data: "secure_token", options: options)
+let read = KeyChain.getDataStatus(key: key, options: options)
+
+if read.status == errSecSuccess {
+    print("token:", read.value ?? "")
+} else {
+    print(KeyChain.statusMessage(read.status))
+}
+
+// 3) Codable 对象
+struct Profile: Codable { let id: Int; let name: String }
+_ = KeyChain.saveObject(key: "profile", object: Profile(id: 1, name: "LTM"))
+let profile = KeyChain.getObject(key: "profile", as: Profile.self)
+```
+
+常见状态码：
+- `errSecSuccess`：成功
+- `errSecUserCanceled`：用户取消生物识别
+- `errSecAuthFailed`：生物识别失败
+- `errSecInteractionNotAllowed`：当前上下文不允许交互
+- `errSecItemNotFound`：未找到条目
+- `errSecNotAvailable`：服务或生物识别不可用
+
+提示：排查问题建议使用 `saveStatus/getDataStatus/deleteStatus` + `KeyChain.statusMessage(_:)`。
+
+### KeyChain 迁移说明
+
+- 历史 `NSString` 归档数据会在首次读取成功后自动迁移。
+- 推荐迁移方式：保持旧 key 不变，先用新接口读取一次，再通过 `saveStatus` 重写。
+- 若历史数据格式可能混用，优先使用 `getDataStatus`，便于按状态码做重试/兜底。
+
+### accessible 选型建议
+
+| 场景 | 建议 `accessible` | 说明 |
+| --- | --- | --- |
+| 普通 token / 会话信息 | `kSecAttrAccessibleAfterFirstUnlock` | 首次解锁后可用，适合后台读取 |
+| 高安全敏感数据 | `kSecAttrAccessibleWhenUnlockedThisDeviceOnly` | 仅解锁时可访问，且不迁移到其他设备 |
+| 需要随备份迁移 | `kSecAttrAccessibleWhenUnlocked` | 解锁可访问，可备份迁移 |
+| 后台可用且仅本机 | `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` | 后台可读且不迁移 |
+
+### 生物识别完整流程（保存 + 读取 + 成败判断）
+
+```swift
+import LocalAuthentication
+import LTMSwift
+
+let key = "bio.token"
+
+// 1) 构建访问控制策略
+let access = KeyChain.makeAccessControl(flags: [.biometryCurrentSet, .userPresence])
+
+// 2) 配置查询参数
+let context = LAContext()
+context.localizedCancelTitle = "改用密码"
+
+let options = KeyChainQueryOptions(
+    service: "com.demo.secure",
+    account: "login_token",
+    accessControl: access,
+    authenticationPrompt: "验证身份以读取安全令牌",
+    authenticationContext: context
+)
+
+// 3) 保存并判断是否真正写入
+let saveStatus = KeyChain.saveStatus(key: key, data: "token_123", options: options)
+guard saveStatus == errSecSuccess else {
+    print("保存失败:", KeyChain.statusMessage(saveStatus))
+    // 例如 errSecAuthFailed / errSecInteractionNotAllowed / errSecParam
+    return
+}
+
+// 4) 读取并按状态码判断生物识别结果
+let readResult = KeyChain.getDataStatus(key: key, options: options)
+switch readResult.status {
+case errSecSuccess:
+    print("读取成功:", readResult.value ?? "")
+case errSecUserCanceled:
+    print("用户取消了生物识别")
+case errSecAuthFailed:
+    print("生物识别失败")
+case errSecInteractionNotAllowed:
+    print("当前状态不允许弹出生物识别交互")
+default:
+    print("读取失败:", KeyChain.statusMessage(readResult.status))
+}
+```
+
+### 生物识别行为说明
+
+- 生物识别成功/失败体现在读写返回的状态码（如 `errSecSuccess` / `errSecAuthFailed` / `errSecUserCanceled`），不是 `makeAccessControl` 的返回值。
+- `makeAccessControl(...)` 只负责生成 `SecAccessControl?` 策略对象；返回 `nil` 表示策略构建失败。
+- `saveStatus == errSecSuccess` 才表示“确实保存成功”。
+- 若在后台或禁止交互场景读取，常见为 `errSecInteractionNotAllowed`。
+
+### 业务侧统一错误码处理模板
+
+```swift
+import Security
+import LTMSwift
+
+enum SecureReadResult {
+    case success(String)
+    case userCanceled
+    case retryable(String)
+    case fallbackToPassword(String)
+    case fatal(String)
+}
+
+func handleKeychainStatus(_ status: OSStatus, value: String?) -> SecureReadResult {
+    switch status {
+    case errSecSuccess:
+        return .success(value ?? "")
+
+    case errSecUserCanceled:
+        // 用户主动取消，不弹错误，交给上层决定是否静默
+        return .userCanceled
+
+    case errSecInteractionNotAllowed:
+        // 常见于 App 不在前台、当前时机不可交互，可稍后重试
+        return .retryable("当前不可交互，请稍后重试")
+
+    case errSecAuthFailed:
+        // 生物识别失败，建议引导密码登录兜底
+        return .fallbackToPassword("生物识别失败，请使用密码")
+
+    case errSecItemNotFound:
+        // 视业务场景而定：首次登录、数据已清理、需重新写入
+        return .fallbackToPassword("未找到安全数据，请重新登录")
+
+    default:
+        return .fatal(KeyChain.statusMessage(status))
+    }
+}
+
+func readSecureToken() {
+    let key = "bio.token"
+    let access = KeyChain.makeAccessControl(flags: [.biometryCurrentSet])
+    let options = KeyChainQueryOptions(
+        service: "com.demo.secure",
+        account: "login_token",
+        accessControl: access,
+        authenticationPrompt: "验证身份以继续"
+    )
+
+    let result = KeyChain.getDataStatus(key: key, options: options)
+    switch handleKeychainStatus(result.status, value: result.value) {
+    case .success(let token):
+        print("读取成功:", token)
+
+    case .userCanceled:
+        print("用户取消，不打断主流程")
+
+    case .retryable(let tip):
+        print("可重试:", tip)
+
+    case .fallbackToPassword(let tip):
+        print("走密码兜底:", tip)
+
+    case .fatal(let msg):
+        print("致命错误:", msg)
+    }
+}
+```
+
+建议：
+- `errSecUserCanceled` 归类为“可预期行为”，避免全局错误弹窗。
+- `errSecInteractionNotAllowed` 做延迟重试（如 300ms~1s）比立即失败更稳。
+- `errSecAuthFailed` 建议限制重试次数，超过阈值直接切密码。
+
 ## Extension 快速上手（按文件）
 
 ### BaseExtension
