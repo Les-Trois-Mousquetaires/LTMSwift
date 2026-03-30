@@ -54,6 +54,7 @@ Pod::Spec.new do |s|
   
   s.subspec 'HUDManage' do |ss|
       ss.source_files = 'LTMSwift/Classes/LTMHUDManage.swift'
+      ss.dependency 'LTMSwift/Extension/UIExtension'
   end
   
   s.subspec 'KeyChain' do |ss|
