@@ -26,55 +26,53 @@
   "subspecs": [
     {
       "name": "CoreData",
-      "source_files": "LTMSwift/Classes/CoreData{*}.swift"
+      "source_files": "LTMSwift/Classes/CoreData/**/*.swift"
     },
     {
       "name": "Extension",
       "subspecs": [
         {
           "name": "UIExtension",
-          "source_files": "LTMSwift/Classes/UI{*}+{*}.swift",
+          "source_files": "LTMSwift/Classes/Extension/UIExtension/**/*.swift",
           "dependencies": {
             "LTMSwift/Extension/BaseExtension": []
           }
         },
         {
           "name": "BaseExtension",
-          "source_files": [
-            "LTMSwift/Classes/{A,D,N,S}*+*.swift",
-            "LTMSwift/Classes/Swizzling.swift"
-          ]
+          "source_files": "LTMSwift/Classes/Extension/BaseExtension/**/*.swift"
         }
       ]
     },
     {
       "name": "HUDManage",
-      "source_files": "LTMSwift/Classes/LTMHUDManage.swift",
+      "source_files": "LTMSwift/Classes/HUDManage/**/*.swift",
       "dependencies": {
         "LTMSwift/Extension/UIExtension": []
       }
     },
     {
       "name": "KeyChain",
-      "source_files": "LTMSwift/Classes/KeyChain.swift"
+      "source_files": "LTMSwift/Classes/KeyChain/**/*.swift"
     },
     {
       "name": "Network",
-      "source_files": "LTMSwift/Classes/LTM{*}.swift",
+      "source_files": "LTMSwift/Classes/Network/**/*.swift",
       "dependencies": {
         "Moya": [],
         "SmartCodable": [
           "~> 6.0.1"
-        ]
+        ],
+        "LTMSwift/Extension/BaseExtension": []
       }
     },
     {
       "name": "PopView",
-      "source_files": "LTMSwift/Classes/Pop{*}.swift"
+      "source_files": "LTMSwift/Classes/PopView/**/*.swift"
     },
     {
       "name": "Scan",
-      "source_files": "LTMSwift/Classes/Scan{*}.swift",
+      "source_files": "LTMSwift/Classes/Scan/**/*.swift",
       "dependencies": {
         "SnapKit": [],
         "LTMSwift/Extension": []
@@ -85,14 +83,14 @@
       "subspecs": [
         {
           "name": "Gradient",
-          "source_files": "LTMSwift/Classes/Gradient{*}.swift",
+          "source_files": "LTMSwift/Classes/UI/Gradient/**/*.swift",
           "dependencies": {
             "LTMSwift/Extension": []
           }
         },
         {
           "name": "Keyboard",
-          "source_files": "LTMSwift/Classes/Keyboard{*}.swift",
+          "source_files": "LTMSwift/Classes/UI/Keyboard/**/*.swift",
           "dependencies": {
             "SnapKit": [],
             "LTMSwift/Extension": []
@@ -100,11 +98,11 @@
         },
         {
           "name": "Margin",
-          "source_files": "LTMSwift/Classes/Margin{*}.swift"
+          "source_files": "LTMSwift/Classes/UI/Margin/**/*.swift"
         },
         {
           "name": "RichView",
-          "source_files": "LTMSwift/Classes/Rich{*}.swift",
+          "source_files": "LTMSwift/Classes/UI/RichView/**/*.swift",
           "dependencies": {
             "SnapKit": [],
             "LTMSwift/Extension": [],
@@ -113,7 +111,7 @@
         },
         {
           "name": "TimePicker",
-          "source_files": "LTMSwift/Classes/TimePicker{*}.swift",
+          "source_files": "LTMSwift/Classes/UI/TimePicker/**/*.swift",
           "dependencies": {
             "SnapKit": [],
             "LTMSwift/Extension": []
@@ -121,7 +119,7 @@
         },
         {
           "name": "UISwitch",
-          "source_files": "LTMSwift/Classes/TextSwitch.swift"
+          "source_files": "LTMSwift/Classes/UI/UISwitch/**/*.swift"
         }
       ]
     }

@@ -236,7 +236,58 @@ Recommendations:
 - For `errSecInteractionNotAllowed`, delayed retry is usually better than immediate failure.
 - For `errSecAuthFailed`, cap retries and move to password fallback.
 
-## Network Quick Start (Auto Refresh + Retry)
+## Network Module (Moya-based Wrapper)
+
+This module is a Moya-based wrapper:
+
+```text
+Moya TargetType -> MoyaProvider -> LTMNetworkDeal.request(...) -> unified parse/retry/logging
+```
+
+### 1) Define Moya TargetType
+
+```swift
+import Foundation
+import Moya
+
+enum UserApi {
+    case profile
+    case updateNickname(String)
+}
+
+extension UserApi: TargetType {
+    var baseURL: URL { URL(string: "https://api.example.com")! }
+
+    var path: String {
+        switch self {
+        case .profile: return "/user/profile"
+        case .updateNickname: return "/user/update"
+        }
+    }
+
+    var method: Moya.Method {
+        switch self {
+        case .profile: return .get
+        case .updateNickname: return .post
+        }
+    }
+
+    var task: Task {
+        switch self {
+        case .profile:
+            return .requestPlain
+        case .updateNickname(let name):
+            return .requestParameters(parameters: ["nickname": name], encoding: JSONEncoding.default)
+        }
+    }
+
+    var headers: [String: String]? {
+        ["Content-Type": "application/json"]
+    }
+}
+```
+
+### 2) Build NetworkManager with MoyaProvider
 
 ```swift
 import LTMSwift
@@ -246,111 +297,321 @@ final class NetworkManager: LTMNetworkDeal {
     static let shared = NetworkManager()
 
     private lazy var logPlugin = makeLogPlugin()
-    private lazy var loginProvider = MoyaProvider<LoginApi>(plugins: [logPlugin])
-    private lazy var meProvider = MoyaProvider<MeApi>(plugins: [logPlugin])
+    private lazy var userProvider = MoyaProvider<UserApi>(plugins: [logPlugin])
+    private lazy var authProvider = MoyaProvider<AuthApi>(plugins: [logPlugin])
 
     private override init() {
         super.init()
 
         applyConfig { config in
-            config.enableAutoTokenRefresh = true
-            config.maxAutoRetryCount = 1
-            config.tokenRefreshTimeout = 8
-            config.successStatusCodes = Set(200...299)
+            // Response example from backend:
+            // {
+            //   "code": "200",
+            //   "msg": "ok",
+            //   "data": { "id": 42, "nickname": "LTM" }
+            // }
+            // Mapping:
+            // - codeKey reads "code"
+            // - successCodes matches "200"/"0" as business success
+            // - dataKey points to "data" for model parsing
+            // - successStatusCodes validates HTTP first (for example 200)
+            config.response.codeKey = "code"
+            config.response.successCodes = ["200", "0"]
+            config.response.dataKey = "data"
+            config.response.successStatusCodes = Set(200...299)
 
-            config.enableDuplicateRequestGuard = true
-            config.duplicateRequestInterval = 0.5
+            // Callback dispatch behavior:
+            // - true: dispatch success/failure on main thread (UI-friendly)
+            // - false: keep current callback thread (data-processing friendly)
+            config.callback.onMainThread = true
 
-            config.log.isEnabled = true
-            config.log.logHeaders = true
-            config.log.logBody = false
-            config.log.maxBodyLogLength = 4000
-            config.log.redactedKeys.insert("set-cookie")
-            config.log.logger = { message in
-                print(message)
+            // Observer example: receives refresh/retry/duplicate-block events
+            config.observer.eventHandler = { event in
+                print("network event:", event)
             }
 
-            config.autoRetryPathFilter = { method, path in
-                // e.g. do not retry payment/order submit APIs
-                return !(method == "POST" && path.contains("/order/submit"))
-            }
-
-            config.tokenExpiredMatcher = { raw in
+            // Token refresh still uses Moya request internally
+            // Failure payload example (business code 403): {"code":"403","msg":"token expired"}
+            config.tokenRefresh.isEnabled = true      // Enables token-expired auto-refresh flow
+            config.tokenRefresh.maxRetryCount = 1      // Max auto-retry count per request
+            config.tokenRefresh.timeout = 8            // Refresh action timeout in seconds
+            config.tokenRefresh.expiredMatcher = { raw in
                 guard let dict = raw as? [String: Any] else { return false }
                 return (dict["code"] as? String) == "403"
             }
-
-            config.tokenRefreshAction = { done in
-                // do refresh token request here
-                // done(true): refresh success, auto retry original request
-                // done(false): refresh failed, call failure block
-                done(true)
+            config.tokenRefresh.refreshAction = { [weak self] done in
+                guard let self else { done(false); return }
+                self.authProvider.request(.refreshToken) { result in
+                    switch result {
+                    case .success:
+                        done(true)
+                    case .failure:
+                        done(false)
+                    }
+                }
             }
-
-            config.onTokenRefreshFailed = { raw in
-                // unified failure handling (logout / toast / route to login)
+            config.tokenRefresh.pathFilter = { method, path in
+                // Trigger scenario: a request matches token-expired condition (for example code 403)
+                // Input example: method = "POST", path = "/auth/refresh"
+                // Trigger result: false -> skip auto-retry and go to failure callback directly
+                // Trigger result: true  -> allow replaying original request after refresh succeeds
+                !(method == "POST" && path == "/auth/refresh")
+            }
+            config.tokenRefresh.onRefreshFailed = { raw in
+                // Trigger scenario: refreshAction ends with done(false) or refresh timeout
+                // Input example: raw = ["code": "403", "msg": "token expired"]
+                // Trigger result: run unified fallback (clear auth state / redirect login / toast / tracking)
                 print("refresh failed:", raw ?? "nil")
             }
 
-            config.networkEventHandler = { event in
-                // optional metrics/observability hook
-                print("network event:", event)
+            config.duplicateRequest.isEnabled = true      // Enables duplicate request protection
+            config.duplicateRequest.minimumInterval = 0.5  // Default minimum interval in seconds
+            config.duplicateRequest.keyProvider = { method, path, defaultKey in
+                // Request example: POST /note/save
+                // Input params: id=42&content=hello&timestamp=1719999999&nonce=abc&sign=xxxx
+                // Goal: ignore timestamp/nonce/sign, keep id/content for duplicate checks
+                // Extend as needed: timestamp/ts/_t/nonce/sign/signature/requestId/traceId
+                let unstablePattern = "(timestamp|ts|_t|nonce|sign|signature|requestId|traceId)=[^&|]*"
+                let sanitized = defaultKey.replacingOccurrences(
+                    of: unstablePattern,
+                    with: "",
+                    options: .regularExpression
+                )
+                let compact = sanitized.replacingOccurrences(of: "&&", with: "&")
+
+                // Result example:
+                // before key: POST|/note/save|...|{"content":"hello","id":42,"nonce":"abc","sign":"xxxx","timestamp":1719999999}
+                // after  key: POST|/note/save|...|{"content":"hello","id":42}
+                return "\(method)|\(path)|\(compact)"
+            }
+            config.duplicateRequest.intervalProvider = { method, path, key in
+                // Per-endpoint interval override:
+                // - /order/submit: 10s (strong anti-duplication)
+                // - /sms/send: 1s (anti-double-tap)
+                // - /feed/refresh: 0s (allow pass-through)
+                // Return nil to fallback to minimumInterval
+                if method == "POST", path == "/order/submit" { return 10 }
+                if method == "POST", path == "/sms/send" { return 1 }
+                if key.contains("/feed/refresh") { return 0 }
+                return nil
+            }
+            config.duplicateRequest.failureBuilder = { method, path in
+                // Unified failure payload when blocked, easy for UI to recognize
+                [
+                    "error": "duplicate-request",
+                    "message": "Please do not submit repeatedly",
+                    "method": method,
+                    "path": path
+                ]
+            }
+            config.duplicateRequest.recordTTL = 120      // Completed-record retention in seconds
+            config.duplicateRequest.maxRecordCount = 2000 // Completed-record cache limit
+
+            // Log output example:
+            // [Network][Request] POST https://api.example.com/user/update
+            // [Network][Headers] {"Authorization":"***"}
+            // [Network][Response] status=200 url=...
+            config.log.isEnabled = true                // Master log switch
+            config.log.logHeaders = true                // Print request/response headers
+            config.log.logBody = false                  // Print body or not (production: as needed)
+            config.log.maxBodyLogLength = 4000          // Truncate body logs above this length
+            config.log.redactedKeys.formUnion(["authorization", "set-cookie"]) // Redact sensitive fields
+            config.log.logger = { message in            // Custom logger (default is print)
+                print(message)
+                // Expected result: logs are printed in request lifecycle order, for example:
+                // [Network][Request] POST https://api.example.com/user/update
+                // [Network][Headers] {"Authorization":"***"}
+                // [Network][Response] status=200 url=https://api.example.com/user/update
             }
         }
-    }
-
-    func loginRequest(model: UserInfoModel, success: resultBlcok?, failure: resultBlcok?) {
-        request(
-            provider: loginProvider,
-            target: .login,
-            model: model,
-            successBlock: success,
-            failureBlock: failure
-        )
-    }
-
-    func meRequest(model: MeModel, success: resultBlcok?, failure: resultBlcok?) {
-        request(
-            provider: meProvider,
-            target: .me,
-            model: model,
-            successBlock: success,
-            failureBlock: failure
-        )
     }
 }
 ```
 
-Business-side usage:
+### 2.0) Response Mapping Example
+
+Backend response example:
+
+```json
+{
+  "code": "200",
+  "msg": "ok",
+  "data": {
+    "id": 42,
+    "nickname": "LTM"
+  }
+}
+```
+
+Matching config:
 
 ```swift
-NetworkManager.shared.meRequest(model: MeModel()) { result in
-    guard let me = result as? MeModel else { return }
-    print("me success:", me)
-} failure: { error in
-    print("me failed:", error ?? "nil")
+config.response.codeKey = "code"
+config.response.successCodes = ["200", "0"]
+config.response.dataKey = "data"
+config.response.successStatusCodes = Set(200...299)
+```
+
+Match flow:
+- Step 1: HTTP status code must be in `successStatusCodes` (for example 200).
+- Step 2: Read `response[codeKey]` (`code` in this example), and it must match `successCodes`.
+- Step 3: On success, parse `response[dataKey]` first (`data` in this example).
+- If `dataKey` is missing: fallback to parsing the whole response dictionary.
+- If `code` does not match: go to failure callback, and `failureHandle` receives the whole response dictionary.
+
+### 2.1) Full Configuration Field Reference
+
+`config.response`
+
+- `codeKey`: Business status-code key, for example `code`.
+- `successCodes`: Business success code set, for example `["200", "0"]`.
+- `dataKey`: Business payload key, for example `data`.
+- `successStatusCodes`: Accepted HTTP success status-code set (default `200...299`).
+- Data parsing behavior: once business code is considered successful, parser uses `response[dataKey]` first; if missing, it falls back to the whole response dictionary.
+- Type note: current default model deserialization expects a dictionary (`[String: Any]`). If `dataKey` points to a non-dictionary payload (for example an array), default parsing returns `nil`; use array-model parsing in business code or override parsing logic.
+
+`config.callback`
+
+- `onMainThread`: Whether callbacks are dispatched on the main thread.
+
+`config.observer`
+
+- `eventHandler`: Network event observer callback for metrics/debugging/retry visibility.
+
+`config.tokenRefresh`
+
+- `isEnabled`: Enables token-refresh + auto-retry flow.
+- `maxRetryCount`: Maximum auto-retry count per request.
+- `expiredMatcher`: Determines whether a failure should be treated as token-expired.
+- `refreshAction`: Refresh-token action; call `done(true/false)` when finished.
+- `timeout`: Refresh action timeout in seconds.
+- `pathFilter`: Method/path filter for retry eligibility.
+- `onRefreshFailed`: Unified fallback callback when refresh fails.
+
+`config.duplicateRequest`
+
+- `isEnabled`: Enables duplicate-request protection.
+- `minimumInterval`: Minimum interval for the same request fingerprint (default fallback value).
+- `intervalProvider`: Per-request interval override provider; return `nil` to fallback to `minimumInterval`.
+- `keyProvider`: Custom duplicate-request key generator.
+- `failureBuilder`: Builds failure payload when a duplicate request is blocked.
+- Practical tip: remove unstable keys in `keyProvider` (`timestamp`, `nonce`, `sign`, `traceId`), keep business keys (`id`, `content`).
+- `recordTTL`: Retention time (seconds) for completed-request records.
+- `maxRecordCount`: Maximum cached completed-request record count.
+
+`config.log`
+
+- `isEnabled`: Master switch for network logging. No log output when `false`.
+- `logHeaders`: Controls whether request/response headers are printed.
+- `logBody`: Controls whether request/response bodies are printed.
+- `maxBodyLogLength`: Maximum body log length. Longer content is truncated.
+- `redactedKeys`: Sensitive-key set for header/body masking (for example `authorization`, `token`, `cookie`).
+- `logger`: Custom log output closure. Defaults to `print` when not set.
+
+### 3) Model Definitions (Based on LTMModel)
+
+```swift
+import LTMSwift
+
+struct ProfileModel: LTMModel {
+    var id: Int = 0
+    var nickname: String = ""
+}
+
+struct BaseModel: LTMModel {
+    var msg: String = ""
+}
+
+// List recommendation: keep `data` as dictionary and put list inside it
+struct ArticleModel: LTMModel {
+    var id: Int = 0
+    var title: String = ""
+}
+
+struct ArticleListModel: LTMModel {
+    var list: [ArticleModel] = []
+    var total: Int = 0
 }
 ```
 
 Notes:
-- Response key mapping is configured once in `applyConfig` (`codeKey` / `codeSuccess` / `dataKey`) and reused by all APIs.
-- `successStatusCodes` allows 2xx success strategy (default `200...299`).
-- `tokenRefreshTimeout` prevents refresh flow from hanging forever if callback is missing.
-- `enableDuplicateRequestGuard` blocks identical requests in-flight or in a short interval.
-- Log config is centralized in `applyConfig`; use `log.logger` to route logs and `log.maxBodyLogLength` to cap payload output.
-- `request(...)` internally uses Moya `provider.request(...)` and adds optional auto refresh + retry.
-- Use `handleData(...)` / `failureHandle(data:)` as unified business parsing and error mapping hooks.
-- Set `tokenExpiredMatcher` + `tokenRefreshAction` to enable refresh+retry; otherwise request failures return directly.
+- Current default parsing entry expects a dictionary (`[String: Any]`).
+- If backend `data` is a raw array, prefer `data: { list: [...] }` then parse with `ArticleListModel`.
 
-Token refresh failure template:
+### 4) Business request wrappers
 
 ```swift
-config.onTokenRefreshFailed = { raw in
-    // 1) clear local auth state
-    // 2) route to login page
-    // 3) report event with raw payload
+extension NetworkManager {
+    func profile(
+        model: ProfileModel,
+        success: ((ProfileModel?) -> Void)?,
+        failure: ((Any?) -> Void)?
+    ) {
+        request(
+            provider: userProvider,
+            target: .profile,
+            model: model,
+            successBlock: success,
+            failureBlock: failure
+        )
+    }
+
+    func updateNickname(
+        _ nickname: String,
+        model: BaseModel,
+        success: ((BaseModel?) -> Void)?,
+        failure: ((Any?) -> Void)?
+    ) {
+        request(
+            provider: userProvider,
+            target: .updateNickname(nickname),
+            model: model,
+            successBlock: success,
+            failureBlock: failure
+        )
+    }
 }
 ```
+
+### 5) Call Site (Call + Response Example)
+
+Call code:
+
+```swift
+NetworkManager.shared.profile(model: ProfileModel()) { profile in
+    print("profile:", profile as Any)
+} failure: { error in
+    print("error:", error as Any)
+}
+```
+
+Example backend response for this call:
+
+```json
+{
+  "code": "200",
+  "msg": "ok",
+  "data": {
+    "id": 42,
+    "nickname": "LTM"
+  }
+}
+```
+
+How this maps to config:
+
+```swift
+config.response.codeKey = "code"                  // reads response["code"]
+config.response.successCodes = ["200", "0"]      // business success values
+config.response.dataKey = "data"                  // parses response["data"]
+config.response.successStatusCodes = Set(200...299) // HTTP gate first
+```
+
+### 6) Notes
+
+- `makeLogPlugin()` creates a Moya plugin backed by `config.log`.
+- Duplicate-request records are bounded by `recordTTL` and `maxRecordCount`.
+- This section uses only the new API groups: `response / callback / observer / tokenRefresh / duplicateRequest / log`.
 
 ## Extension Quick Start (By File)
 

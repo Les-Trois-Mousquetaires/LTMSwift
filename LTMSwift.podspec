@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'kenan' => 'houkenan0620@126.com' }
   s.source           = { :git => 'https://github.com/Les-Trois-Mousquetaires/LTMSwift.git', :tag => s.version.to_s }
-  
+
   s.ios.deployment_target = '13.0'
 
   s.swift_versions = '5.2'
@@ -36,79 +36,80 @@ Pod::Spec.new do |s|
   #   'LTMSwift' => ['LTMSwift/Assets/*.png']
   # }
 
-   s.frameworks = 'UIKit', 'Foundation'
-   s.subspec 'CoreData' do |ss|
-       ss.source_files = 'LTMSwift/Classes/CoreData{*}.swift'
-   end
-   
+  s.frameworks = 'UIKit', 'Foundation'
+
+  s.subspec 'CoreData' do |ss|
+      ss.source_files = 'LTMSwift/Classes/CoreData/**/*.swift'
+  end
+
   s.subspec 'Extension' do |ss|
-      ss.subspec 'UIExtension' do |ss|
-          ss.source_files = 'LTMSwift/Classes/UI{*}+{*}.swift'
-          ss.dependency 'LTMSwift/Extension/BaseExtension'
+      ss.subspec 'UIExtension' do |sss|
+          sss.source_files = 'LTMSwift/Classes/Extension/UIExtension/**/*.swift'
+          sss.dependency 'LTMSwift/Extension/BaseExtension'
       end
-      
-      ss.subspec 'BaseExtension' do |ss|
-          ss.source_files = 'LTMSwift/Classes/{A,D,N,S}*+*.swift','LTMSwift/Classes/Swizzling.swift'
+
+      ss.subspec 'BaseExtension' do |sss|
+          sss.source_files = 'LTMSwift/Classes/Extension/BaseExtension/**/*.swift'
       end
   end
-  
+
   s.subspec 'HUDManage' do |ss|
-      ss.source_files = 'LTMSwift/Classes/LTMHUDManage.swift'
+      ss.source_files = 'LTMSwift/Classes/HUDManage/**/*.swift'
       ss.dependency 'LTMSwift/Extension/UIExtension'
   end
-  
+
   s.subspec 'KeyChain' do |ss|
-      ss.source_files = 'LTMSwift/Classes/KeyChain.swift'
+      ss.source_files = 'LTMSwift/Classes/KeyChain/**/*.swift'
   end
-  
+
   s.subspec 'Network' do |ss|
-      ss.source_files = 'LTMSwift/Classes/LTM{*}.swift'
+      ss.source_files = 'LTMSwift/Classes/Network/**/*.swift'
       ss.dependency 'Moya'
       ss.dependency 'SmartCodable', '~> 6.0.1'
+      ss.dependency 'LTMSwift/Extension/BaseExtension'
   end
-  
+
   s.subspec 'PopView' do |ss|
-      ss.source_files = 'LTMSwift/Classes/Pop{*}.swift'
+      ss.source_files = 'LTMSwift/Classes/PopView/**/*.swift'
   end
 
   s.subspec 'Scan' do |ss|
-      ss.source_files = 'LTMSwift/Classes/Scan{*}.swift'
+      ss.source_files = 'LTMSwift/Classes/Scan/**/*.swift'
       ss.dependency 'SnapKit'
       ss.dependency 'LTMSwift/Extension'
   end
-  
+
   s.subspec 'UI' do |ss|
-      ss.subspec 'Gradient' do |ss|
-          ss.source_files = 'LTMSwift/Classes/Gradient{*}.swift'
-          ss.dependency 'LTMSwift/Extension'
+      ss.subspec 'Gradient' do |sss|
+          sss.source_files = 'LTMSwift/Classes/UI/Gradient/**/*.swift'
+          sss.dependency 'LTMSwift/Extension'
       end
-      
-      ss.subspec 'Keyboard' do |ss|
-          ss.source_files = 'LTMSwift/Classes/Keyboard{*}.swift'
-          ss.dependency 'SnapKit'
-          ss.dependency 'LTMSwift/Extension'
+
+      ss.subspec 'Keyboard' do |sss|
+          sss.source_files = 'LTMSwift/Classes/UI/Keyboard/**/*.swift'
+          sss.dependency 'SnapKit'
+          sss.dependency 'LTMSwift/Extension'
       end
-      
-      ss.subspec 'Margin' do |ss|
-          ss.source_files = 'LTMSwift/Classes/Margin{*}.swift'
+
+      ss.subspec 'Margin' do |sss|
+          sss.source_files = 'LTMSwift/Classes/UI/Margin/**/*.swift'
       end
-      
-      ss.subspec 'RichView' do |ss|
-          ss.source_files = 'LTMSwift/Classes/Rich{*}.swift'
-          ss.dependency 'SnapKit'
-          ss.dependency 'LTMSwift/Extension'
-          ss.dependency 'LTMSwift/UI/UISwitch'
+
+      ss.subspec 'RichView' do |sss|
+          sss.source_files = 'LTMSwift/Classes/UI/RichView/**/*.swift'
+          sss.dependency 'SnapKit'
+          sss.dependency 'LTMSwift/Extension'
+          sss.dependency 'LTMSwift/UI/UISwitch'
       end
-      
-      ss.subspec 'TimePicker' do |ss|
-          ss.source_files = 'LTMSwift/Classes/TimePicker{*}.swift'
-          ss.dependency 'SnapKit'
-          ss.dependency 'LTMSwift/Extension'
+
+      ss.subspec 'TimePicker' do |sss|
+          sss.source_files = 'LTMSwift/Classes/UI/TimePicker/**/*.swift'
+          sss.dependency 'SnapKit'
+          sss.dependency 'LTMSwift/Extension'
       end
-      
-      ss.subspec 'UISwitch' do |ss|
-          ss.source_files = 'LTMSwift/Classes/TextSwitch.swift'
+
+      ss.subspec 'UISwitch' do |sss|
+          sss.source_files = 'LTMSwift/Classes/UI/UISwitch/**/*.swift'
       end
   end
-  
 end

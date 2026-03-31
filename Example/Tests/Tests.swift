@@ -224,14 +224,14 @@ final class Tests: XCTestCase {
         let deal = LTMNetworkDeal()
         var refreshCount = 0
         deal.applyConfig { config in
-            config.callbackOnMainThread = false
-            config.enableAutoTokenRefresh = true
-            config.maxAutoRetryCount = 1
-            config.tokenExpiredMatcher = { raw in
+            config.callback.onMainThread = false
+            config.tokenRefresh.isEnabled = true
+            config.tokenRefresh.maxRetryCount = 1
+            config.tokenRefresh.expiredMatcher = { raw in
                 guard let dict = raw as? [String: Any], let code = dict["code"] as? String else { return false }
                 return code == "403"
             }
-            config.tokenRefreshAction = { done in
+            config.tokenRefresh.refreshAction = { done in
                 refreshCount += 1
                 done(true)
             }
@@ -267,15 +267,15 @@ final class Tests: XCTestCase {
         let refreshFailExp = expectation(description: "refresh failed callback")
 
         deal.applyConfig { config in
-            config.callbackOnMainThread = false
-            config.enableAutoTokenRefresh = true
-            config.maxAutoRetryCount = 1
-            config.tokenExpiredMatcher = { raw in
+            config.callback.onMainThread = false
+            config.tokenRefresh.isEnabled = true
+            config.tokenRefresh.maxRetryCount = 1
+            config.tokenRefresh.expiredMatcher = { raw in
                 guard let dict = raw as? [String: Any], let code = dict["code"] as? String else { return false }
                 return code == "403"
             }
-            config.tokenRefreshAction = { done in done(false) }
-            config.onTokenRefreshFailed = { _ in
+            config.tokenRefresh.refreshAction = { done in done(false) }
+            config.tokenRefresh.onRefreshFailed = { _ in
                 refreshFailExp.fulfill()
             }
         }
@@ -306,14 +306,14 @@ final class Tests: XCTestCase {
         var refreshCount = 0
 
         deal.applyConfig { config in
-            config.callbackOnMainThread = false
-            config.enableAutoTokenRefresh = true
-            config.maxAutoRetryCount = 1
-            config.tokenExpiredMatcher = { raw in
+            config.callback.onMainThread = false
+            config.tokenRefresh.isEnabled = true
+            config.tokenRefresh.maxRetryCount = 1
+            config.tokenRefresh.expiredMatcher = { raw in
                 guard let dict = raw as? [String: Any], let code = dict["code"] as? String else { return false }
                 return code == "403"
             }
-            config.tokenRefreshAction = { done in
+            config.tokenRefresh.refreshAction = { done in
                 refreshCount += 1
                 DispatchQueue.global().asyncAfter(deadline: .now() + 0.05) {
                     done(true)
@@ -353,9 +353,9 @@ final class Tests: XCTestCase {
     func testNetworkDuplicateRequestGuardBlocksSameRequest() {
         let deal = LTMNetworkDeal()
         deal.applyConfig { config in
-            config.callbackOnMainThread = false
-            config.enableDuplicateRequestGuard = true
-            config.duplicateRequestInterval = 2
+            config.callback.onMainThread = false
+            config.duplicateRequest.isEnabled = true
+            config.duplicateRequest.minimumInterval = 2
         }
 
         let provider = MoyaProvider<NetworkStubTarget>(stubClosure: MoyaProvider.immediatelyStub)
@@ -404,18 +404,18 @@ final class Tests: XCTestCase {
         let failureExp = expectation(description: "final failure callback")
 
         deal.applyConfig { config in
-            config.callbackOnMainThread = false
-            config.enableAutoTokenRefresh = true
-            config.maxAutoRetryCount = 1
-            config.tokenRefreshTimeout = 0.05
-            config.tokenExpiredMatcher = { raw in
+            config.callback.onMainThread = false
+            config.tokenRefresh.isEnabled = true
+            config.tokenRefresh.maxRetryCount = 1
+            config.tokenRefresh.timeout = 0.05
+            config.tokenRefresh.expiredMatcher = { raw in
                 guard let dict = raw as? [String: Any], let code = dict["code"] as? String else { return false }
                 return code == "403"
             }
-            config.tokenRefreshAction = { _ in
+            config.tokenRefresh.refreshAction = { _ in
                 // Intentionally do not callback to trigger timeout.
             }
-            config.onTokenRefreshFailed = { _ in
+            config.tokenRefresh.onRefreshFailed = { _ in
                 refreshFailExp.fulfill()
             }
         }

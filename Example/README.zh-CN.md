@@ -241,7 +241,68 @@ func readSecureToken() {
 - `errSecInteractionNotAllowed` 做延迟重试（如 300ms~1s）比立即失败更稳。
 - `errSecAuthFailed` 建议限制重试次数，超过阈值直接切密码。
 
-## Network 快速上手（自动刷新 + 自动重试）
+## Network 完整示例（基于 Moya 二次封装）
+
+当前 Network 模块是基于 `Moya` 的业务封装：
+
+```text
+Moya TargetType -> MoyaProvider -> LTMNetworkDeal.request(...) -> 统一解析/重试/日志
+```
+
+模块职责拆分：
+
+```text
+Network/
+  Config/
+  Core/
+  Plugin/
+  Runtime/
+```
+
+### 1) 定义 Moya Target（TargetType）
+
+```swift
+import Foundation
+import Moya
+
+enum UserApi {
+    case profile
+    case updateNickname(String)
+}
+
+extension UserApi: TargetType {
+    var baseURL: URL { URL(string: "https://api.example.com")! }
+
+    var path: String {
+        switch self {
+        case .profile: return "/user/profile"
+        case .updateNickname: return "/user/update"
+        }
+    }
+
+    var method: Moya.Method {
+        switch self {
+        case .profile: return .get
+        case .updateNickname: return .post
+        }
+    }
+
+    var task: Task {
+        switch self {
+        case .profile:
+            return .requestPlain
+        case .updateNickname(let name):
+            return .requestParameters(parameters: ["nickname": name], encoding: JSONEncoding.default)
+        }
+    }
+
+    var headers: [String: String]? {
+        ["Content-Type": "application/json"]
+    }
+}
+```
+
+### 2) 基于 MoyaProvider 封装 NetworkManager
 
 ```swift
 import LTMSwift
@@ -251,117 +312,336 @@ final class NetworkManager: LTMNetworkDeal {
     static let shared = NetworkManager()
 
     private lazy var logPlugin = makeLogPlugin()
-    private lazy var loginProvider = MoyaProvider<LoginApi>(plugins: [logPlugin])
-    private lazy var meProvider = MoyaProvider<MeApi>(plugins: [logPlugin])
+    private lazy var userProvider = MoyaProvider<UserApi>(plugins: [logPlugin])
+    private lazy var authProvider = MoyaProvider<AuthApi>(plugins: [logPlugin])
 
     private override init() {
         super.init()
 
         applyConfig { config in
-            // 可选：全局开关
-            config.enableAutoTokenRefresh = true
-            config.maxAutoRetryCount = 1
-            config.tokenRefreshTimeout = 8
-            config.successStatusCodes = Set(200...299)
+            // Response 解析
+            // 后端返回示例：
+            // {
+            //   "code": "200",
+            //   "msg": "ok",
+            //   "data": { "id": 42, "nickname": "LTM" }
+            // }
+            // 映射关系：
+            // - codeKey 对应 "code"
+            // - successCodes 命中 "200"/"0" 视为业务成功
+            // - dataKey 对应 "data"，成功后解析该字段
+            // - successStatusCodes 先校验 HTTP 状态码（如 200）
+            config.response.codeKey = "code"
+            config.response.successCodes = ["200", "0"]
+            config.response.dataKey = "data"
+            config.response.successStatusCodes = Set(200...299)
 
-            // 可选：重复请求防护
-            config.enableDuplicateRequestGuard = true
-            config.duplicateRequestInterval = 0.5
+            // 回调线程
+            // 示例：
+            // - true：success/failure 回调切回主线程（适合 UI 直接刷新）
+            // - false：保持当前回调线程（适合纯数据处理）
+            config.callback.onMainThread = true
 
-            // 可选：日志配置（一次配置，全局生效）
-            config.log.isEnabled = true
-            config.log.logHeaders = true
-            config.log.logBody = false
-            config.log.maxBodyLogLength = 4000
-            config.log.redactedKeys.insert("set-cookie")
-            config.log.logger = { message in
-                print(message)
+            // 可观测事件
+            // 示例：可收到 token 刷新开始/结束、自动重试、重复请求拦截等事件
+            config.observer.eventHandler = { event in
+                print("network event:", event)
             }
 
-            // 可选：按 method/path 过滤可自动重试的请求
-            config.autoRetryPathFilter = { method, path in
-                // 例如：下单等接口不自动重试
-                return !(method == "POST" && path.contains("/order/submit"))
-            }
-
-            // 判定是否 token 过期
-            config.tokenExpiredMatcher = { raw in
+            // Token 过期自动刷新（刷新动作本身也走 Moya）
+            // 失败示例（业务 code 403）：{"code":"403","msg":"token expired"}
+            config.tokenRefresh.isEnabled = true      // 开启 token 过期自动刷新链路
+            config.tokenRefresh.maxRetryCount = 1      // 单请求最大自动重试次数
+            config.tokenRefresh.timeout = 8            // 刷新动作超时时间（秒）
+            config.tokenRefresh.expiredMatcher = { raw in
                 guard let dict = raw as? [String: Any] else { return false }
                 return (dict["code"] as? String) == "403"
             }
-
-            // token 刷新动作（single-flight）
-            config.tokenRefreshAction = { done in
-                // 刷新成功 done(true) -> 自动重放原请求
-                // 刷新失败 done(false) -> 走 failureBlock
-                done(true)
+            config.tokenRefresh.refreshAction = { [weak self] done in
+                guard let self else { done(false); return }
+                self.authProvider.request(.refreshToken) { result in
+                    switch result {
+                    case .success:
+                        done(true)
+                    case .failure:
+                        done(false)
+                    }
+                }
             }
-
-            // 刷新失败统一处理
-            config.onTokenRefreshFailed = { raw in
+            config.tokenRefresh.pathFilter = { method, path in
+                // 触发场景：某个请求命中过期码（如 403）后，决定“是否允许自动重试”
+                // 输入示例：method = "POST", path = "/auth/refresh"
+                // 触发结果：返回 false -> 不自动重试，直接走失败回调（避免递归刷新）
+                // 触发结果：返回 true  -> 允许在刷新成功后自动重放原请求
+                !(method == "POST" && path == "/auth/refresh")
+            }
+            config.tokenRefresh.onRefreshFailed = { raw in
+                // 触发场景：refreshAction 最终回调 done(false) 或刷新超时
+                // 输入示例：raw = ["code": "403", "msg": "token expired"]
+                // 触发结果：执行统一兜底（如清理登录态、跳转登录页、弹 Toast、埋点）
                 print("refresh failed:", raw ?? "nil")
-                // 可在这里统一登出/跳登录
             }
 
-            // 可选：埋点事件
-            config.networkEventHandler = { event in
-                print("network event:", event)
+            // 重复请求防护
+            config.duplicateRequest.isEnabled = true      // 开启重复请求防护
+            config.duplicateRequest.minimumInterval = 0.5  // 默认最小间隔（秒）
+            config.duplicateRequest.keyProvider = { method, path, defaultKey in
+                // 示例请求地址：POST /note/save
+                // 示例入参：id=42&content=hello&timestamp=1719999999&nonce=abc&sign=xxxx
+                // 目标：忽略 timestamp/nonce/sign，保留 id/content 参与去重
+                // 可按业务继续扩展：timestamp/ts/_t/nonce/sign/signature/requestId/traceId
+                let unstablePattern = "(timestamp|ts|_t|nonce|sign|signature|requestId|traceId)=[^&|]*"
+                let sanitized = defaultKey.replacingOccurrences(
+                    of: unstablePattern,
+                    with: "",
+                    options: .regularExpression
+                )
+                let compact = sanitized.replacingOccurrences(of: "&&", with: "&")
+
+                // 结果示例：
+                // 处理前 key: POST|/note/save|...|{"content":"hello","id":42,"nonce":"abc","sign":"xxxx","timestamp":1719999999}
+                // 处理后 key: POST|/note/save|...|{"content":"hello","id":42}
+                return "\(method)|\(path)|\(compact)"
+            }
+            config.duplicateRequest.intervalProvider = { method, path, key in
+                // 按接口动态覆盖间隔：
+                // - /order/submit: 10s（强防重）
+                // - /sms/send: 1s（防连点）
+                // - /feed/refresh: 0s（放行）
+                // 返回 nil 时回退到 minimumInterval
+                if method == "POST", path == "/order/submit" { return 10 }
+                if method == "POST", path == "/sms/send" { return 1 }
+                if key.contains("/feed/refresh") { return 0 }
+                return nil
+            }
+            config.duplicateRequest.failureBuilder = { method, path in
+                // 被拦截时返回统一错误结构，业务层可直接识别并提示
+                [
+                    "error": "duplicate-request",
+                    "message": "请勿重复提交",
+                    "method": method,
+                    "path": path
+                ]
+            }
+            config.duplicateRequest.recordTTL = 120      // 已完成请求记录保留时长（秒）
+            config.duplicateRequest.maxRecordCount = 2000 // 已完成请求记录上限
+
+            // 日志插件
+            // 输出示例：
+            // [Network][Request] POST https://api.example.com/user/update
+            // [Network][Headers] {"Authorization":"***"}
+            // [Network][Response] status=200 url=...
+            config.log.isEnabled = true                // 日志总开关
+            config.log.logHeaders = true                // 打印请求/响应 Header
+            config.log.logBody = false                  // 是否打印 Body（生产建议按需）
+            config.log.maxBodyLogLength = 4000          // Body 最大输出长度，超出截断
+            config.log.redactedKeys.formUnion(["authorization", "set-cookie"]) // 敏感字段脱敏
+            config.log.logger = { message in            // 自定义日志输出（不设置则默认 print）
+                print(message)
+                // 预期结果：控制台会按请求生命周期输出日志，例如：
+                // [Network][Request] POST https://api.example.com/user/update
+                // [Network][Headers] {"Authorization":"***"}
+                // [Network][Response] status=200 url=https://api.example.com/user/update
             }
         }
-    }
-
-    func loginRequest(model: UserInfoModel, success: resultBlcok?, failure: resultBlcok?) {
-        request(
-            provider: loginProvider,
-            target: .login,
-            model: model,
-            successBlock: success,
-            failureBlock: failure
-        )
-    }
-
-    func meRequest(model: MeModel, success: resultBlcok?, failure: resultBlcok?) {
-        request(
-            provider: meProvider,
-            target: .me,
-            model: model,
-            successBlock: success,
-            failureBlock: failure
-        )
     }
 }
 ```
 
-业务侧调用示例：
+### 2.0) Response 返回示例与配置映射
+
+后端返回示例：
+
+```json
+{
+  "code": "200",
+  "msg": "ok",
+  "data": {
+    "id": 42,
+    "nickname": "LTM"
+  }
+}
+```
+
+对应配置：
 
 ```swift
-NetworkManager.shared.meRequest(model: MeModel()) { result in
-    guard let me = result as? MeModel else { return }
-    print("me success:", me)
-} failure: { error in
-    print("me failed:", error ?? "nil")
+config.response.codeKey = "code"
+config.response.successCodes = ["200", "0"]
+config.response.dataKey = "data"
+config.response.successStatusCodes = Set(200...299)
+```
+
+命中规则：
+- 第一步：HTTP 状态码需在 `successStatusCodes` 内（例如 200）。
+- 第二步：读取 `response[codeKey]`，即上例中的 `code`，值需命中 `successCodes`。
+- 第三步：成功后优先解析 `response[dataKey]`（上例是 `data` 字段）。
+- 若 `dataKey` 不存在：回退解析整个响应字典。
+- 若 `code` 不命中：进入失败回调，`failureHandle` 收到完整响应字典。
+
+### 2.1) 全量配置字段说明
+
+`config.response`
+
+- `codeKey`：业务状态码字段名，例如 `code`。
+- `successCodes`：业务成功状态码集合，例如 `["200", "0"]`。
+- `dataKey`：业务数据字段名，例如 `data`。
+- `successStatusCodes`：HTTP 成功状态码集合，默认 `200...299`。
+- 数据解析行为：当业务码命中成功后，优先解析 `response[dataKey]`；若该字段不存在，则回退为解析整个响应字典。
+- 类型注意：当前默认模型反序列化入口是字典（`[String: Any]`）。若 `dataKey` 对应值是数组等非字典结构，默认会解析失败并返回 `nil`，建议在业务层改用数组模型解析或覆写解析逻辑。
+
+`config.callback`
+
+- `onMainThread`：回调是否切回主线程；UI 场景通常建议 `true`。
+
+`config.observer`
+
+- `eventHandler`：网络事件监听回调，用于埋点、调试、观测重试/刷新过程。
+
+`config.tokenRefresh`
+
+- `isEnabled`：是否启用 token 过期自动刷新与自动重试。
+- `maxRetryCount`：单请求最大自动重试次数。
+- `expiredMatcher`：判断失败结果是否属于 token 过期。
+- `refreshAction`：执行刷新 token 的动作，完成后回调 `done(true/false)`。
+- `timeout`：刷新动作超时时间（秒），超时后按失败处理。
+- `pathFilter`：按 `method/path` 过滤哪些请求允许自动重试。
+- `onRefreshFailed`：刷新失败后的统一兜底回调（如清理登录态、跳登录页）。
+
+`config.duplicateRequest`
+
+- `isEnabled`：是否启用重复请求防护。
+- `minimumInterval`：同一请求指纹最小触发间隔（默认兜底值）。
+- `intervalProvider`：按请求动态覆盖间隔；返回 `nil` 时回退 `minimumInterval`。
+- `keyProvider`：自定义请求去重 key 生成规则。
+- `failureBuilder`：重复请求被拦截时的失败结果构造器。
+- 实战建议：在 `keyProvider` 中移除易变字段（如 `timestamp`、`nonce`、`sign`、`traceId`），保留业务字段（如 `id`、`content`）。
+- `recordTTL`：已完成请求记录保留时长（秒）。
+- `maxRecordCount`：已完成请求记录最大缓存条数。
+
+`config.log`
+
+- `isEnabled`：是否启用网络日志总开关；`false` 时不输出任何日志。
+- `logHeaders`：是否打印请求/响应 Header。
+- `logBody`：是否打印请求/响应 Body。
+- `maxBodyLogLength`：Body 日志最大输出长度，超出会截断，避免大对象刷屏。
+- `redactedKeys`：敏感字段脱敏键集合（如 `authorization`、`token`、`cookie`）。
+- `logger`：自定义日志输出闭包；不设置时使用默认输出（`print`）。
+
+### 3) 模型定义（基于 LTMModel）
+
+```swift
+import LTMSwift
+
+struct ProfileModel: LTMModel {
+    var id: Int = 0
+    var nickname: String = ""
+}
+
+struct BaseModel: LTMModel {
+    var msg: String = ""
+}
+
+// 列表建议：让 data 始终是字典，再在字典里放 list
+struct ArticleModel: LTMModel {
+    var id: Int = 0
+    var title: String = ""
+}
+
+struct ArticleListModel: LTMModel {
+    var list: [ArticleModel] = []
+    var total: Int = 0
 }
 ```
 
 说明：
-- 响应字段映射可在 `applyConfig` 里一次配置（`codeKey` / `codeSuccess` / `dataKey`），所有 API 通用。
-- `successStatusCodes` 用于配置 HTTP 成功码范围（默认 `200...299`）。
-- `tokenRefreshTimeout` 可避免刷新动作未回调导致请求悬挂。
-- `enableDuplicateRequestGuard` 可拦截 in-flight 或短时间重复请求。
-- 日志配置也可在 `applyConfig` 统一设置，通过 `makeLogPlugin()` 注入各个 provider；可用 `log.logger` 接入业务日志系统，`log.maxBodyLogLength` 限制日志体长度。
-- `request(...)` 内部仍然调用 Moya 的 `provider.request(...)`，只是额外封装了自动刷新与重试。
-- 使用 `handleData(...)` / `failureHandle(data:)` 作为业务解析与错误映射统一入口。
-- 配置 `tokenExpiredMatcher` + `tokenRefreshAction` 可启用刷新并重试；未配置时请求失败会直接回调。
+- 当前默认解析入口是字典（`[String: Any]`）。
+- 若后端 `data` 直接返回数组，建议改为 `data: { list: [...] }` 再用 `ArticleListModel` 解析。
 
-Token 刷新失败统一处理模板：
+### 4) 业务请求封装
 
 ```swift
-config.onTokenRefreshFailed = { raw in
-    // 1) 清理本地登录态
-    // 2) 跳转登录页
-    // 3) 上报事件（可携带 raw）
+extension NetworkManager {
+    func profile(
+        model: ProfileModel,
+        success: ((ProfileModel?) -> Void)?,
+        failure: ((Any?) -> Void)?
+    ) {
+        request(
+            provider: userProvider,
+            target: .profile,
+            model: model,
+            successBlock: success,
+            failureBlock: failure
+        )
+    }
+
+    func updateNickname(
+        _ nickname: String,
+        model: BaseModel,
+        success: ((BaseModel?) -> Void)?,
+        failure: ((Any?) -> Void)?
+    ) {
+        request(
+            provider: userProvider,
+            target: .updateNickname(nickname),
+            model: model,
+            successBlock: success,
+            failureBlock: failure
+        )
+    }
 }
 ```
+
+### 5) 业务调用（调用示例 + 返回示例）
+
+调用代码：
+
+```swift
+NetworkManager.shared.profile(model: ProfileModel()) { profile in
+    print("profile:", profile as Any)
+} failure: { error in
+    print("error:", error as Any)
+}
+```
+
+该调用对应的后端返回示例：
+
+```json
+{
+  "code": "200",
+  "msg": "ok",
+  "data": {
+    "id": 42,
+    "nickname": "LTM"
+  }
+}
+```
+
+上述返回与配置关系：
+
+```swift
+config.response.codeKey = "code"                  // 读取 response["code"]
+config.response.successCodes = ["200", "0"]      // 命中则判定业务成功
+config.response.dataKey = "data"                  // 成功后解析 response["data"]
+config.response.successStatusCodes = Set(200...299) // HTTP 先过这一层
+```
+
+### 6) 可观测事件
+
+`config.observer.eventHandler` 可收到：
+
+- `autoRetrySkipped(reason:method:path:retryCount:)`
+- `tokenRefreshStarted(method:path:retryCount:)`
+- `tokenRefreshFinished(success:method:path:)`
+- `requestRetried(method:path:retryCount:)`
+- `duplicateRequestBlocked(reason:method:path:)`
+
+### 7) 容量与性能说明
+
+- 重复请求防护不会无限增长：`recordTTL` + `maxRecordCount` 双限制。
+- `makeLogPlugin()` 生成的 Moya 插件复用同一套 `config.log` 配置。
+- 本章节示例仅保留新设计字段（`config.response / callback / observer / tokenRefresh / duplicateRequest / log`）。
 
 ## Extension 快速上手（按文件）
 
