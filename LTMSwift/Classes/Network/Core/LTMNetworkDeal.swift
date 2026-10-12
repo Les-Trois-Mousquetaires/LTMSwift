@@ -84,7 +84,7 @@ open class LTMNetworkDeal: NSObject {
                 expectedCodes.remove("")
 
                 if expectedCodes.contains(responseCode) {
-                    let targetData = data[cfg.response.dataKey] ?? data
+                    let targetData: [String: Any] = (data[cfg.response.dataKey] as? [String: Any]) ?? data
                     invokeSuccess(successBlock, result: successHandle(data: targetData))
                 } else {
                     invokeFailure(failureBlock, result: failureHandle(data: data))
@@ -229,12 +229,8 @@ open class LTMNetworkDeal: NSObject {
         }
     }
     
-    private func successHandle<T: LTMModel>(data: Any) -> T? {
-        if let dict = data as? [String: Any] {
-            return T.deserialize(from: dict)
-        }
-
-        return nil
+    private func successHandle<T: LTMModel>(data: [String: Any]) -> T? {
+        T.deserialize(from: data)
     }
     
     /// Business-side unified error mapping hook.

@@ -820,3 +820,7 @@ LTMSwift is available under the MIT license. See the LICENSE file for more info.
 ## Foundation utilities and version management
 
 [API and usage guide](FoundationUtilities.md)
+
+## Network parameter plugin
+
+[Query and body parameter guide](NetworkParamPlugin.md)

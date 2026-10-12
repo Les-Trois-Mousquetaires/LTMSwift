@@ -476,7 +476,7 @@ config.response.successStatusCodes = Set(200...299)
 - 第一步：HTTP 状态码需在 `successStatusCodes` 内（例如 200）。
 - 第二步：读取 `response[codeKey]`，即上例中的 `code`，值需命中 `successCodes`。
 - 第三步：成功后优先解析 `response[dataKey]`（上例是 `data` 字段）。
-- 若 `dataKey` 不存在：回退解析整个响应字典。
+- 只有 `response[dataKey]` 是 JSON 对象时才解析内层字典；字段缺失、null、数字、字符串或数组时回退解析整个响应字典，模型解析入参始终为 `[String: Any]`。根响应不是 JSON 对象时进入失败回调。
 - 若 `code` 不命中：进入失败回调，`failureHandle` 收到完整响应字典。
 
 ### 2.1) 全量配置字段说明
@@ -850,3 +850,7 @@ LTMSwift 基于 MIT 协议开源，详见 LICENSE。
 ## Foundation utilities and version management
 
 [API and usage guide](FoundationUtilities.md)
+
+## Network parameter plugin
+
+[Query and body parameter guide](NetworkParamPlugin.md)
