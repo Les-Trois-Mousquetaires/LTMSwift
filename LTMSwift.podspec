@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
   s.author           = { 'kenan' => 'houkenan0620@126.com' }
   s.source           = { :git => 'https://github.com/Les-Trois-Mousquetaires/LTMSwift.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '13.0'
+  s.ios.deployment_target = '15.0'
 
   s.swift_versions = '5.2'
   # s.resource_bundles = {
