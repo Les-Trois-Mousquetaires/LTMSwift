@@ -80,3 +80,7 @@ listView.groupHeaderProvider = { [weak self] section in
 ```
 
 默认嵌入模式让父布局由内容高度推导列表高度；滚动模式需要父布局约束列表视口高度。Header 闭包如访问所属控制器应弱引用捕获。自定义 Header 默认在阴影卡片外，需和行共用卡片的布局不属于当前接口。
+
+## 表头与表尾挂载时机
+
+headerView/footerView 设置后先请求重新布局，待列表实际宽度可用时通过 systemLayoutSizeFitting 测量并设置 frame，再挂载到 TableView。不得提前挂载零尺寸视图，避免 UIView-Encapsulated-Layout-Width/Height 与内容约束冲突。设置 nil 时移除对应视图。

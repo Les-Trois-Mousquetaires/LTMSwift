@@ -816,3 +816,7 @@ LTMSwift is available under the MIT license. See the LICENSE file for more info.
 ## RichView grouped lists
 
 [RichView API and layout guide](RichViewSystemDesign.md)
+
+## Foundation utilities and version management
+
+[API and usage guide](FoundationUtilities.md)

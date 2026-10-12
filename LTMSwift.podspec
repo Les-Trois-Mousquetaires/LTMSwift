@@ -58,6 +58,11 @@ Pod::Spec.new do |s|
       ss.dependency 'LTMSwift/Extension/UIExtension'
   end
 
+  s.subspec 'Version' do |ss|
+      ss.source_files = 'LTMSwift/Classes/Version/**/*.swift'
+      ss.dependency 'LTMSwift/Extension/BaseExtension'
+  end
+
   s.subspec 'KeyChain' do |ss|
       ss.source_files = 'LTMSwift/Classes/KeyChain/**/*.swift'
   end

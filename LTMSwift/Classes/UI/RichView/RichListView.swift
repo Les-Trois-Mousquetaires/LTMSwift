@@ -68,8 +68,18 @@ open class RichListView: UIView {
         }
     }
     // 表头和表尾通过内部约束自动计算高度。
-    public var headerView: UIView? { didSet { tableview.tableHeaderView = headerView; refreshAccessoryLayout() } }
-    public var footerView: UIView? { didSet { tableview.tableFooterView = footerView; refreshAccessoryLayout() } }
+    public var headerView: UIView? {
+        didSet {
+            if headerView == nil { tableview.tableHeaderView = nil }
+            refreshAccessoryLayout()
+        }
+    }
+    public var footerView: UIView? {
+        didSet {
+            if footerView == nil { tableview.tableFooterView = nil }
+            refreshAccessoryLayout()
+        }
+    }
 
     /**
      一次配置分组和标题，过滤空组时同步过滤对应标题。
@@ -261,8 +271,12 @@ open class RichListView: UIView {
             if accessory.frame != frame {
                 changed = true
                 accessory.frame = frame
-                if accessory === headerView { tableview.tableHeaderView = accessory }
-                if accessory === footerView { tableview.tableFooterView = accessory }
+            }
+            if accessory === headerView, tableview.tableHeaderView !== accessory || changed {
+                tableview.tableHeaderView = accessory
+            }
+            if accessory === footerView, tableview.tableFooterView !== accessory || changed {
+                tableview.tableFooterView = accessory
             }
         }
         return changed

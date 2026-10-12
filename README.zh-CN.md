@@ -846,3 +846,7 @@ LTMSwift 基于 MIT 协议开源，详见 LICENSE。
 ## RichView 分组列表
 
 [RichView API and layout guide](RichViewSystemDesign.md)
+
+## Foundation utilities and version management
+
+[API and usage guide](FoundationUtilities.md)

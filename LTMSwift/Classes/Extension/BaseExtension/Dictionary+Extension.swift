@@ -77,3 +77,21 @@ public extension Dictionary where Key == String {
         return LTMJSONHelper.jsonString(from: self, prettyPrinted: prettyPrinted)
     }
 }
+
+public extension Dictionary where Value == Any {
+    /** 移除顶层 nil、NSNull 和空字符串、数组、字典；保留 0、false 及非空值。 */
+    func filterNilValues() -> [Key: Any] {
+        compactMapValues { value in
+            var unwrapped: Any = value
+            while Mirror(reflecting: unwrapped).displayStyle == .optional {
+                guard let child = Mirror(reflecting: unwrapped).children.first else { return nil }
+                unwrapped = child.value
+            }
+            if unwrapped is NSNull { return nil }
+            if let text = unwrapped as? String, text.isEmpty { return nil }
+            if let array = unwrapped as? [Any], array.isEmpty { return nil }
+            if let dictionary = unwrapped as? [AnyHashable: Any], dictionary.isEmpty { return nil }
+            return unwrapped
+        }
+    }
+}
