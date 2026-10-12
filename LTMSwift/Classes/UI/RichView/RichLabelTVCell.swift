@@ -39,19 +39,22 @@ open class RichLabelTVCell: UITableViewCell {
             }
             self.valueRichLabel.attributedText =  self.attrModel.value
             self.dividerView.isHidden = !self.attrModel.isShowLine
-            if self.attrModel.isUpdateLineSpace {
-                self.dividerView.snp.remakeConstraints { make in
-                    make.left.equalTo(self.contentView).offset(self.attrModel.lineSpace)
-                    make.bottom.right.equalTo(self.contentView)
-                    make.height.equalTo(1)
-                }
+            self.dividerView.snp.remakeConstraints { make in
+                make.left.equalTo(self.contentView).offset(self.attrModel.isUpdateLineSpace ? self.attrModel.lineSpace : 14)
+                make.bottom.right.equalTo(self.contentView)
+                make.height.equalTo(1)
             }
         }get{
             self.attrModel
         }
     }
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    /** 创建行视图。
+
+     - parameters style 行样式
+     - parameters reuseIdentifier 复用标识
+     */
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none
         self.contentView.addSubViews([self.titleRichLabel,
@@ -73,6 +76,10 @@ open class RichLabelTVCell: UITableViewCell {
         }
     }
     
+    /** 不支持归档初始化。
+
+     - parameters coder 归档数据
+     */
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

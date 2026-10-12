@@ -30,6 +30,8 @@ open class RichTextFieldTVCell: UITableViewCell {
             self.titleRichLabel.attributedText =  self.attrModel.key
             self.valueTextField.keyboardType = self.attrModel.keyboard
             self.valueTextField.isEnabled = self.attrModel.isEnabled
+            self.valueTextField.textColor = self.attrModel.textFieldTextColor
+            self.valueTextField.font = self.attrModel.textFieldFont
             if (self.attrModel.value.string.count > 0){
                 self.valueTextField.attributedText =  self.attrModel.value
             }else{
@@ -37,32 +39,30 @@ open class RichTextFieldTVCell: UITableViewCell {
                 self.valueTextField.font = self.attrModel.textFieldFont
             }
             self.valueTextField.attributedPlaceholder =  self.attrModel.placeHolder
-            if (self.attrModel.maxLength >= 0){
-                self.valueTextField.maxLength = self.attrModel.maxLength
-            }
-            if (self.attrModel.maxNumber.doubleValue >= 0){
-                self.valueTextField.maxNumber = self.attrModel.maxNumber
-            }
-            if (self.attrModel.digits >= 0){
-                self.valueTextField.digits = self.attrModel.digits
-            }
-            if ((self.attrModel.limitBlock) != nil){
-                self.valueTextField.limitBlock = self.attrModel.limitBlock
-            }
+            self.valueTextField.removeTarget(self.valueTextField, action: #selector(UITextField.checkMaxLength(textField:)), for: .editingChanged)
+            self.valueTextField.removeTarget(self.valueTextField, action: #selector(UITextField.checkMaxNumber(textField:)), for: .editingChanged)
+            self.valueTextField.removeTarget(self.valueTextField, action: #selector(UITextField.checkMaxDigits(textField:)), for: .editingChanged)
+            self.valueTextField.limitBlock = self.attrModel.limitBlock
+            if self.attrModel.maxLength >= 0 { self.valueTextField.maxLength = self.attrModel.maxLength }
+            if self.attrModel.maxNumber.doubleValue >= 0 { self.valueTextField.maxNumber = self.attrModel.maxNumber }
+            if self.attrModel.digits >= 0 { self.valueTextField.digits = self.attrModel.digits }
             self.dividerView.isHidden = !self.attrModel.isShowLine
-            if self.attrModel.isUpdateLineSpace {
-                self.dividerView.snp.remakeConstraints { make in
-                    make.left.equalTo(self.contentView).offset(self.attrModel.lineSpace)
-                    make.bottom.right.equalTo(self.contentView)
-                    make.height.equalTo(1)
-                }
+            self.dividerView.snp.remakeConstraints { make in
+                make.left.equalTo(self.contentView).offset(self.attrModel.isUpdateLineSpace ? self.attrModel.lineSpace : 14)
+                make.bottom.right.equalTo(self.contentView)
+                make.height.equalTo(1)
             }
         }get{
             self.attrModel
         }
     }
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    /** 创建行视图。
+
+     - parameters style 行样式
+     - parameters reuseIdentifier 复用标识
+     */
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none
         self.contentView.addSubViews([self.titleRichLabel,
@@ -85,6 +85,10 @@ open class RichTextFieldTVCell: UITableViewCell {
         self.valueTextField.addTarget(self, action: #selector(phoneTextFieldChange(_:)), for: .editingChanged)
     }
     
+    /** 转发输入变化。
+
+     - parameters textfield 输入框
+     */
     @objc func phoneTextFieldChange(_ textfield: UITextField){
         guard let block = self.textFieldEvnentBlock else{
             return
@@ -92,6 +96,10 @@ open class RichTextFieldTVCell: UITableViewCell {
         block(textfield.text ?? "")
     }
     
+    /** 不支持归档初始化。
+
+     - parameters coder 归档数据
+     */
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -842,3 +842,7 @@ coenen, coenen@aliyun.com
 ## License
 
 LTMSwift 基于 MIT 协议开源，详见 LICENSE。
+
+## RichView 分组列表
+
+[RichView API and layout guide](RichViewSystemDesign.md)

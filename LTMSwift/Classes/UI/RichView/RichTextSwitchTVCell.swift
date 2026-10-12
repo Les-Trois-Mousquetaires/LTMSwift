@@ -44,19 +44,22 @@ open class RichTextSwitchTVCell: UITableViewCell {
             self.textSwitch.alpha = self.attrModel.alpha
             self.textSwitch.isEnabled = self.attrModel.isEnabled
             self.dividerView.isHidden = !self.attrModel.isShowLine
-            if self.attrModel.isUpdateLineSpace {
-                self.dividerView.snp.remakeConstraints { make in
-                    make.left.equalTo(self.contentView).offset(self.attrModel.lineSpace)
-                    make.bottom.right.equalTo(self.contentView)
-                    make.height.equalTo(1)
-                }
+            self.dividerView.snp.remakeConstraints { make in
+                make.left.equalTo(self.contentView).offset(self.attrModel.isUpdateLineSpace ? self.attrModel.lineSpace : 14)
+                make.bottom.right.equalTo(self.contentView)
+                make.height.equalTo(1)
             }
         }get{
             self.attrModel
         }
     }
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    /** 创建行视图。
+
+     - parameters style 行样式
+     - parameters reuseIdentifier 复用标识
+     */
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none
         self.contentView.addSubViews([self.titleRichLabel,
@@ -80,6 +83,8 @@ open class RichTextSwitchTVCell: UITableViewCell {
         self.textSwitch.addTarget(self, action: #selector(click), for: .valueChanged)
     }
     
+    /** 转发开关变化。
+     */
     @objc func click(){
         guard let block = self.textSwitchBlock else{
             return
@@ -87,6 +92,10 @@ open class RichTextSwitchTVCell: UITableViewCell {
         block(self.textSwitch.isOn)
     }
     
+    /** 不支持归档初始化。
+
+     - parameters coder 归档数据
+     */
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -812,3 +812,7 @@ coenen, coenen@aliyun.com
 ## License
 
 LTMSwift is available under the MIT license. See the LICENSE file for more info.
+
+## RichView grouped lists
+
+[RichView API and layout guide](RichViewSystemDesign.md)

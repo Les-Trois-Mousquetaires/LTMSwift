@@ -26,20 +26,38 @@ open class RichLabelImageTVCell: UITableViewCell {
             self.dividerView.backgroundColor = self.attrModel.lineColor
             self.titleRichLabel.attributedText =  self.attrModel.key
             self.valueRichLabel.attributedText =  self.attrModel.value
+            self.titleRichLabel.snp.remakeConstraints { make in
+                make.top.bottom.equalTo(self.contentView)
+                make.left.equalTo(self.contentView).offset(self.attrModel.space)
+                if self.attrModel.titleWidth > 0 { make.width.equalTo(self.attrModel.titleWidth) }
+            }
+            self.valueRichLabel.snp.remakeConstraints { make in
+                make.top.bottom.equalTo(self.contentView)
+                make.left.equalTo(self.titleRichLabel.snp.right).offset(14)
+                make.right.equalTo(self.rightImageView.snp.left).offset(-self.attrModel.textImageSpace)
+            }
+            self.rightImageView.snp.remakeConstraints { make in
+                make.centerY.equalTo(self.contentView)
+                make.size.equalTo(self.attrModel.imageSize)
+                make.right.equalTo(self.contentView).offset(-self.attrModel.rightSpace)
+            }
             self.dividerView.isHidden = !self.attrModel.isShowLine
-            if self.attrModel.isUpdateLineSpace {
-                self.dividerView.snp.remakeConstraints { make in
-                    make.left.equalTo(self.contentView).offset(self.attrModel.lineSpace)
-                    make.bottom.right.equalTo(self.contentView)
-                    make.height.equalTo(1)
-                }
+            self.dividerView.snp.remakeConstraints { make in
+                make.left.equalTo(self.contentView).offset(self.attrModel.isUpdateLineSpace ? self.attrModel.lineSpace : 14)
+                make.bottom.right.equalTo(self.contentView)
+                make.height.equalTo(1)
             }
         }get{
             self.attrModel
         }
     }
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    /** 创建行视图。
+
+     - parameters style 行样式
+     - parameters reuseIdentifier 复用标识
+     */
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none
         self.contentView.addSubViews([self.titleRichLabel,
@@ -67,6 +85,10 @@ open class RichLabelImageTVCell: UITableViewCell {
         }
     }
     
+    /** 不支持归档初始化。
+
+     - parameters coder 归档数据
+     */
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
