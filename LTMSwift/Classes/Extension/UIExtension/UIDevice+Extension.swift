@@ -141,6 +141,8 @@ public extension UIDevice {
         "iPhone18,5": ("6.1", "iPhone 17e", "iPhone 17e"),
         "iPhone19,2": ("6.3", "iPhone 18 Pro", "iPhone 18 Pro"),
         "iPhone19,3": ("6.9", "iPhone 18 Pro Max", "iPhone 18 Pro Max"),
+        // Duo 固定记录展开内屏 7.6 英寸，外屏为 5.4 英寸；此处不表示当前折叠状态。
+        "iPhone19,4": ("7.6", "iPhone Duo", "iPhone Duo"),
         "iPhone19,7": ("6.9", "iPhone 18 Pro Max", "iPhone 18 Pro Max"),
     ]
 
