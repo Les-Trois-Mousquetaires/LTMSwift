@@ -26,13 +26,14 @@ open class LTMLogPlugin: PluginType {
         let method = urlRequest.httpMethod ?? "UNKNOWN"
         let url = urlRequest.url?.absoluteString ?? ""
 
-        log("[Network][Request] \(method) \(url)")
+        var lines = ["[Network][Request] \(method) \(url)"]
         if config.logHeaders {
-            log("[Network][Headers] \(redactedHeaders(urlRequest.allHTTPHeaderFields))")
+            lines.append("[Network][Request Headers]\n\(formatJSON(redactedHeaders(urlRequest.allHTTPHeaderFields)) ?? "{}")")
         }
-
-        guard config.logBody else { return }
-        log("[Network][Body] \(truncate(formatBody(urlRequest.httpBody)))")
+        if config.logBody {
+            lines.append("[Network][Body]\n\(truncate(formatBody(urlRequest.httpBody)))")
+        }
+        log(lines.joined(separator: "\n"))
     }
 
     open func didReceive(_ result: Result<Response, MoyaError>, target: TargetType) {
@@ -49,8 +50,8 @@ open class LTMLogPlugin: PluginType {
                 return
             }
 
-            if let json = try? response.mapJSON() {
-                log("[Network][Payload] \(truncate("\(redactedJSON(json))"))")
+            if let json = try? response.mapJSON(), let pretty = formatJSON(json) {
+                log("[Network][Payload] \(truncate(pretty))")
             } else if let text = String(data: response.data, encoding: .utf8), !text.isEmpty {
                 log("[Network][Payload] \(truncate(text))")
             } else {
@@ -95,12 +96,24 @@ open class LTMLogPlugin: PluginType {
         return object
     }
 
+    /**
+     将脱敏后的内容格式化为 JSON，支持对象、数组和标量。
+
+     - parameters object 待格式化的 JSON 内容
+     */
+    private func formatJSON(_ object: Any) -> String? {
+        guard let data = try? JSONSerialization.data(
+            withJSONObject: redactedJSON(object),
+            options: [.prettyPrinted, .sortedKeys, .fragmentsAllowed, .withoutEscapingSlashes]
+        ) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+
     private func formatBody(_ data: Data?) -> String {
         guard let data, !data.isEmpty else { return "<empty>" }
 
-        if let json = try? JSONSerialization.jsonObject(with: data, options: []),
-           let prettyData = try? JSONSerialization.data(withJSONObject: redactedJSON(json), options: [.prettyPrinted]),
-           let pretty = String(data: prettyData, encoding: .utf8) {
+        if let json = try? JSONSerialization.jsonObject(with: data, options: [.fragmentsAllowed]),
+           let pretty = formatJSON(json) {
             return pretty
         }
 

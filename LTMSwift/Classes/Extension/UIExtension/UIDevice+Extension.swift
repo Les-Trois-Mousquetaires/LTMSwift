@@ -137,7 +137,11 @@ public extension UIDevice {
         "iPhone18,1": ("6.3", "iPhone 17 Pro", "iPhone 17 Pro"),
         "iPhone18,2": ("6.9", "iPhone 17 Pro Max", "iPhone 17 Pro Max"),
         "iPhone18,3": ("6.3", "iPhone 17", "iPhone 17"),
-        "iPhone18,4": ("6.6", "iPhone Air", "iPhone Air"),
+        "iPhone18,4": ("6.5", "iPhone Air", "iPhone Air"),
+        "iPhone18,5": ("6.1", "iPhone 17e", "iPhone 17e"),
+        "iPhone19,2": ("6.3", "iPhone 18 Pro", "iPhone 18 Pro"),
+        "iPhone19,3": ("6.9", "iPhone 18 Pro Max", "iPhone 18 Pro Max"),
+        "iPhone19,7": ("6.9", "iPhone 18 Pro Max", "iPhone 18 Pro Max"),
     ]
 
     private static let iPadMap: [String: (size: String, model: String, modelEn: String)] = [
@@ -155,9 +159,6 @@ public extension UIDevice {
         "iPad3,4": ("9.7", "iPad (第4代)", "iPad (4th generation)"),
         "iPad3,5": ("9.7", "iPad (第4代)", "iPad (4th generation)"),
         "iPad3,6": ("9.7", "iPad (第4代)", "iPad (4th generation)"),
-        "iPad3,7": ("9.7", "iPad (第4代)", "iPad (4th generation)"),
-        "iPad3,8": ("9.7", "iPad (第4代)", "iPad (4th generation)"),
-        "iPad3,9": ("9.7", "iPad (第4代)", "iPad (4th generation)"),
         "iPad4,1": ("9.7", "iPad Air (第1代)", "iPad Air (1st generation)"),
         "iPad4,2": ("9.7", "iPad Air (第1代)", "iPad Air (1st generation)"),
         "iPad4,3": ("9.7", "iPad Air (第1代)", "iPad Air (1st generation)"),
@@ -229,12 +230,26 @@ public extension UIDevice {
         "iPad14,9": ("11", "iPad Air 11-inch (M2)", "iPad Air 11-inch (M2)"),
         "iPad14,10": ("13", "iPad Air 13-inch (M2)", "iPad Air 13-inch (M2)"),
         "iPad14,11": ("13", "iPad Air 13-inch (M2)", "iPad Air 13-inch (M2)"),
+        "iPad15,3": ("11", "iPad Air 11-inch (M3)", "iPad Air 11-inch (M3)"),
+        "iPad15,4": ("11", "iPad Air 11-inch (M3)", "iPad Air 11-inch (M3)"),
+        "iPad15,5": ("13", "iPad Air 13-inch (M3)", "iPad Air 13-inch (M3)"),
+        "iPad15,6": ("13", "iPad Air 13-inch (M3)", "iPad Air 13-inch (M3)"),
+        "iPad15,7": ("11", "iPad (A16)", "iPad (A16)"),
+        "iPad15,8": ("11", "iPad (A16)", "iPad (A16)"),
         "iPad16,1": ("8.3", "iPad mini (A17 Pro)", "iPad mini (A17 Pro)"),
         "iPad16,2": ("8.3", "iPad mini (A17 Pro)", "iPad mini (A17 Pro)"),
         "iPad16,3": ("11", "iPad Pro 11-inch (M4)", "iPad Pro 11-inch (M4)"),
         "iPad16,4": ("11", "iPad Pro 11-inch (M4)", "iPad Pro 11-inch (M4)"),
         "iPad16,5": ("13", "iPad Pro 13-inch (M4)", "iPad Pro 13-inch (M4)"),
         "iPad16,6": ("13", "iPad Pro 13-inch (M4)", "iPad Pro 13-inch (M4)"),
+        "iPad16,8": ("11", "iPad Air 11-inch (M4)", "iPad Air 11-inch (M4)"),
+        "iPad16,9": ("11", "iPad Air 11-inch (M4)", "iPad Air 11-inch (M4)"),
+        "iPad16,10": ("13", "iPad Air 13-inch (M4)", "iPad Air 13-inch (M4)"),
+        "iPad16,11": ("13", "iPad Air 13-inch (M4)", "iPad Air 13-inch (M4)"),
+        "iPad17,1": ("11", "iPad Pro 11-inch (M5)", "iPad Pro 11-inch (M5)"),
+        "iPad17,2": ("11", "iPad Pro 11-inch (M5)", "iPad Pro 11-inch (M5)"),
+        "iPad17,3": ("13", "iPad Pro 13-inch (M5)", "iPad Pro 13-inch (M5)"),
+        "iPad17,4": ("13", "iPad Pro 13-inch (M5)", "iPad Pro 13-inch (M5)"),
     ]
 
     private static let deviceMap: [String: (size: String, model: String, modelEn: String)] = iPhoneMap.merging(iPadMap) { current, _ in
@@ -246,11 +261,15 @@ public extension UIDevice {
             return ("Simulator", "Simulator", "Simulator")
         }
 
-        if let model = Self.deviceMap[self.detailedModel] {
+        let identifier = self.detailedModel
+        if let model = Self.deviceMap[identifier] {
             return model
         }
-        if self.detailedModel.hasPrefix("iPad") {
+        if identifier.hasPrefix("iPad") {
             return ("", "iPad", "iPad")
+        }
+        if identifier.hasPrefix("iPhone") {
+            return ("", identifier, identifier)
         }
         return ("", "", "")
     }
