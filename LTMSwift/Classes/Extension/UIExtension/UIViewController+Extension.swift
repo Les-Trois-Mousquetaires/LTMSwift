@@ -27,3 +27,17 @@ public extension UIViewController{
     }
     
 }
+
+public extension UIBarButtonItem {
+    /**
+     创建自定义导航按钮，避免 iOS 26 叠加系统玻璃背景。
+
+     - parameters projectCustomView 自定义导航按钮视图
+     */
+    convenience init(projectCustomView: UIView) {
+        self.init(customView: projectCustomView)
+        if #available(iOS 26.0, *) {
+            self.hidesSharedBackground = true
+        }
+    }
+}
