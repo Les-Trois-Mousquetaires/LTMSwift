@@ -85,6 +85,10 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'UI' do |ss|
+      ss.subspec 'Line' do |sss|
+          sss.source_files = 'LTMSwift/Classes/UI/Line/**/*.swift'
+      end
+
       ss.subspec 'Gradient' do |sss|
           sss.source_files = 'LTMSwift/Classes/UI/Gradient/**/*.swift'
           sss.dependency 'LTMSwift/Extension'

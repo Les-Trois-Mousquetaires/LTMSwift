@@ -824,3 +824,79 @@ LTMSwift is available under the MIT license. See the LICENSE file for more info.
 ## Network parameter plugin
 
 [Query and body parameter guide](NetworkParamPlugin.md)
+
+## DashedLineView
+
+A UIKit view for horizontal, vertical, diagonal, or custom lines, with solid/dashed strokes and optional gradients. Source: `LTMSwift/Classes/UI/Line/DashedLineView.swift`. The `LTMSwift/UI/Line` subspec will be available once a version containing this component is published; it is not included in the published 0.8.5 release.
+
+### Basic usage
+
+Create the view, configure its properties, and provide a frame or Auto Layout constraints. Updating `config` or resizing the view redraws the line.
+
+```swift
+import LTMSwift
+
+let line = DashedLineView()
+line.config.direction = .horizontal
+line.config.color = .systemGray
+line.config.lineWidth = 1
+line.config.dashLengths = [3, 4]
+line.config.lineCap = .butt
+line.config.contentInsets = UIEdgeInsets(top: 0, left: 14, bottom: 0, right: 14)
+line.frame = CGRect(x: 0, y: 0, width: 200, height: 10)
+view.addSubview(line)
+```
+
+### Directions
+
+```swift
+line.config.direction = .horizontal
+line.config.direction = .vertical
+line.config.direction = .diagonalDown // Top left to bottom right.
+line.config.direction = .diagonalUp   // Bottom left to top right.
+line.config.direction = .custom(
+    start: CGPoint(x: 0, y: 0.25),
+    end: CGPoint(x: 1, y: 0.75)
+)
+```
+
+Custom endpoints use normalized coordinates in `0...1`, relative to the drawing area after applying `contentInsets`.
+
+### Gradients and solid strokes
+
+```swift
+// Evenly spaced colors along the line, from its start to its end.
+line.config.gradientColors = [.clear, .systemTeal, .clear]
+
+// Return to a single color.
+line.config.gradientColors = []
+line.config.color = .systemGray
+
+// Use a continuous stroke instead of dashes.
+line.config.dashLengths = []
+```
+
+Two or more `gradientColors` override `color`, regardless of assignment order. With fewer than two colors, `color` is used. Gradients preserve dash gaps and cap shapes.
+
+### Configuration
+
+| Property | Default | Behavior |
+| --- | --- | --- |
+| `direction` | `.horizontal` | Horizontal, vertical, either diagonal, or custom endpoints |
+| `color` | Black at 10% opacity | Single stroke color when no gradient is active |
+| `gradientColors` | `[]` | Two or more colors enable an evenly spaced gradient |
+| `lineWidth` | `2` | Stroke thickness in points; must be finite and positive |
+| `dashLengths` | `[2, 4]` | Alternating painted and empty lengths in points; `[]` draws a continuous stroke; nonpositive/nonfinite values are ignored |
+| `dashPhase` | `0` | Dash offset in points; nonfinite values fall back to zero |
+| `lineCap` | `.square` | `.butt`, `.square`, or `.round` |
+| `contentInsets` | `.zero` | Nonnegative, finite drawing area insets |
+
+`.square` and `.round` extend each dash by half the line width at both ends. For example, a width of 5 with `[2, 4]` can merge neighboring dashes. Use `.butt` for exact dash lengths, or increase the gap:
+
+```swift
+line.config.lineWidth = 5
+line.config.lineCap = .round
+line.config.dashLengths = [5, 10]
+```
+
+Provide enough space for the stroke: at least `lineWidth` in height for a horizontal line, or in width for a vertical line. Diagonal lines need both dimensions. End caps at the view boundary may be clipped; add insets to leave room. Invalid widths, insets, or custom coordinates skip drawing.

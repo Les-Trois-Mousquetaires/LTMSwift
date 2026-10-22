@@ -854,3 +854,79 @@ LTMSwift 基于 MIT 协议开源，详见 LICENSE。
 ## Network parameter plugin
 
 [Query and body parameter guide](NetworkParamPlugin.md)
+
+## DashedLineView
+
+基于 UIKit 的通用线条视图，支持横线、竖线、斜线、自定义端点、实线、虚线及渐变色。源码位于 `LTMSwift/Classes/UI/Line/DashedLineView.swift`。子模块为 `LTMSwift/UI/Line`，需等待包含该组件的版本发布后安装；已发布的 0.8.5 不包含此组件。
+
+### 基础用法
+
+无参创建后通过属性配置，并设置 frame 或 Auto Layout 约束。修改 `config` 或视图尺寸会自动重绘。
+
+```swift
+import LTMSwift
+
+let line = DashedLineView()
+line.config.direction = .horizontal
+line.config.color = .systemGray
+line.config.lineWidth = 1
+line.config.dashLengths = [3, 4]
+line.config.lineCap = .butt
+line.config.contentInsets = UIEdgeInsets(top: 0, left: 14, bottom: 0, right: 14)
+line.frame = CGRect(x: 0, y: 0, width: 200, height: 10)
+view.addSubview(line)
+```
+
+### 绘制方向
+
+```swift
+line.config.direction = .horizontal
+line.config.direction = .vertical
+line.config.direction = .diagonalDown // 左上至右下。
+line.config.direction = .diagonalUp   // 左下至右上。
+line.config.direction = .custom(
+    start: CGPoint(x: 0, y: 0.25),
+    end: CGPoint(x: 1, y: 0.75)
+)
+```
+
+自定义端点使用 `0...1` 范围内的归一化坐标，基于扣除 `contentInsets` 后的绘制区域。
+
+### 渐变色与实线
+
+```swift
+// 颜色沿线条起点至终点等距渐变。
+line.config.gradientColors = [.clear, .systemTeal, .clear]
+
+// 恢复纯色。
+line.config.gradientColors = []
+line.config.color = .systemGray
+
+// 取消虚线间隔，绘制连续实线。
+line.config.dashLengths = []
+```
+
+`gradientColors` 至少有两种颜色时优先于 `color`，与赋值先后无关；不足两种时使用 `color`。渐变保留虚线空隙和端点形状。
+
+### 配置说明
+
+| 属性 | 默认值 | 作用 |
+| --- | --- | --- |
+| `direction` | `.horizontal` | 水平、垂直、两种斜线或自定义端点 |
+| `color` | 黑色，10% 不透明度 | 未启用渐变时的线条颜色 |
+| `gradientColors` | `[]` | 至少两种颜色时启用等距渐变 |
+| `lineWidth` | `2` | 线条粗细，单位 pt，必须为有限正数 |
+| `dashLengths` | `[2, 4]` | 实线段与空白段交替长度，单位 pt；空数组绘制实线，忽略非正数和非有限值 |
+| `dashPhase` | `0` | 虚线起始偏移，单位 pt；非有限值按零处理 |
+| `lineCap` | `.square` | 支持 `.butt`、`.square`、`.round` 端点 |
+| `contentInsets` | `.zero` | 绘制区域内边距，必须为非负有限值 |
+
+`.square` 和 `.round` 会在每段两端各延伸半个线宽。例如线宽为 5、间隔为 `[2, 4]` 时，相邻虚线可能连成实线。需要严格按长度绘制时使用 `.butt`，或加大间隔：
+
+```swift
+line.config.lineWidth = 5
+line.config.lineCap = .round
+line.config.dashLengths = [5, 10]
+```
+
+使用方负责布局：横线视图高度、竖线视图宽度至少应等于 `lineWidth`，斜线需要足够宽高。端点位于视图边缘时，延伸部分可能被裁切，可通过内边距留白。无效线宽、内边距或自定义坐标不绘制。

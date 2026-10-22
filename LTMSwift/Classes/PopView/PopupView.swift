@@ -17,6 +17,9 @@ public protocol PopupViewAnimator {
     /// - Returns: void
     func setup(popupView: PopupView, contentView: UIView, backgroundView: PopupView.BackgroundView)
 
+    /** 加入展示容器后，在入场动画开始前准备初始状态。 */
+    func prepareForDisplay()
+
 
     /// 横竖屏切换的时候，刷新布局
     /// - Parameters:
@@ -42,6 +45,11 @@ public protocol PopupViewAnimator {
     ///   - animated: 是否需要动画
     ///   - completion: 动画完成后的回调
     func dismiss(contentView: UIView, backgroundView: PopupView.BackgroundView, animated: Bool, completion: @escaping ()->())
+}
+
+public extension PopupViewAnimator {
+    /** 默认无需额外准备，兼容已有的自定义动画驱动器。 */
+    func prepareForDisplay() {}
 }
 
 /// 一个轻量级的自定义视图弹框框架，主要提供动画、背景的灵活配置，功能简单却强大
@@ -155,6 +163,11 @@ public class PopupView: UIView {
         self.bottomAnchor.constraint(equalTo: curContainerView.bottomAnchor).isActive = true
         self.leadingAnchor.constraint(equalTo: curContainerView.leadingAnchor).isActive = true
         self.trailingAnchor.constraint(equalTo: curContainerView.trailingAnchor).isActive = true
+
+        UIView.performWithoutAnimation {
+            curContainerView.layoutIfNeeded()
+            animator.prepareForDisplay()
+        }
 
         willDispalyCallback?()
         animator.display(contentView: contentView, backgroundView: backgroundView, animated: animated, completion: {
@@ -273,6 +286,14 @@ open class BaseAnimator: PopupViewAnimator {
     open var dismissSpringVelocity: CGFloat?
     /// 消失动画的配置block
     open var dismissAnimationBlock: (()->())?
+
+    // 位移动画的初始布局延后到弹框加入展示容器后执行。
+    var prepareDisplayBlock: (() -> Void)?
+
+    /** 在有效的窗口层级中设置位移动画的起始状态。 */
+    open func prepareForDisplay() {
+        prepareDisplayBlock?()
+    }
 
     public enum Layout {
         case center(Center)
@@ -542,7 +563,8 @@ open class LeftwardAnimator: BaseAnimator {
                 popupView.layoutIfNeeded()
             }
         }
-        fromClosure()
+        backgroundView.alpha = 0
+        prepareDisplayBlock = fromClosure
 
         displayAnimationBlock = { [weak self, weak popupView] in
             guard let self = self, let popupView = popupView else { return }
@@ -593,7 +615,8 @@ open class RightwardAnimator: BaseAnimator {
                 popupView.layoutIfNeeded()
             }
         }
-        fromClosure()
+        backgroundView.alpha = 0
+        prepareDisplayBlock = fromClosure
 
         displayAnimationBlock = { [weak self, weak popupView] in
             guard let self = self, let popupView = popupView else { return }
@@ -648,7 +671,8 @@ open class UpwardAnimator: BaseAnimator {
                 popupView.layoutIfNeeded()
             }
         }
-        fromClosure()
+        backgroundView.alpha = 0
+        prepareDisplayBlock = fromClosure
 
         displayAnimationBlock = { [weak self, weak popupView] in
             guard let self = self, let popupView = popupView else { return }
@@ -703,7 +727,8 @@ open class DownwardAnimator: BaseAnimator {
                 popupView.layoutIfNeeded()
             }
         }
-        fromClosure()
+        backgroundView.alpha = 0
+        prepareDisplayBlock = fromClosure
 
         displayAnimationBlock = { [weak self, weak popupView] in
             guard let self = self, let popupView = popupView else { return }
